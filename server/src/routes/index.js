@@ -1,4 +1,4 @@
-import authRouter from './authRoutes';
+import authRouter from './authRoutes.js';
 
 const configureRouter = (app) => {
   app.use('/auth', authRouter);

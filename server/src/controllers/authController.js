@@ -1,9 +1,10 @@
 import User from '../models/user.js';
-import { createUser } from '../services/authServices';
+import { createUser } from '../services/authServices.js';
 
 export const signUp = async (req, res) => {
   try {
-    const existingUser = User.findOne({ $or: [{ username }, { email }] });
+    const { username, email } = req.body;
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
     if (existingUser)
       return res
         .status(400)
