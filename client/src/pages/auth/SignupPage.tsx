@@ -12,15 +12,11 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signupFormSchema } from '@/lib/validation';
-import { Link, useNavigate } from 'react-router-dom';
-import API from '@/lib/axios';
-import { AxiosError } from 'axios';
-import { useState } from 'react';
-import { toast } from 'react-hot-toast';
+import { Link } from 'react-router-dom';
+import { useSignup } from '@/hooks/useSignUp';
 
 const Signup = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
+  const signupMutation = useSignup();
 
   const form = useForm<z.infer<typeof signupFormSchema>>({
     resolver: zodResolver(signupFormSchema),
@@ -32,29 +28,10 @@ const Signup = () => {
       confirmPassword: '',
     },
   });
-  const onSubmit = async (
+  const onSubmit =  (
     data: z.infer<typeof signupFormSchema>
-  ): Promise<void> => {
-    setIsLoading(true);
-    try {
-      const response = await API.post('/auth/signup', data);
-      console.log('User created:', response.data);
-      toast.success('Signup successful! Redirecting to login...');
-      setTimeout(() => {
-        navigate('/sign-in');
-      }, 2000);
-    } catch (error) {
-      if (error instanceof AxiosError) {
-        console.error(
-          'Signup failed:',
-          error.response?.data.message || error.message
-        );
-      } else {
-        console.error('Unexpected error:', error);
-      }
-    } finally {
-      setIsLoading(false);
-    }
+  ) => {
+    signupMutation.mutate(data)
   };
   return (
     <>
@@ -138,7 +115,7 @@ const Signup = () => {
               type="submit"
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
             >
-              {isLoading ? <div>Sigining Up...</div> : 'Sign Up'}
+              {signupMutation.isPending ? 'Sigining Up...' : 'Sign Up'}
             </Button>
           </form>
         </Form>
