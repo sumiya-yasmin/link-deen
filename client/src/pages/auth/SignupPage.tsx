@@ -12,7 +12,9 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signupFormSchema } from '@/lib/validation';
-import { Link } from 'react-router-dom';
+import { Link} from 'react-router-dom';
+import API from '@/lib/axios';
+import { AxiosError } from 'axios';
 
 const Signup = () => {
   const isLoading = false;
@@ -21,12 +23,22 @@ const Signup = () => {
     defaultValues: {
       name: '',
       username: '',
+      email: '',
       password: '',
       confirmPassword: '',
     },
   });
-  function onSubmit(values: z.infer<typeof signupFormSchema>) {
-    console.log(values);
+  const onSubmit = async (data: z.infer<typeof signupFormSchema>):Promise<void> => {
+    try {
+      const response = await API.post('/auth/signup', data);
+      console.log('User created:', response.data);
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.error('Signup failed:', error.response?.data.message || error.message);
+      } else {
+        console.error('Unexpected error:', error);
+      }
+    }
   }
   return (
     <>
