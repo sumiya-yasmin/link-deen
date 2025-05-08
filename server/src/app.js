@@ -8,7 +8,7 @@ const port = config.PORT;
 
 //middleware
 app.use(express.json());
-app.use(cors(config.CORS.ORIGIN));
+app.use(cors(config.CORS));
 
 connectDB();
 configureRouter(app);

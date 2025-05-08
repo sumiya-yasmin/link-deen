@@ -7,6 +7,7 @@ export const config = {
     //   Mongo_DBName: process.env.dbName,
     },
     CORS: {
-      ORIGIN: process.env.CORS_ORIGIN
+      origin: process.env.CORS_ORIGIN,
+      credentials: true,
     }
   };
