@@ -13,10 +13,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { signinFormSchema} from '@/lib/validation';
 import { Link } from 'react-router-dom';
-import { useSignup } from '@/hooks/useSignUp';
+import { useSignin } from '@/hooks/useSignIn';
 
 const Signin = () => {
-  const signupMutation = useSignup();
+  const signinMutation = useSignin();
 
   const form = useForm<z.infer<typeof signinFormSchema>>({
     resolver: zodResolver(signinFormSchema),
@@ -28,7 +28,7 @@ const Signin = () => {
   const onSubmit =  (
     data: z.infer<typeof signinFormSchema>
   ) => {
-    signupMutation.mutate(data)//need to be updated later
+    signinMutation.mutate(data)//need to be updated later
   };
   return (
     <>
@@ -69,7 +69,7 @@ const Signin = () => {
               type="submit"
               className="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-amber-600 hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-amber-500 transition-colors"
             >
-              {signupMutation.isPending ? 'Sigining in...' : 'Sign In'}
+              {signinMutation.isPending ? 'Sigining in...' : 'Sign In'}
             </Button>
           </form>
         </Form>

@@ -1,5 +1,5 @@
 import { Outlet } from 'react-router-dom';
-import { Toaster } from 'react-hot-toast';
+
 
 export default function AuthLayout() {
   return (
@@ -27,7 +27,7 @@ export default function AuthLayout() {
       <footer className="text-center p-6 text-xs text-slate-400">
         &copy; {new Date().getFullYear()} LinkDeen. All rights reserved.
       </footer>
-      <Toaster position="top-right" />
+
     </>
   );
 }

@@ -10,3 +10,11 @@ import API from "@/lib/axios"
 const response = await API.post('/auth/signup', data);
 return response.data;
 }
+
+export const signInMutation = async(data:{
+  email: string;
+  password: string;
+}) => {
+  const response = await API.post('/auth/signin', data);
+  return response.data;
+}
