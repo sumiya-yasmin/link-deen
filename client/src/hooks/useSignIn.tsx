@@ -8,7 +8,9 @@ export const useSignin = () => {
     const navigate = useNavigate()
   return useMutation({
     mutationFn: signInMutation,
-    onSuccess: () => {
+    onSuccess: (data) => {
+        localStorage.setItem('accessToken', data.accessToken);
+  localStorage.setItem('refreshToken', data.refreshToken);
       toast.success('Sign in successful. Welcome to Link Deen');
       navigate("/");
     },
