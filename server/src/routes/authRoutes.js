@@ -1,9 +1,10 @@
 import express from 'express';
-import { signUp } from '../controllers/authController.js';
+import { signIn, signUp } from '../controllers/authController.js';
 import validatePayload from '../middlewares/validation.js';
-import { signupSchema } from '../validations/auth.js';
+import { signinSchema, signupSchema } from '../validations/auth.js';
 
 const authRouter = express.Router();
 
 authRouter.post('/signup', validatePayload(signupSchema), signUp);
+authRouter.post('/signin', validatePayload(signinSchema), signIn)
 export default authRouter;
