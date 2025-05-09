@@ -9,5 +9,6 @@ export const config = {
     CORS: {
       origin: process.env.CORS_ORIGIN,
       credentials: true,
-    }
+    },
+    JWT_SECRET: process.env.JWT_SECRET
   };

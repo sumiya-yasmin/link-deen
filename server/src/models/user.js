@@ -9,13 +9,15 @@ const userSchema = new mongoose.Schema({
 },{timestamps: true});
 
 //hash before save
-userSchema.pre('save', async function () {
+userSchema.pre('save', async function (next) {
     if(!this.isModified('password')) return;
-    this.password= await bcrypt.hash(this.password, 10);
+     const salt = await bcrypt.genSalt(10);
+    this.password= await bcrypt.hash(this.password, salt);
+    next();
 });
 
-userSchema.methods.comparePassword = async function (candidate) {
-   return await bcrypt.compare(candidate, this.password);
+userSchema.methods.comparePassword = async function (plainPassword) {
+   return await bcrypt.compare(plainPassword, this.password);
     
 }
 const User = mongoose.model('User', userSchema);
