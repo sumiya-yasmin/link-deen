@@ -1,3 +1,4 @@
+import AuthGuard from '@/components/AuthGuard';
 import AuthLayout from '@/layouts/AuthLayout';
 import RootLayout from '@/layouts/RootLayout';
 import { HomePage } from '@/pages';
@@ -14,7 +15,7 @@ export default function AppRouter() {
            <Route path='sign-up' element={<SignupPage />} />
            <Route path='sign-in' element={<SigninPage />} />
         </Route>
-        <Route path="/" element={<RootLayout />}>
+        <Route path="/" element={<AuthGuard><RootLayout /></AuthGuard>}>
         <Route index element={<HomePage />}/>
         </Route>
       </Routes>
