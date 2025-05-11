@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import crypto from 'crypto';
 import { config } from '../config/index.js';
 export const generateTokens = (user) => {
   const payload = {
@@ -13,4 +14,8 @@ export const generateTokens = (user) => {
   });
 
   return { accessToken, refreshToken };
+};
+
+export const hashToken = (token) => {
+  return crypto.createHash('sha256').update(token).digest('hex');
 };
