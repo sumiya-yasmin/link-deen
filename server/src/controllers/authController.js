@@ -5,6 +5,16 @@ import { generateTokens } from '../services/tokentServices.js';
 import { ApiError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
 
+const setRefreshToken = (res, refreshToken) =>{
+   res.cookie('refreshToken', refreshToken, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV,
+    sameSite: 'strict',
+    path: '/api/auth/refresh',
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+   })
+};
+
 export const signUp = async (req, res) => {
   try {
     const { username, email } = req.body;
@@ -24,6 +34,7 @@ export const signUp = async (req, res) => {
   }
 };
 
+
 export const signIn = async (req, res) => {
   const { email, password} = req.body;
 
@@ -33,8 +44,14 @@ export const signIn = async (req, res) => {
     }
 
       const user = await signInServices(email, password);
-      const tokens = generateTokens(user);
-      return res.status(200).json(tokens);
+      const {accessToken, refreshToken} = generateTokens(user);
+      setRefreshToken(res, refreshToken);
+
+      return res.status(200).json({accessToken, user:{
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      }});
   } catch (error) {
  
     console.error('Unexpected error during sign in:', error);
@@ -45,9 +62,10 @@ export const signIn = async (req, res) => {
   }
 };
 
+
 export const refreshAccessToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.body;
+    const { refreshToken } = req.cookies.refreshToken;
 
     if (!refreshToken) {
       return res.status(401).json({ message: 'Refresh token is required' });
@@ -57,51 +75,25 @@ export const refreshAccessToken = async (req, res, next) => {
 
     // Optional: Check if user still exists (security best practice)
     const user = await User.findById(decoded._id);
-    if (!user) {
+    if (!user || user.refreshToken !== refreshToken) {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
 
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user._id);
+     user.refreshToken = newRefreshToken;
+    await user.save();
+
+    setRefreshToken(res, newRefreshToken);
 
     res.status(200).json({ accessToken, refreshToken: newRefreshToken });
   } catch (error) {
     console.error(error);
-    return res.status(401).json({ message: 'Invalid or expired refresh token' });
+    
+    if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Invalid or expired refresh token' });
+    }
+     res.status(500).json({ message: 'Server error' });
   }
 };
 
 
-
-// export const signIn = async (req, res) => {
-//   const { email, password, tokens } = req.body;
-
-//   try {
-//     if (email && password) {
-//       const user = await signInServices(email, password);
-//       const tokens = generateTokens(user);
-//       return res.status(200).json(tokens);
-//     }
-//     if (refreshToken) {
-//       jwt.verify(refreshToken, config.JWT_SECRET, async (err, payload) => {
-//         if (err)
-//           return res.status(401).json({ message: 'Invalid refresh token' });
-//         const user = await User.findById(payload._id);
-//         if (!user) return res.status(404).json({ message: 'User not found' });
-//         const tokens = generateTokens(user);
-//         return res.status(200).json(tokens);
-//       });
-//     }else {
-//       return res.status(400).json({ message: 'Provide email/password or refreshToken' });
-//     };
-//     return res.status(200).json({ message: 'Sign in successful', tokens });
-//   } catch (error) {
-//     console.log('ERROR TYPE:', error.constructor.name);
-//     console.log('IS API ERROR:', error instanceof ApiError);
-//     console.error('FULL ERROR:', error);
-//     if (error instanceof ApiError) {
-//       return res.status(401).json({ message: error.message });
-//     }
-//     console.error('Unexpected error during sign in:', error);
-//     return res.status(500).json({ message: 'Internal server error' });
-//   }
-// };
