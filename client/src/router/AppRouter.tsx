@@ -11,7 +11,7 @@ export default function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<AuthLayout />}>
+        <Route path="/auth" element={<AuthLayout />}>
            <Route path='sign-up' element={<SignupPage />} />
            <Route path='sign-in' element={<SigninPage />} />
         </Route>

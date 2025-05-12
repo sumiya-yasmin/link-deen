@@ -12,11 +12,21 @@ import {
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { signinFormSchema} from '@/lib/validation';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSignin } from '@/hooks/useSignIn.tsx';
+import { useAuth } from '@/context/AuthContext';
+import { useEffect } from 'react';
 
 const Signin = () => {
-  const signinMutation = useSignin();
+const signinMutation = useSignin();
+const { isAuthenticated } = useAuth();
+const navigate = useNavigate();
+
+useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
 
   const form = useForm<z.infer<typeof signinFormSchema>>({
     resolver: zodResolver(signinFormSchema),
@@ -28,7 +38,7 @@ const Signin = () => {
   const onSubmit =  (
     data: z.infer<typeof signinFormSchema>
   ) => {
-    signinMutation.mutate(data)//need to be updated later
+    signinMutation.mutate(data)
   };
   return (
     <>
@@ -71,12 +81,18 @@ const Signin = () => {
             >
               {signinMutation.isPending ? 'Sigining in...' : 'Sign In'}
             </Button>
+            {signinMutation.error && (
+            <p className="text-red-500 text-sm mt-2">
+              {(signinMutation.error as any)?.response?.data?.message ??
+                'An unexpected error occurred.'}
+            </p>
+          )}
           </form>
         </Form>
         <div className="text-center text-sm text-slate-500 mt-4">
           Don't have an account?{' '}
           <Link
-            to="/sign-up"
+            to="/auth/sign-up"
             className="text-amber-600 hover:text-amber-500 font-medium"
           >
             Sign Up

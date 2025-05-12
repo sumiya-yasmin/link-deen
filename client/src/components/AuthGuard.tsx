@@ -12,7 +12,7 @@ const AuthGuard = ({ children }: AuthGuardProps) => {
    return <div>Loading....</div>;
   }
   if (!isAuthenticated) {
-    return <Navigate to="/sign-in" />;
+    return <Navigate to="/auth/sign-in" />;
   }
   return <>{children}</>;
 };

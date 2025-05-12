@@ -30,9 +30,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleSignin = (accessToken: string) => {
-    localStorage.setItem('accessToken', accessToken);
+       setAccessToken(accessToken);
     setIsAuthenticated(true);
-    // fetchUserData();
+    fetchUserData();
+
   };
   const handleSignout = async () => {
     try {

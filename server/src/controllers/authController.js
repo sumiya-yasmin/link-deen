@@ -8,9 +8,9 @@ import { config } from '../config/index.js';
 const setRefreshToken = (res, refreshToken) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV,
+    secure: process.env.NODE_ENV === "production",
     sameSite: 'strict',
-    path: '/api/auth/refresh',
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
@@ -69,16 +69,16 @@ export const signIn = async (req, res) => {
 
 export const refreshAccessToken = async (req, res, next) => {
   try {
-    const { refreshToken } = req.cookies.refreshToken;
+    const  refreshToken  = req.cookies.refreshToken;
 
     if (!refreshToken) {
-      return res.status(401).json({ message: 'Refresh token is required' });
+      return res.status(401).json({ message: 'Refresh token is required',error: 'NO_REFRESH_TOKEN' });
     }
-
-    const decoded = jwt.verify(refreshToken, config.JWT_SECRET);
+    let decoded;
+     decoded = jwt.verify(refreshToken, config.JWT_SECRET);
 
     const user = await User.findById(decoded._id);
-    if (!user || user.refreshToken !== refreshToken) {
+    if (!user || user.refreshToken !== hashToken(refreshToken)) {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(

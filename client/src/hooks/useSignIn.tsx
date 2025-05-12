@@ -21,7 +21,7 @@ export const useSignin = () => {
           'Signup failed. Please create an account first'
       );
       if (error.response?.data.name === 'UserNotFoundError') {
-        navigate('/sign-up');
+        navigate('auth/sign-up');
       }
     },
   });
