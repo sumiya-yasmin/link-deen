@@ -10,4 +10,12 @@ authRouter.post('/signup', validatePayload(signupSchema), signUp);
 authRouter.post('/signin', validatePayload(signinSchema), signIn);
 authRouter.post('/refresh', refreshAccessToken);
 authRouter.get('/me', getUserProfile);
+authRouter.get('/debug-cookies', (req, res) => {
+  console.log('Cookies received:', req.cookies);
+  res.json({ 
+    cookies: req.cookies,
+    hasRefreshToken: !!req.cookies.refreshToken,
+    message: 'Check your server console for cookie details'
+  });
+});
 export default authRouter;

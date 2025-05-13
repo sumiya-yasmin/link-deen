@@ -32,12 +32,12 @@ API.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      error.response?.data?.message === 'Access token expired'
+      error.response?.data?.message === 'Access token expired' && !originalRequest.url?.includes('/auth/refresh')
     ) {
       originalRequest._retry = true;
 
       try {
-        const response = await API.post('/auth/refresh-token');
+        const response = await API.post('/auth/refresh', {withCredentials:true});
         const newToken = response.data.accessToken;
         setAccessToken(newToken);
         originalRequest.headers.Authorization = `Bearer ${newToken}`;
@@ -45,6 +45,7 @@ API.interceptors.response.use(
       } catch (refreshError) {
         console.error('Refresh failed:', refreshError);
         window.location.href = 'auth/sign-in';
+         setAccessToken(null);
         return Promise.reject(refreshError);
       }
     }

@@ -1,5 +1,5 @@
 import API from '@/lib/axios';
-import { setAccessToken } from '@/lib/token';
+import { getAccessToken, setAccessToken } from '@/lib/token';
 import {
   createContext,
   ReactNode,
@@ -37,11 +37,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
   const handleSignout = async () => {
     try {
-      await API.post('/auth/logout');
       // Clear in-memory token
       setAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
+      await API.post('/auth/logout');
     } catch (error) {
       console.error('Logout error:', error);
     }
@@ -67,7 +67,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   // Check if user is logged in on initial load
 
   const onRefresh = async () => {
+     setIsLoading(true);
     try {
+      const existingToken = getAccessToken();
+      
+      if (existingToken) {
+        // If we have a token, try to fetch user data with it
+        await fetchUserData();
+        return; // Exit early if successful
+      }
       // Try to refresh the token on initial load
       const response = await API.post(
         '/auth/refresh',
@@ -79,11 +87,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAccessToken(newAccessToken);
         await fetchUserData();
       } else {
-        setIsLoading(false);
+        throw new Error('No access token received');
       }
     } catch (error) {
       console.error('Auth check error:', error);
       setUser(null);
+       setIsAuthenticated(false);
+      }finally{
       setIsLoading(false);
     }
   };

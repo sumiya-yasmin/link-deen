@@ -1,3 +1,6 @@
+import { config } from "../config/index.js";
+
+
 export const authenticate = async(req,res, next) =>{
     try {
     // Get token from header
@@ -11,10 +14,10 @@ export const authenticate = async(req,res, next) =>{
     const token = authHeader.split(' ')[1];
     
     // Verify token
-    const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    const decoded = jwt.verify(token, config.JWT_SECRET);
     
     // Add user ID to request
-    req.userId = decoded._id;
+    req._id = decoded._id;
     
     next();
   } catch (error) {

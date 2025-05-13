@@ -9,7 +9,7 @@ const setRefreshToken = (res, refreshToken) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: 'strict',
+    sameSite: process.env.NODE_ENV === "production" ? 'strict' : 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -46,10 +46,10 @@ export const signIn = async (req, res) => {
 
     const user = await signInServices(email, password);
     const { accessToken, refreshToken } = generateTokens(user);
-    setRefreshToken(res, refreshToken);
     const hashedRefreshToken = hashToken(refreshToken);
     user.refreshToken = hashedRefreshToken;
     await user.save();
+    setRefreshToken(res, refreshToken);
     return res.status(200).json({
       accessToken,
       user: {
@@ -70,25 +70,33 @@ export const signIn = async (req, res) => {
 export const refreshAccessToken = async (req, res, next) => {
   try {
     const  refreshToken  = req.cookies.refreshToken;
-
-    if (!refreshToken) {
-      return res.status(401).json({ message: 'Refresh token is required',error: 'NO_REFRESH_TOKEN' });
+   if (!refreshToken) {
+     return res.status(401).json({ message: 'Refresh token is required',error: 'NO_REFRESH_TOKEN' });
     }
     let decoded;
-     decoded = jwt.verify(refreshToken, config.JWT_SECRET);
-
+    decoded = jwt.verify(refreshToken, config.JWT_SECRET);
+    
     const user = await User.findById(decoded._id);
-    if (!user || user.refreshToken !== hashToken(refreshToken)) {
+    if (!user) {
+      return res.status(401).json({ message: 'User not found' });
+    }
+    const hashedRefreshToken = hashToken(refreshToken);
+    if (user.refreshToken !== hashedRefreshToken) {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
     const { accessToken, refreshToken: newRefreshToken } = generateTokens(
-      user._id
+      user
     );
-    const hashedRefreshToken = hashToken(refreshToken);
-    user.refreshToken = hashedRefreshToken;
+    const newHashedRefreshToken = hashToken(newRefreshToken);
+    user.refreshToken = newHashedRefreshToken;
     await user.save();
     setRefreshToken(res, newRefreshToken);
-    res.status(200).json({ accessToken, refreshToken: newRefreshToken });
+    res.status(200).json({ accessToken, user: {
+      id: user._id,
+      username: user.username,
+      email: user.email,
+    } });
+    
   } catch (error) {
     console.error(error);
 
@@ -103,3 +111,4 @@ export const refreshAccessToken = async (req, res, next) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+

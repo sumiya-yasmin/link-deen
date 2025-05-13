@@ -9,7 +9,7 @@ export const useSignup = () =>{
         mutationFn: signUpMutation,
         onSuccess: ()=>{
             toast.success('Signup successful! Redirecting to login...');
-            navigate('auth/sign-in');
+            navigate('/auth/sign-in');
         },
         onError: (error: AxiosError<{ message?: string }>)=>{
             toast.error(error.response?.data.message || 'Signup failed');
