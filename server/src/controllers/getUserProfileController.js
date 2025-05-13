@@ -3,7 +3,7 @@ import { getUserProfileById } from '../services/getUserProfileServices.js';
 export const getUserProfile = async (req, res) => {
   const id = req._id;
   try {
-    const profile = getUserProfileById(id);
+    const profile = await getUserProfileById(id);
     if (!profile) {
       return res.status(404).json({ message: 'User not found' });
     }

@@ -1,4 +1,5 @@
 import { config } from "../config/index.js";
+import jwt from 'jsonwebtoken';
 
 
 export const authenticate = async(req,res, next) =>{
