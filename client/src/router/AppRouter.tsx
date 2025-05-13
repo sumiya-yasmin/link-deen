@@ -1,7 +1,8 @@
 import AuthGuard from '@/components/AuthGuard';
 import AuthLayout from '@/layouts/AuthLayout';
 import RootLayout from '@/layouts/RootLayout';
-import { HomePage } from '@/pages';
+import HomePage from '@/pages/HomePage';
+
 import { SigninPage, SignupPage } from '@/pages/auth';
 
 
