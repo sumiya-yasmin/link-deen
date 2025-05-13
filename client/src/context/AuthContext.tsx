@@ -12,6 +12,7 @@ interface User {
   id: string;
   username: string;
   email: string;
+  name: string;
 }
 
 interface AuthContextType {
@@ -49,9 +50,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Function to fetch user data
   const fetchUserData = async () => {
+     setIsLoading(true);
     try {
       const response = await API.get('/auth/me');
-      setUser(response.data.user);
+      setUser(response.data);
       setIsAuthenticated(true);
     } catch (error) {
       console.error('Error fetching user data:', error);
