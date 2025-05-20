@@ -18,3 +18,7 @@ export const signInMutation = async(data:{
   const response = await API.post('/auth/signin', data);
   return response.data;
 }
+
+export const signOutMutation = async() =>{
+    return API.post('/auth/signout');
+}

@@ -9,8 +9,8 @@ export const useSignout = () => {
   const signout = async() => {
     try {
       await handleSignout();
-      navigate('/auth/sign-in');
       toast.success('Logged out successfully');
+      navigate('/auth/sign-in');
     } catch (error) {
       console.error('Logout error:', error);
       toast.error('Failed to logout');

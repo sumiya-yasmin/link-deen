@@ -1,3 +1,4 @@
+import { signOutMutation } from '@/api/auth';
 import API from '@/lib/axios';
 import { getAccessToken, setAccessToken } from '@/lib/token';
 import {
@@ -39,12 +40,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const handleSignout = async () => {
     try {
       // Clear in-memory token
+      await signOutMutation();
       setAccessToken(null);
       setUser(null);
       setIsAuthenticated(false);
-      await API.post('/auth/logout');
     } catch (error) {
       console.error('Logout error:', error);
+       throw error; 
     }
   };
 
