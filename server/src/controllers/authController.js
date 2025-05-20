@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { createUser, signInServices } from '../services/authServices.js';
+import { createUser, signInServices, signOutServices } from '../services/authServices.js';
 import { generateTokens, hashToken } from '../services/tokentServices.js';
 import { ApiError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
@@ -66,6 +66,28 @@ export const signIn = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+export const signout = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  try {
+    await signOutServices(refreshToken);
+
+    // Clear the cookie always
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      path: '/',
+    });
+
+    res.status(200).json({ message: 'Logged out successfully' });
+  } catch (error) {
+    console.error('Logout error:', error);
+    res.status(500).json({ message: 'Internal server error during logout' });
+  }
+};
+
 
 export const refreshAccessToken = async (req, res, next) => {
   try {
