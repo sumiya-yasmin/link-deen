@@ -2,6 +2,7 @@ import AuthGuard from '@/components/AuthGuard';
 import AuthLayout from '@/layouts/AuthLayout';
 import RootLayout from '@/layouts/RootLayout';
 import HomePage from '@/pages/HomePage';
+import ProfilePage from '@/pages/ProfilePage';
 
 import { SigninPage, SignupPage } from '@/pages/auth';
 
@@ -17,7 +18,9 @@ export default function AppRouter() {
            <Route path='sign-in' element={<SigninPage />} />
         </Route>
         <Route path="/" element={<AuthGuard><RootLayout /></AuthGuard>}>
+              {/* <Route path="/" element={<RootLayout />}> */}
         <Route index element={<HomePage />}/>
+        <Route path='/profile' element={<ProfilePage/>} />
         </Route>
       </Routes>
     </BrowserRouter>

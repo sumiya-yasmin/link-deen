@@ -9,6 +9,9 @@ const HomePage = () => {
   if (isLoading) {
   return <div className="min-h-screen p-6">Loading...</div>;
 }
+const handleClick = async () => {
+    await signout(); 
+  };
   return (
     <div className="min-h-screen bg-slate-50 p-6 text-black">
       <div className="max-w-2xl mx-auto bg-white shadow-md rounded-lg p-8">
@@ -20,7 +23,7 @@ const HomePage = () => {
           </div>
         )}
         <button 
-          onClick={signout}
+          onClick={handleClick}
           className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
         >
           Logout
