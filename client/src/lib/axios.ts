@@ -44,7 +44,7 @@ API.interceptors.response.use(
         return API(originalRequest);
       } catch (refreshError) {
         console.error('Refresh failed:', refreshError);
-        window.location.href = 'auth/sign-in';
+        window.location.href = '/auth/sign-in';
          setAccessToken(null);
         return Promise.reject(refreshError);
       }
