@@ -9,7 +9,9 @@ export const getUserProfile = async (req, res) => {
     }
     res.json({ _id: profile._id,
       name: profile.name,
-      email: profile.email });
+      email: profile.email,
+      username: profile.username,
+     });
   } catch (error) {
     console.error('Get user error:', error);
     res.status(500).json({ message: 'Server error' });
