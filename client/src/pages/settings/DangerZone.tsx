@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 function DangerZone() {
   return (
-    <Card className="min-w-xs flex flex-col justify-center items-center">
+    <Card className="md:min-w-xs flex flex-col justify-center items-center">
         <CardHeader>
           <CardTitle>Danger Zone</CardTitle>
         </CardHeader>

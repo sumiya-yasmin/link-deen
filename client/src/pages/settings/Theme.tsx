@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 function Theme() {
   return (
-       <Card className="min-w-xs flex flex-col justify-center items-center">
+       <Card className="md:min-w-xs flex flex-col justify-center items-center">
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
         </CardHeader>
