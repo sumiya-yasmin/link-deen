@@ -11,7 +11,7 @@ function EditProfile() {
   return (
      <>
       <div className="space-y-8 ">
-      <Card>
+      <Card className="min-w-xl">
         <CardHeader>
           <CardTitle>Profile Settings</CardTitle>
         </CardHeader>

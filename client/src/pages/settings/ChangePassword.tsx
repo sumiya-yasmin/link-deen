@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 function ChangePassword() {
   return (
-          <Card>
+          <Card className="min-w-xl">
         <CardHeader>
           <CardTitle>Change Password</CardTitle>
         </CardHeader>

@@ -9,21 +9,15 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 function Theme() {
   return (
-       <Card>
+       <Card className="min-w-xs flex flex-col justify-center items-center">
         <CardHeader>
           <CardTitle>Preferences</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="flex items-center justify-between">
             <Label htmlFor="theme">Dark Mode</Label>
-            {/* <Switch
-              id="theme"
-              checked={isDarkMode}
-              onCheckedChange={handleThemeToggle}
-            /> */}
-          </div>
+        
           <Button variant="outline" className="w-full md:w-auto" >
-            Logout
+            Switch Theme
           </Button>
         </CardContent>
       </Card>
