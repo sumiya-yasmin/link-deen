@@ -12,8 +12,6 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { useSignout } from '@/hooks/useSignout';
 
-
-
 const sideNavItems = [
   // { icon: '/assets/react.svg', label:'Profile', path: '/profile' },
 
@@ -28,9 +26,9 @@ const sideNavItems = [
 function Sidebar() {
   const { user } = useAuth();
   const location = useLocation();
-  const  signout = useSignout();
+  const signout = useSignout();
   const handleClick = async () => {
-    await signout(); 
+    await signout();
   };
   return (
     <nav className="hidden md:flex bg-dark-2 px-6 py-2 min-w-[270px] flex-col justify-between h-full">
@@ -54,7 +52,10 @@ function Sidebar() {
         <ul className="space-y-6">
           {sideNavItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const isActive =
+              item.path === '/'
+                ? location.pathname === '/'
+                : location.pathname.startsWith(item.path);
             return (
               <li
                 key={item.label}
@@ -75,12 +76,15 @@ function Sidebar() {
           })}
         </ul>
         <li className={`group p-2 hover:bg-[#CD7F32] rounded-md`}>
-        <button    onClick={handleClick} className="flex items-center justify-items-start gap-2">
-          <LogOut
-            className={`w-6 h-6 text-[#CD7F32] group-hover:text-[#ffffff]`}
-          />
-          <span className="ml-3">Signout</span>
-        </button>
+          <button
+            onClick={handleClick}
+            className="flex items-center justify-items-start gap-2"
+          >
+            <LogOut
+              className={`w-6 h-6 text-[#CD7F32] group-hover:text-[#ffffff]`}
+            />
+            <span className="ml-3">Signout</span>
+          </button>
         </li>
       </div>
     </nav>

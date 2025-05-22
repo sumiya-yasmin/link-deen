@@ -1,6 +1,6 @@
 // src/pages/SettingsPage.tsx
 
-import { Link, Outlet } from 'react-router-dom';
+import { Link, Outlet, useLocation } from 'react-router-dom';
 import { RotateCcwKey, SunMoon, UserCog, UserRoundX } from 'lucide-react';
 const settingsItems = [
   // { icon: '/assets/react.svg', label:'Profile', path: '/profile' },
@@ -14,13 +14,14 @@ const settingsItems = [
 ];
 
 function SettingsPage() {
+    const location = useLocation();
   return (
-    <section className="flex max-w-6xl  p-6 gap-6 h-[calc(100vh-64px)]">
-      <aside className="bg-dark-2 px-2 py-4 w-[270px] rounded-lg overflow-y-auto">
-        <ul className="space-y-6">
+    <section className="flex md:max-w-6xl md:flex-row flex-col items-center justify-center p-6 gap-6 md:h-[calc(100vh-64px)]">
+      <aside className="bg-dark-2 px-2 py-4 w-full md:w-[270px] rounded-lg overflow-y-auto md:overflow-y-auto">
+        <ul className="flex md:flex-col justify-between md:space-y-6 space-x-2 md:space-x-0 text-sm overflow-x-scroll md:overflow-auto">
           {settingsItems.map((item) => {
             const Icon = item.icon;
-            const isActive = location.pathname === item.path;
+            const isActive = location.pathname.startsWith(`/settings/${item.path}`);
             return (
               <li
                 key={item.label}
@@ -28,7 +29,7 @@ function SettingsPage() {
                   isActive ? 'bg-[#CD7F32]' : ''
                 } hover:bg-[#CD7F32] rounded-md`}
               >
-                <Link to={item.path} className="flex items-center gap-2">
+                <Link to={item.path} className="flex md:flex-row flex-col items-center gap-2">
                   <Icon
                     className={`w-6 h-6 text-[#CD7F32]  ${
                       isActive ? 'text-[#ffffff]' : ''
@@ -41,7 +42,7 @@ function SettingsPage() {
           })}
         </ul>
       </aside>
-      <main className="flex flex-1 overflow-y-auto pr-2 items-center px-6 ">
+      <main className="flex md:flex-1 overflow-y-auto pr-2 items-center px-2 md:px-6 ">
         <Outlet />
       </main>
     </section>
