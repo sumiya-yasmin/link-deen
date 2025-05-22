@@ -1,6 +1,7 @@
   import { useAuth } from '@/context/AuthContext';
 import { Link } from 'react-router-dom';
-import { Button } from '../ui/button';
+// import { Button } from '../ui/button';
+import { LogOut } from 'lucide-react';
   // import {
   //   Avatar,
   //   AvatarFallback,
@@ -16,16 +17,24 @@ import { Button } from '../ui/button';
           <img src="/assets/logo5.png" className="" width={130} height={325} />
         </Link>
         <div className='flex gap-3'>
-          <Button variant='ghost' onClick={()=>handleSignout()} className='bg-gray-700'>
-          <img src='/assets/out.png' alt="profile" className='h-8 w-8 rounded-full' />
-          </Button>
-          <Link to="/profile">
-          <img src='/assets/profile-placeholder.png' alt="profile" className='h-8 w-8 rounded-full' />
-          {/* <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar> */}
-          </Link>
+          <button  onClick={()=>handleSignout()}>
+          <LogOut
+            className={`w-8 h-8 text-[#CD7F32] group-hover:text-[#ffffff]`}
+          />
+          </button>
+            <Link to="/profile" className="flex items-center">
+          <img
+            src="/assets/profile-placeholder.png"
+            alt="profile"
+            className="h-10 w-10 rounded-full border-2 border-[#CD7F32]"
+          />
+          {/* <div className="flex flex-col">
+            <p className="text-[18px] font-bold leading-[140%]">{user?.name}</p>
+            <p className="text-[#ECBF87] text-[14px] font-normal leading-[140%]">
+              @{user?.username}
+            </p>
+          </div> */}
+        </Link>
         </div>
         </div>
       </section>
