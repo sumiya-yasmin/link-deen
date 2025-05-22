@@ -1,12 +1,12 @@
 import { Link, useLocation } from 'react-router-dom';
 import {
   Home,
-  Users,
+  // Users,
   Settings,
-  PlusSquare,
+  // PlusSquare,
   Files,
   Telescope,
-  LogOut,
+  // LogOut,
 } from 'lucide-react';
 
 const bottomNavItems = [
