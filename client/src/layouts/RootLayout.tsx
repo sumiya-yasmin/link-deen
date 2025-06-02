@@ -8,7 +8,7 @@ export default function RootLayout() {
     <div className="w-full md:flex">
       <Topbar />
       <Sidebar />
-      <section className="flex flex-1 h-full">
+      <section className="flex flex-1 h-full pb-16">
         <Outlet />
       </section>
       <Bottombar />
