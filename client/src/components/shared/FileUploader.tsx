@@ -1,0 +1,52 @@
+import { ImageUp } from 'lucide-react'
+import React, {useCallback, useState} from 'react'
+import {FileWithPath,useDropzone} from 'react-dropzone'
+import { Button } from '../ui/button'
+
+type FileUploaderProps ={
+    fieldChange: (FILES: File[]) =>void;
+    mediaUrl: string;
+}
+
+function FileUploader({fieldChange, mediaUrl}: FileUploaderProps) {
+    const [file, setFile] =useState<File[]>([])
+    const [fileUrl, setFileUrl] = useState('')
+    const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+      setFile(acceptedFiles);
+      fieldChange(acceptedFiles);
+      setFileUrl(URL.createObjectURL(acceptedFiles[0]));
+    }, [file])
+    const {getRootProps, getInputProps} = useDropzone({
+        onDrop,
+        accept:{
+            'image/*': ['.png', '.jpeg', '.jpg', '.svg']
+        }
+    })
+  return (
+     <div {...getRootProps()} className='flex flex-col bg-dark-3 rounded-xl cursor-pointer items-center justify-center'>
+      <input {...getInputProps()} className='cursor-pointer'/>
+      {
+        fileUrl ? (
+            <>
+<div className='flex flex-1 justify-center w-full p-5 lg:p-10'>
+    <img
+    src={fileUrl} 
+    alt='image'
+    className='h-80 lg:h-[480px] w-full rounded-[24px] object-cover object-top'/>
+</div>
+<p className='text-light-4 text-center small-regular w-full p-4 border-t border-t-dark-4'>Click or Drag photo to replace</p>
+</>
+        ): (
+            <div className='flex-center flex-col p-7 h-80 lg:h-[512px]'>
+             <ImageUp className='w-24 h-24 text-[#CD7F32]' />
+             <h3 className='text-light-2 text-[16px] font-medium leading-[140%] mb-2 mt-6'>Drag Photo here</h3>
+             <p className='text-light-4 text-[14px] font-normal leading-[140%] mb-6'>SVG, PNG, JPG</p>
+             <Button className='h-12 bg-dark-4 px-5 text-light-1 flex gap-2'>Select from device</Button>
+            </div> 
+        )
+      }
+    </div>
+  )
+}
+
+export default FileUploader;
