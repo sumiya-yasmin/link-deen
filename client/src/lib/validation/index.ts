@@ -1,16 +1,33 @@
-import { z } from "zod"
-export const signupFormSchema = z.object({
+import { z } from 'zod';
+export const signupFormSchema = z
+  .object({
     name: z.string().min(1).max(50),
-    username: z.string().min(3, {message: "Must be atleast of two characters"}),
+    username: z
+      .string()
+      .min(3, { message: 'Must be atleast of two characters' }),
     email: z.string().email('Invalid email'),
-    password: z.string().min(8, {message: "Password must be at least 6 characters"}),
-    confirmPassword: z.string()
-  }).refine((data)=> data.password === data.confirmPassword,{
+    password: z
+      .string()
+      .min(8, { message: 'Password must be at least 6 characters' }),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"]
-})
+    path: ['confirmPassword'],
+  });
 
 export const signinFormSchema = z.object({
   email: z.string().email('Invalid email'),
-  password: z.string().min(8, {message: "Password must be at least 6 characters"}),
-})
+  password: z
+    .string()
+    .min(8, { message: 'Password must be at least 6 characters' }),
+});
+
+export const postFormSchema = z.object({
+  caption: z.string().max(200, {
+    message: 'Caption cant be more than 200 characters.',
+  }),
+  file: z.custom<File[]>(),
+  location: z.string().max(100),
+  tags: z.string(),
+});
