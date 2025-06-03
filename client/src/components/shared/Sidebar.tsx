@@ -19,7 +19,7 @@ const sideNavItems = [
   { icon: PlusSquare, label: 'Create Post', path: '/create' },
   { icon: Telescope, label: 'Explore', path: '/explore' },
   { icon: Users, label: 'Friends', path: '/people' },
-  { icon: Files, label: 'Dua Board', path: '/blogs' },
+  { icon: Files, label: `Du'a Board`, path: '/blogs' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
