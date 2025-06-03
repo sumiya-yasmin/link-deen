@@ -1,41 +1,65 @@
- 
+import toast from 'react-hot-toast';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
- 
 import { Button } from "@/components/ui/button"
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
 import { Input } from "@/components/ui/input";
 import { Textarea } from "../ui/textarea"
 import FileUploader from "../shared/FileUploader"
+import { postFormSchema } from "@/lib/validation"
+import { useState } from 'react';
 
-const formSchema = z.object({
-  caption: z.string().max(200, {
-    message: "Caption cant be more than 200 characters.",
-  }),
-})
 
-function PostForm(post) {
+interface Post {
+    _id: string;
+    caption: string;
+    imageUrl: string; 
+    location: string;
+    tags: string[]; 
+}
+type PostFormProps = {
+    post?: Post; 
+}
+
+function PostForm({post}: PostFormProps) {
+  const [isUploading, setIsUploading] = useState(false);
+
      // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof postFormSchema>>({
+    resolver: zodResolver(postFormSchema),
     defaultValues: {
-      caption: "",
+      caption: post? post?.caption: "",
+      file: [],
+      location: post? post?.location:"",
+      tags: post? post.tags.join(','): '',
     },
   })
  
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values)
+  function onSubmit(data: z.infer<typeof postFormSchema>) {
+   try {
+      setIsUploading(true);
+
+      const formData = new FormData();
+      Object.keys(data).forEach((key) => {
+        if (key === "file") return;
+        formData.append(key, data[key as keyof typeof data] as string);
+      });
+
+      if (data.file && data.file.length > 0) {
+        formData.append("imageFile", data.file[0]);
+      }
+
+     console.log(data)
+      toast.success("Post created successfully!");
+      
+    } catch (err) {
+      console.error("Error uploading post:", err);
+      toast.error("Failed to upload post.");
+    } finally {
+      setIsUploading(false);
+    }
   }
   return (
     <Form {...form}>
@@ -63,6 +87,7 @@ function PostForm(post) {
                 <FileUploader 
                 fieldChange={field.onChange}
                 mediaUrl={post?.imageUrl}
+                setClearFilePreview={setClearFilePreview}
                 />
               </FormControl>
               <FormMessage className="text-red" />
@@ -76,7 +101,7 @@ function PostForm(post) {
             <FormItem>
               <FormLabel className="text-white">Add Location</FormLabel>
               <FormControl>
-                <Input type="text" className="" />
+                <Input type="text" className="" {...field} />
               </FormControl>
               <FormMessage className="text-red" />
             </FormItem>
@@ -89,7 +114,7 @@ function PostForm(post) {
             <FormItem>
               <FormLabel className="text-white">Add Tags(separated by comma",")</FormLabel>
               <FormControl>
-                <Input type="text" className="" placeholder="React, Js, NextJs " />
+                <Input type="text" className="" placeholder="React, Js, NextJs " {...field} />
               </FormControl>
               <FormMessage className="text-red" />
             </FormItem>
@@ -97,11 +122,11 @@ function PostForm(post) {
         />
         <div className="flex gap-4 items-center justify-end">
         <Button type="button" className="h-12 bg-dark-4 px-5 text-light-1 flex gap-2 ">Cancel</Button>
-        <Button type="submit" className="h-12 px-5 bg-[#CD7F32]">Create</Button>
+        <Button type="submit"   disabled={isUploading} className="h-12 px-5 bg-[#CD7F32]">Create</Button>
         </div>
       </form>
     </Form>
   )
 }
 
-export default PostForm
+export default PostForm;
