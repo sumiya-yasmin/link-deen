@@ -24,7 +24,7 @@ type PostFormProps = {
 
 function PostForm({post}: PostFormProps) {
   const [isUploading, setIsUploading] = useState(false);
-
+  const [clearFilePreview, setClearFilePreview] = useState<() => void>(() => () => {});
      // 1. Define your form.
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
@@ -53,7 +53,13 @@ function PostForm({post}: PostFormProps) {
 
      console.log(data)
       toast.success("Post created successfully!");
-      
+      form.reset({
+        caption: "",
+        file: [],
+        location: "",
+        tags: "",
+      });
+      clearFilePreview();
     } catch (err) {
       console.error("Error uploading post:", err);
       toast.error("Failed to upload post.");
