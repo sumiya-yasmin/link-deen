@@ -41,6 +41,18 @@ class PostService {
     return { message: 'Post deleted successfully' };
   }
 
+  async getPostById(postId) {
+    const post = await Post.findById(postId)
+      .populate('author', 'username name')
+      .populate('comments.user', 'username name');
+
+    if (!post) {
+      throw new Error('Post not found');
+    }
+
+    return post;
+  }
+
   async getAllPosts(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
     const posts = await Post.find()
@@ -64,14 +76,14 @@ class PostService {
   }
 
   async getUserPosts(userId, page = 1, limit = 10) {
-    skip = (page - 1) * limit;
+    const skip = (page - 1) * limit;
     const posts = await Post.find({ author: userId })
       .populate('author', 'username name')
       .populate('comments.user', 'username name')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    const total = await Post.countDocuments();
+    const total = await Post.countDocuments(userId);
     return {
       posts,
       pagination: {
@@ -101,17 +113,6 @@ class PostService {
     return await Post.findById(postId)
       .populate('author', 'username name')
       .populate('comments.user', 'username name');
-  }
-
-  async addComment(postId, userId, commentData) {
-    const post = await Post.findById(postId);
-
-    if (!post) {
-      throw new Error('Post not found');
-    }
-    post.comments.push({ userId, commentData });
-
-    await post.save();
   }
 }
 
