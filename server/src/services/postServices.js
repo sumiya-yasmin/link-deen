@@ -116,4 +116,4 @@ class PostService {
   }
 }
 
-module.exports = new PostService();
+export default new PostService();
