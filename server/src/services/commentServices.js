@@ -93,4 +93,4 @@ class CommentService {
       .populate('comments.user', 'username name');
   }
 }
-module.exports = new CommentService();
+export default new CommentService();
