@@ -1,9 +1,9 @@
-import User from "../models/user.js"
+import User from '../models/user.js';
 
-export const getUserProfileById = (id) =>{
-    const profile = User.findById(id).select('-password -refreshToken');
-    if(!profile){
-        throw new Error('User not found')
-    }
-    return profile;
-}
+export const getUserProfileById = (id) => {
+  const profile = User.findById(id).select('-password -refreshToken');
+  if (!profile) {
+    throw new Error('User not found');
+  }
+  return profile;
+};

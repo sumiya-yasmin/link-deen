@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
-import {InvalidPasswordError, UserNotFoundError } from '../utils/ApiError.js';
+import { InvalidPasswordError, UserNotFoundError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
 import { hashToken } from './tokentServices.js';
 
@@ -23,8 +23,8 @@ export const signInServices = async (email, password) => {
   return user;
 };
 
-export const signOutServices = async (refreshToken) =>{
-  if(!refreshToken) return;
+export const signOutServices = async (refreshToken) => {
+  if (!refreshToken) return;
   try {
     const decoded = jwt.verify(refreshToken, config.JWT_SECRET);
 
@@ -35,7 +35,7 @@ export const signOutServices = async (refreshToken) =>{
       { _id: decoded._id, refreshToken: hashedToken },
       { refreshToken: null }
     );
-     if (!result) {
+    if (!result) {
       console.warn('No user found with this refresh token during logout');
       return false;
     }
@@ -44,5 +44,4 @@ export const signOutServices = async (refreshToken) =>{
     console.error('Logout token verification failed:', error.message);
     // Don’t throw — we’ll still clear the cookie in the controller
   }
-
-}
+};
