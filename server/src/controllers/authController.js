@@ -1,6 +1,10 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/user.js';
-import { createUser, signInServices, signOutServices } from '../services/authServices.js';
+import {
+  createUser,
+  signInServices,
+  signOutServices,
+} from '../services/authServices.js';
 import { generateTokens, hashToken } from '../services/tokentServices.js';
 import { ApiError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
@@ -8,8 +12,8 @@ import { config } from '../config/index.js';
 const setRefreshToken = (res, refreshToken) => {
   res.cookie('refreshToken', refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? 'strict' : 'lax',
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
     path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
@@ -88,16 +92,20 @@ export const signout = async (req, res) => {
   }
 };
 
-
 export const refreshAccessToken = async (req, res, next) => {
   try {
-    const  refreshToken  = req.cookies.refreshToken;
-   if (!refreshToken) {
-     return res.status(401).json({ message: 'Refresh token is required',error: 'NO_REFRESH_TOKEN' });
+    const refreshToken = req.cookies.refreshToken;
+    if (!refreshToken) {
+      return res
+        .status(401)
+        .json({
+          message: 'Refresh token is required',
+          error: 'NO_REFRESH_TOKEN',
+        });
     }
     let decoded;
     decoded = jwt.verify(refreshToken, config.JWT_SECRET);
-    
+
     const user = await User.findById(decoded._id);
     if (!user) {
       return res.status(401).json({ message: 'User not found' });
@@ -106,19 +114,19 @@ export const refreshAccessToken = async (req, res, next) => {
     if (user.refreshToken !== hashedRefreshToken) {
       return res.status(401).json({ message: 'Invalid refresh token' });
     }
-    const { accessToken, refreshToken: newRefreshToken } = generateTokens(
-      user
-    );
+    const { accessToken, refreshToken: newRefreshToken } = generateTokens(user);
     const newHashedRefreshToken = hashToken(newRefreshToken);
     user.refreshToken = newHashedRefreshToken;
     await user.save();
     setRefreshToken(res, newRefreshToken);
-    res.status(200).json({ accessToken, user: {
-      id: user._id,
-      username: user.username,
-      email: user.email,
-    } });
-    
+    res.status(200).json({
+      accessToken,
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error(error);
 
@@ -133,4 +141,3 @@ export const refreshAccessToken = async (req, res, next) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
-

@@ -24,7 +24,7 @@ class PostController {
     }
   }
 
-    async likePost(req, res) {
+  async likePost(req, res) {
     try {
       const userId = req.user.id;
       const postId = req.params.id;
