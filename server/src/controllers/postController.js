@@ -24,6 +24,36 @@ class PostController {
       res.status(500).json({ error: 'Failed to create post' });
     }
   }
+
+  async updatePost(req, res) {
+    try {
+      const postId = req.params.id;
+      const userId = req.user.id;
+      const { caption, location, tags } = req.body;
+      let imageUrl;
+
+      if (req.file) {
+        imageUrl = await uploadService.uploadImage(req.file);
+      }
+      const updateData = {
+        caption,
+        location,
+        tags: tags ? JSON.parse(tags) : [],
+      };
+
+      if (imageUrl) {
+        updateData.image = imageUrl;
+      }
+
+      const post = await postServices.updatePost(postId, updateData, userId);
+      res.json(post);
+    } catch (error) {
+      console.error('Update post error:', error.message);
+      const statusCode = error.message.includes('authorized') ? 403 : 404;
+      res.status(statusCode).json({ error: error.message });
+    }
+  }
+  
   async deletePost(req, res) {
     try {
       const postId = req.params.id;
