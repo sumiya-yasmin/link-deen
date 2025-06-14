@@ -4,6 +4,7 @@ import cors from 'cors'
 import { config } from './config/index.js';
 import connectDB from './config/db.js';
 import configureRouter from './routes/index.js';
+import { configureCloudinary } from './config/cloudinary.js';
 const app= express();
 const port = config.PORT;
 
