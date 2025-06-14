@@ -53,7 +53,7 @@ class PostController {
       res.status(statusCode).json({ error: error.message });
     }
   }
-  
+
   async deletePost(req, res) {
     try {
       const postId = req.params.id;
@@ -77,6 +77,31 @@ class PostController {
     }
   }
 
+  async getAllPosts(req, res) {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const posts = await postService.getAllPosts(page, limit);
+      res.json(posts);
+    } catch (error) {
+      console.error('Get all posts error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch posts' });
+    }
+  }
+
+  async getUserPosts(req, res) {
+    try {
+      const userId = req.params.userId;
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const result = await postService.getUserPosts(userId, page, limit);
+      res.json(result);
+    } catch (error) {
+      console.error('Get user posts error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch user posts' });
+    }
+  }
+
   async likePost(req, res) {
     try {
       const userId = req.user.id;
@@ -87,6 +112,20 @@ class PostController {
     } catch (error) {
       console.error('Like post error:', error);
       res.status(500).json({ error: error.message || 'Failed to like post' });
+    }
+  }
+
+  async uploadImage(req, res) {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: 'No file uploaded' });
+      }
+
+      const imageUrl = await uploadService.uploadImage(req.file);
+      res.json({ imageUrl });
+    } catch (error) {
+      console.error('Upload error:', error.message);
+      res.status(500).json({ error: 'Failed to upload image' });
     }
   }
 }
