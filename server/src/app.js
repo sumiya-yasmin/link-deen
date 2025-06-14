@@ -4,7 +4,8 @@ import cors from 'cors'
 import { config } from './config/index.js';
 import connectDB from './config/db.js';
 import configureRouter from './routes/index.js';
-import { configureCloudinary } from './config/cloudinary.js';
+import cloudinary from './config/cloudinary.js';
+
 const app= express();
 const port = config.PORT;
 
@@ -14,7 +15,7 @@ app.use(cookieParser());
 app.use(cors(config.CORS));
 
 connectDB();
-configureCloudinary();
+cloudinary.config();
 configureRouter(app);
 app.listen(port, ()=>{
     console.log(`Server running on http://localhost:${port}`);

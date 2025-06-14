@@ -1,4 +1,5 @@
-import { cloudinary } from '../config/cloudinaryConfig.js';
+import cloudinary  from "../config/cloudinary.js";
+
 
 class UploadService {
   async uploadImage(file) {

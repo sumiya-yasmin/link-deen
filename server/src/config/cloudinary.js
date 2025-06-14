@@ -8,6 +8,6 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-export const configureCloudinary = () => {
-  console.log('Cloudinary configured!')
-};
+console.log('Cloudinary configured!');
+
+export default cloudinary;
