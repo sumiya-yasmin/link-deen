@@ -11,7 +11,7 @@ class PostService {
   }
 
   async updatePost(postId, postData, userId) {
-    const post = Post.findById(postId);
+    const post = await Post.findById(postId);
     if (!post) {
       throw new Error('No post found with the post id');
     }
@@ -30,7 +30,7 @@ class PostService {
   }
 
   async deletePost(postId, userId) {
-    const post = Post.findById(postId);
+    const post = await Post.findById(postId);
     if (!post) {
       throw new Error('No post found with the post id');
     }

@@ -4,7 +4,7 @@ import uploadService from '../services/uploadService.js';
 class PostController {
   async createPost(req, res) {
     try {
-      const userId = req.user.id;
+      const userId = req._id;
       const { caption, location, tags } = req.body;
       let imageUrl = '';
       if (req.file) {
@@ -28,7 +28,7 @@ class PostController {
   async updatePost(req, res) {
     try {
       const postId = req.params.id;
-      const userId = req.user.id;
+      const userId = req._id;
       const { caption, location, tags } = req.body;
       let imageUrl;
 
@@ -57,7 +57,7 @@ class PostController {
   async deletePost(req, res) {
     try {
       const postId = req.params.id;
-      const userId = req.user.id;
+      const userId = req._id;
       const result = await postServices.deletePost(postId, userId);
       res.status(200).json(result);
     } catch (error) {
@@ -69,7 +69,7 @@ class PostController {
   async getPostById(req, res) {
     try {
       const postId = req.params.id;
-      post = await postServices.getPostById(postId);
+      const post = await postServices.getPostById(postId);
       res.status(200).json(post);
     } catch (error) {
       console.error('Get post by ID error:', error);
@@ -81,7 +81,7 @@ class PostController {
     try {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const posts = await postService.getAllPosts(page, limit);
+      const posts = await postServices.getAllPosts(page, limit);
       res.json(posts);
     } catch (error) {
       console.error('Get all posts error:', error.message);
@@ -94,7 +94,7 @@ class PostController {
       const userId = req.params.userId;
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 10;
-      const result = await postService.getUserPosts(userId, page, limit);
+      const result = await postServices.getUserPosts(userId, page, limit);
       res.json(result);
     } catch (error) {
       console.error('Get user posts error:', error.message);
@@ -107,7 +107,7 @@ class PostController {
       const userId = req.user.id;
       const postId = req.params.id;
 
-      const post = await postService.likePost(userId, postId);
+      const post = await postServices.likePost(userId, postId);
       res.status(200).json(post);
     } catch (error) {
       console.error('Like post error:', error);
