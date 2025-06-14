@@ -1,4 +1,4 @@
-import { Post } from '../models/post';
+import { Post } from '../models/post.js';
 
 class CommentService {
   async addComment(postId, userId, content) {
