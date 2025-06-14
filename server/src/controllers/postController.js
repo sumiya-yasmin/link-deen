@@ -1,6 +1,29 @@
 import postServices from '../services/postServices.js';
+import uploadService from '../services/uploadService.js';
 
 class PostController {
+  async createPost(req, res) {
+    try {
+      const userId = req.user.id;
+      const { caption, location, tags } = req.body;
+      let imageUrl = '';
+      if (req.file) {
+        imageUrl = await uploadService.uploadImage(req.file);
+      }
+
+      const postData = {
+        caption,
+        location,
+        tags: tags ? JSON.parse(tags) : [],
+        image: imageUrl,
+      };
+      const post = await postServices.createPost(postData, userId);
+      res.status(201).json(post);
+    } catch (error) {
+      console.error('Create post error:', error.message);
+      res.status(500).json({ error: 'Failed to create post' });
+    }
+  }
   async deletePost(req, res) {
     try {
       const postId = req.params.id;
