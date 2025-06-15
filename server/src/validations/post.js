@@ -29,6 +29,8 @@ export const updatePostSchema = z.object({
     .max(100, 'Location cannot be more than 100 characters')
     .optional(),
   tags: z.string().optional(),
+  removeImage: z.boolean().optional(),
+
 });
 
 export const commentSchema = z.object({

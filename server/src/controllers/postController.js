@@ -29,21 +29,26 @@ class PostController {
     try {
       const postId = req.params.id;
       const userId = req._id;
-      const { caption, location, tags } = req.body;
-      let imageUrl;
+      const { caption, location, tags, removeImage } = req.body;
+      const existingPost = await postServices.getPostById(postId);
+      let imageUrl = existingPost?.image;
 
       if (req.file) {
+        if (existingPost?.image) {
+          await uploadService.deleteImage(existingPost.image);
+        }
         imageUrl = await uploadService.uploadImage(req.file);
+      }
+      if (removeImage === 'true' && existingPost?.image) {
+        await uploadService.deleteImage(existingPost.image);
+        imageUrl = '';
       }
       const updateData = {
         caption,
         location,
         tags: tags ? JSON.parse(tags) : [],
+        image: imageUrl,
       };
-
-      if (imageUrl) {
-        updateData.image = imageUrl;
-      }
 
       const post = await postServices.updatePost(postId, updateData, userId);
       res.json(post);
