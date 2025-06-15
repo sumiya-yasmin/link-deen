@@ -1,4 +1,5 @@
 import { Post } from '../models/post.js';
+import uploadService from './uploadService.js';
 
 class PostService {
   async createPost(postData, userId) {
@@ -37,6 +38,9 @@ class PostService {
     if (post.author.toString() !== userId) {
       throw new Error('Not authorized to delete the post');
     }
+     if (post.image) {
+    await uploadService.deleteImage(post.image);
+  }
     await Post.findByIdAndDelete(postId);
     return { message: 'Post deleted successfully' };
   }

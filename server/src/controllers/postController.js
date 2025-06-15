@@ -58,6 +58,10 @@ class PostController {
     try {
       const postId = req.params.id;
       const userId = req._id;
+      const existingPost = await postServices.getPostById(postId);
+      if (existingPost.image) {
+        await uploadService.deleteImage(existingPost.image);
+      }
       const result = await postServices.deletePost(postId, userId);
       res.status(200).json(result);
     } catch (error) {
@@ -104,7 +108,7 @@ class PostController {
 
   async likePost(req, res) {
     try {
-      const userId = req.user.id;
+      const userId = req._id;
       const postId = req.params.id;
 
       const post = await postServices.likePost(userId, postId);
