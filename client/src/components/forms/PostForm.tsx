@@ -9,6 +9,7 @@ import { Textarea } from "../ui/textarea"
 import FileUploader from "../shared/FileUploader"
 import { postFormSchema } from "@/lib/validation"
 import { useState } from 'react';
+import { createPost } from '@/api/posts';
 
 
 interface Post {
@@ -37,7 +38,7 @@ function PostForm({post}: PostFormProps) {
   })
  
   // 2. Define a submit handler.
-  function onSubmit(data: z.infer<typeof postFormSchema>) {
+  async function onSubmit(data: z.infer<typeof postFormSchema>) {
    try {
       setIsUploading(true);
 
@@ -52,6 +53,7 @@ function PostForm({post}: PostFormProps) {
       }
 
      console.log(data)
+     await createPost(formData)
       toast.success("Post created successfully!");
       form.reset({
         caption: "",

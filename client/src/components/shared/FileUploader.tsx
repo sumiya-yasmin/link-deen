@@ -5,7 +5,7 @@ import { Button } from '../ui/button'
 
 type FileUploaderProps ={
     fieldChange: (FILES: File[]) =>void;
-    mediaUrl: string;
+    mediaUrl?: string;
     setClearFilePreview: React.Dispatch<React.SetStateAction<() => void>>;
 }
 
@@ -39,7 +39,7 @@ function FileUploader({fieldChange, mediaUrl, setClearFilePreview}: FileUploader
             <>
 <div className='flex flex-1 justify-center w-full p-5 lg:p-10'>
     <img
-    src={fileUrl || mediaUrl} 
+    src={fileUrl || mediaUrl || ""} 
     alt='image'
     className='h-80 lg:h-[480px] lg:object-contain w-full rounded-[24px] object-cover object-top'/>
 </div>
