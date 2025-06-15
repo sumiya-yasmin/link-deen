@@ -1,4 +1,3 @@
-import toast from 'react-hot-toast';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
@@ -9,7 +8,8 @@ import { Textarea } from "../ui/textarea"
 import FileUploader from "../shared/FileUploader"
 import { postFormSchema } from "@/lib/validation"
 import { useState } from 'react';
-import { createPost } from '@/api/posts';
+import { useCreatePost } from '@/hooks/usePostApis';
+
 
 
 interface Post {
@@ -24,8 +24,9 @@ type PostFormProps = {
 }
 
 function PostForm({post}: PostFormProps) {
-  const [isUploading, setIsUploading] = useState(false);
   const [clearFilePreview, setClearFilePreview] = useState<() => void>(() => () => {});
+  const createPostMutation = useCreatePost();
+
      // 1. Define your form.
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
@@ -39,9 +40,7 @@ function PostForm({post}: PostFormProps) {
  
   // 2. Define a submit handler.
   async function onSubmit(data: z.infer<typeof postFormSchema>) {
-   try {
-      setIsUploading(true);
-
+      // setIsUploading(true);
       const formData = new FormData();
       Object.keys(data).forEach((key) => {
         if (key === "file") return;
@@ -53,21 +52,12 @@ function PostForm({post}: PostFormProps) {
       }
 
      console.log(data)
-     await createPost(formData)
-      toast.success("Post created successfully!");
-      form.reset({
-        caption: "",
-        file: [],
-        location: "",
-        tags: "",
-      });
+     createPostMutation.mutate(formData, {
+    onSuccess: () => {
+      form.reset();
       clearFilePreview();
-    } catch (err) {
-      console.error("Error uploading post:", err);
-      toast.error("Failed to upload post.");
-    } finally {
-      setIsUploading(false);
-    }
+    },
+   });
   }
   return (
     <Form {...form}>
@@ -130,7 +120,7 @@ function PostForm({post}: PostFormProps) {
         />
         <div className="flex gap-4 items-center justify-end">
         <Button type="button" className="h-12 bg-dark-4 px-5 text-light-1 flex gap-2 ">Cancel</Button>
-        <Button type="submit"   disabled={isUploading} className="h-12 px-5 bg-[#CD7F32]">Create</Button>
+        <Button type="submit"   disabled={createPostMutation.isPending} className="h-12 px-5 bg-[#CD7F32]">{createPostMutation.isPending ? "Creating..." : "Create"}</Button>
         </div>
       </form>
     </Form>
