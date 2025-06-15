@@ -6,6 +6,8 @@ class PostController {
     try {
       const userId = req._id;
       const { caption, location, tags } = req.body;
+       const tagsArray = tags?.split(',').map(tag => tag.trim()) || [];
+
       let imageUrl = '';
       if (req.file) {
         imageUrl = await uploadService.uploadImage(req.file);
@@ -14,7 +16,7 @@ class PostController {
       const postData = {
         caption,
         location,
-        tags: tags ? JSON.parse(tags) : [],
+        tags: tagsArray,
         image: imageUrl,
       };
       const post = await postServices.createPost(postData, userId);
