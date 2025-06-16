@@ -10,3 +10,13 @@ export const createPost = async (formData: FormData) => {
 );
   return response.data;
 };
+
+export const getRecentPosts = async({pageParam = null})=>{
+  const response = await API.get('/post/recent', {
+    params: {
+       cursor: pageParam,
+      limit: 10,
+    },
+  });
+  return response.data;
+}
