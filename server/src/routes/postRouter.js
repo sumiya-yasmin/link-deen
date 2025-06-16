@@ -13,6 +13,8 @@ postRouter.delete('/:id', postController.deletePost);
 
 postRouter.post('/:id/like', postController.likePost);
 
+postRouter.get('/recent', postController.getRecentPosts);
+
 postRouter.post('/:postId/comments', commentController.addComment);
 postRouter.get('/:postId/comments', commentController.getComments);
 postRouter.delete('/:postId/comments/:commentId', commentController.deleteComment);

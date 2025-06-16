@@ -38,9 +38,9 @@ class PostService {
     if (post.author.toString() !== userId) {
       throw new Error('Not authorized to delete the post');
     }
-     if (post.image) {
-    await uploadService.deleteImage(post.image);
-  }
+    if (post.image) {
+      await uploadService.deleteImage(post.image);
+    }
     await Post.findByIdAndDelete(postId);
     return { message: 'Post deleted successfully' };
   }
@@ -117,6 +117,26 @@ class PostService {
     return await Post.findById(postId)
       .populate('author', 'username name')
       .populate('comments.user', 'username name');
+  }
+
+  async getRecentPosts(limit = 10) {
+    const query = {};
+    if (cursor) {
+      query.createdAt = { $lt: new Date(cursor) };
+    }
+    const posts = await Post.find(query)
+      .sort({ createdAt: -1 })
+      .limit(limit)
+      .populate('author', 'name avatar');
+    const hasNextPage = posts.length > limit;
+    const slicedPosts = hasNextPage ? posts.slice(0, limit) : posts;
+    const nextCursor = hasNextPage
+      ? slicedPosts[slicedPosts.length - 1].createdAt.toISOString()
+      : null;
+    return {
+      posts: slicedPosts,
+      nextCursor,
+    };
   }
 }
 

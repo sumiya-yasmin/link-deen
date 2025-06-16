@@ -6,7 +6,7 @@ class PostController {
     try {
       const userId = req._id;
       const { caption, location, tags } = req.body;
-       const tagsArray = tags?.split(',').map(tag => tag.trim()) || [];
+      const tagsArray = tags?.split(',').map((tag) => tag.trim()) || [];
 
       let imageUrl = '';
       if (req.file) {
@@ -123,6 +123,17 @@ class PostController {
     } catch (error) {
       console.error('Like post error:', error);
       res.status(500).json({ error: error.message || 'Failed to like post' });
+    }
+  }
+
+  async getRecentPosts(req, res, next) {
+    try {
+      const limit = parseInt(req.query.limit) || 10;
+      const cursor = req.query.cursor;
+      const posts = await getRecentPostsService({ limit, cursor });
+      res.status(200).json(posts);
+    } catch (error) {
+      next(error);
     }
   }
 
