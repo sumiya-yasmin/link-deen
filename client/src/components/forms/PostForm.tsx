@@ -9,16 +9,10 @@ import FileUploader from "../shared/FileUploader"
 import { postFormSchema } from "@/lib/validation"
 import { useState } from 'react';
 import { useCreatePost } from '@/hooks/usePostApis';
+import { Post } from "@/types"
 
 
 
-interface Post {
-    _id: string;
-    caption: string;
-    imageUrl: string; 
-    location: string;
-    tags: string[]; 
-}
 type PostFormProps = {
     post?: Post; 
 }
