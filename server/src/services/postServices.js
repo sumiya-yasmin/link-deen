@@ -119,7 +119,7 @@ class PostService {
       .populate('comments.user', 'username name');
   }
 
-  async getRecentPosts(limit = 10) {
+  async getRecentPosts(limit = 10, cursor) {
     const query = {};
     if (cursor) {
       query.createdAt = { $lt: new Date(cursor) };

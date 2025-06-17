@@ -130,7 +130,7 @@ class PostController {
     try {
       const limit = parseInt(req.query.limit) || 10;
       const cursor = req.query.cursor;
-      const posts = await getRecentPostsService({ limit, cursor });
+      const posts = await postServices.getRecentPosts({ limit, cursor });
       res.status(200).json(posts);
     } catch (error) {
       next(error);
