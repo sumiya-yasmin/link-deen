@@ -3,8 +3,8 @@ import mongoose from 'mongoose';
 const PostSchema = new mongoose.Schema(
   {
     caption: { type: String, maxlength: 2200, trim: true },
-    imageUrl: { type: String },
-    location: { type: String, maxlength: 100, trtim: true },
+    image: { type: String },
+    location: { type: String, maxlength: 100, trim: true },
     tags: [{ type: String, trim: true }],
     author: {
       type: mongoose.Schema.Types.ObjectId,
@@ -27,10 +27,6 @@ const PostSchema = new mongoose.Schema(
           type: String,
           required: true,
           maxlength: 500,
-        },
-        createdAt: {
-          type: Date,
-          default: Date.now,
         },
       },
     ],
