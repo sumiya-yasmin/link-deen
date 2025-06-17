@@ -4,6 +4,7 @@ import { Post } from '@/types';
 import { SquarePen } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
+import PostStats from './PostStats';
 
 type PostCardProps = {
   post: Post;
@@ -71,6 +72,13 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
             )}
           </div>
         </Link>
+
+        <PostStats
+          likes={post.likesCount || 0}
+          comments={post.commentsCount || 0}
+          isLiked={post.isLiked}
+          isSaved={post.isSaved}
+        />
       </div>
     );
   }
