@@ -78,7 +78,7 @@ function PostForm({post}: PostFormProps) {
               <FormControl>
                 <FileUploader 
                 fieldChange={field.onChange}
-                mediaUrl={post?.imageUrl}
+                mediaUrl={post?.image}
                 setClearFilePreview={setClearFilePreview}
                 />
               </FormControl>
