@@ -3,6 +3,7 @@ import { useGetRecentPosts } from '@/hooks/usePostApis';
 import { Loader, LoaderCircle } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { Post } from '@/types';
+import PostCard from '@/components/shared/PostCard';
 
 const HomePage = () => {
   const {
@@ -24,7 +25,7 @@ const HomePage = () => {
 
   if (isPostLoading && !data) {
     return (
-      <div className="flex-center w-full h-full">
+      <div className="flex justify-center items-center w-full h-full">
         <LoaderCircle size={50} className="animate-spin" />
       </div>
     );
@@ -52,14 +53,16 @@ const HomePage = () => {
           <h2 className=" text-[24px] md:text-[30px] font-bold leading-[140%] tracking-tighter text-left w-full">
             Home Feed
           </h2>
-          <ul className="flex flex-col">
+          <ul className="flex flex-col gap-9">
             {data!.pages.map((page, pageIndex) => (
               <React.Fragment key={pageIndex}>
                 {page.posts.map((post: Post, postIndex: number) => {
                   const isLastPost =
                     pageIndex === data!.pages.length - 1 &&
                     postIndex === page.posts.length - 1;
-                  return <div></div>;
+                  return <div ref={isLastPost? ref : undefined} key={post._id}>
+                      <PostCard post={post} />
+                  </div>;
                 })}
               </React.Fragment>
             ))}
