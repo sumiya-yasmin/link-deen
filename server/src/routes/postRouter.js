@@ -7,13 +7,14 @@ export const postRouter = express.Router();
 postRouter.post('/', upload.single('imageFile'), postController.createPost);
 postRouter.get('/', postController.getAllPosts);
 postRouter.get('/user/:userId', postController.getUserPosts);
+postRouter.get('/recent', postController.getRecentPosts);
+
 postRouter.get('/:id',  postController.getPostById);
 postRouter.put('/:id', upload.single('imageFile'), postController.updatePost);
 postRouter.delete('/:id', postController.deletePost);
 
 postRouter.post('/:id/like', postController.likePost);
 
-postRouter.get('/recent', postController.getRecentPosts);
 
 postRouter.post('/:postId/comments', commentController.addComment);
 postRouter.get('/:postId/comments', commentController.getComments);
