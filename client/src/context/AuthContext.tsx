@@ -1,6 +1,7 @@
 import { signOutMutation } from '@/api/auth';
 import API from '@/lib/axios';
 import { getAccessToken, setAccessToken } from '@/lib/token';
+import { User } from '@/types';
 import {
   createContext,
   ReactNode,
@@ -8,13 +9,6 @@ import {
   useEffect,
   useState,
 } from 'react';
-
-interface User {
-  id: string;
-  username: string;
-  email: string;
-  name: string;
-}
 
 interface AuthContextType {
   user: User | null;
