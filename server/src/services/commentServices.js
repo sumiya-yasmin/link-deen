@@ -16,8 +16,8 @@ class CommentService {
 
     await post.save();
     return await Post.findById(postId)
-      .populate('author', 'username name ')
-      .populate('comments.user', 'username name');
+      .populate('author', '_id username name imageUrl ')
+      .populate('comments.user', '_id username name imageUrl');
   }
 
   async deleteComment(postId, commentId, userId) {
@@ -39,13 +39,13 @@ class CommentService {
     post.comments.pull(commentId);
     await post.save();
     return await Post.findById(postId)
-      .populate('author', 'username name ')
-      .populate('comments.user', 'username name');
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl');
   }
 
   async getComments(postId, page = 1, limit = 20) {
     const post = await Post.findById(postId)
-      .populate('comments.user', 'username name profileImage')
+      .populate('comments.user', '_id username name imageUrl')
       .select('comments');
 
     if (!post) {
@@ -89,8 +89,8 @@ class CommentService {
     await post.save();
 
     return await Post.findById(postId)
-      .populate('author', 'username name')
-      .populate('comments.user', 'username name');
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl');
   }
 }
 export default new CommentService();

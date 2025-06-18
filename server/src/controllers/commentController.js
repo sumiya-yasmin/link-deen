@@ -4,8 +4,8 @@ class CommentController {
   async addComment(req, res) {
     try {
       const postId = req.params.id;
-      const userId = req.user.id;
-      const content = req.body;
+      const userId = req._id;
+      const {content} = req.body;
       if (!content?.trim()) {
         return res.status(400).json({ error: 'Comment content is required' });
       }
@@ -25,7 +25,7 @@ class CommentController {
   async deleteComment(req, res) {
     try {
       const { postId, commentId } = req.params;
-      const userId = req.user.id;
+      const userId = req._id;
       const updatedPost = await commentServices.deleteComment(
         postId,
         commentId,
@@ -46,7 +46,7 @@ class CommentController {
       const page = parseInt(req.query.page) || 1;
       const limit = parseInt(req.query.limit) || 20;
 
-      const data = await commentService.getComments(postId, page, limit);
+      const data = await commentServices.getComments(postId, page, limit);
       res.status(200).json(data);
     } catch (error) {
       console.error('Get comments error:', error);
@@ -60,13 +60,13 @@ class CommentController {
     try {
       const { postId, commentId } = req.params;
       const { content } = req.body;
-      const userId = req.user.id;
+      const userId = req._id;
 
       if (!content?.trim()) {
         return res.status(400).json({ error: 'Updated content is required' });
       }
 
-      const updatedPost = await commentService.updateComment(
+      const updatedPost = await commentServices.updateComment(
         postId,
         commentId,
         userId,

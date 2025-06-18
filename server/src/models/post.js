@@ -18,6 +18,7 @@ const PostSchema = new mongoose.Schema(
       },
     ],
     comments: [
+      new mongoose.Schema(
       {
         user: {
           type: mongoose.Schema.Types.ObjectId,
@@ -29,6 +30,10 @@ const PostSchema = new mongoose.Schema(
           maxlength: 500,
         },
       },
+      {
+      timestamps: true,
+      }
+    )
     ],
   },
 

@@ -87,7 +87,7 @@ class PostService {
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
-    const total = await Post.countDocuments(userId);
+    const total = await Post.countDocuments({ author: userId });
     return {
       posts,
       pagination: {
