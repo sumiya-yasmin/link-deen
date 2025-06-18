@@ -20,3 +20,8 @@ export const getRecentPosts = async({pageParam = null})=>{
   });
   return response.data;
 }
+
+export const likePost = async(postId : string) =>{
+  const response = await API.post(`/post/${postId}/like`);
+  return response.data;
+}
