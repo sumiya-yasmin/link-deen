@@ -57,7 +57,7 @@ export const signIn = async (req, res) => {
     return res.status(200).json({
       accessToken,
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
       },
@@ -122,7 +122,7 @@ export const refreshAccessToken = async (req, res, next) => {
     res.status(200).json({
       accessToken,
       user: {
-        id: user._id,
+        _id: user._id,
         username: user.username,
         email: user.email,
       },

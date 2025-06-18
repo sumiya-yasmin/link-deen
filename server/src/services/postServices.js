@@ -8,7 +8,7 @@ class PostService {
       author: userId,
     });
     await post.save();
-    return await Post.findById(post._id).populate('author', 'username name');
+    return await Post.findById(post._id).populate('author', '_id username name imageUrl');
   }
 
   async updatePost(postId, postData, userId) {
@@ -26,7 +26,7 @@ class PostService {
         updatedAt: new Date(),
       },
       { new: true }
-    ).populate('author', 'username name');
+    ).populate('author', '_id username name imageUrl');
     return updatedPost;
   }
 
@@ -47,8 +47,8 @@ class PostService {
 
   async getPostById(postId) {
     const post = await Post.findById(postId)
-      .populate('author', 'username name')
-      .populate('comments.user', 'username name');
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl');
 
     if (!post) {
       throw new Error('Post not found');
@@ -60,8 +60,8 @@ class PostService {
   async getAllPosts(page = 1, limit = 10) {
     const skip = (page - 1) * limit;
     const posts = await Post.find()
-      .populate('author', 'username name')
-      .populate('comments.user', 'username name')
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -82,8 +82,8 @@ class PostService {
   async getUserPosts(userId, page = 1, limit = 10) {
     const skip = (page - 1) * limit;
     const posts = await Post.find({ author: userId })
-      .populate('author', 'username name')
-      .populate('comments.user', 'username name')
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl')
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
@@ -115,8 +115,8 @@ class PostService {
     }
     await post.save();
     return await Post.findById(postId)
-      .populate('author', 'username name')
-      .populate('comments.user', 'username name');
+      .populate('author', '_id username name imageUrl')
+      .populate('comments.user', '_id username name imageUrl');
   }
 
   async getRecentPosts(limit = 10, cursor) {
@@ -127,7 +127,7 @@ class PostService {
     const posts = await Post.find(query)
       .sort({ createdAt: -1 })
       .limit(limit)
-      .populate('author', 'name avatar');
+      .populate('author', '_id username name imageUrl');
     const hasNextPage = posts.length > limit;
     const slicedPosts = hasNextPage ? posts.slice(0, limit) : posts;
     const nextCursor = hasNextPage

@@ -12,6 +12,7 @@ export const getUserProfile = async (req, res) => {
       name: profile.name,
       email: profile.email,
       username: profile.username,
+      imageUrl: profile.imageUrl || '/assets/profile-placeholder.png'
     });
   } catch (error) {
     console.error('Get user error:', error);
