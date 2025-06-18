@@ -13,6 +13,8 @@ type PostCardProps = {
 const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
   ({ post }, ref) => {
     const { user } = useAuth();
+    console.log(user?._id)
+    console.log(post.author._id)
     console.log(post);
     console.log('post.$createdAt:', post.createdAt, typeof post.createdAt);
     return (
@@ -22,7 +24,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
       >
         <div className="flex justify-between gap-8 items-center">
           <div className="flex items-center gap-3">
-            <Link to={`/profile/${post.author.id}`}>
+            <Link to={`/profile/${post.author._id}`}>
               <img
                 src={
                   post?.author?.imageUrl || '/assets/profile-placeholder.png'
@@ -48,7 +50,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
           </div>
           <Link
             to={`/update-post/${post._id}`}
-            className={`${user?.id !== post.author.id && 'hidden'}`}
+            className={`${user?._id === post.author._id ? '' : 'hidden'}`}
           >
             <SquarePen className="w-6 h-6" />
           </Link>
