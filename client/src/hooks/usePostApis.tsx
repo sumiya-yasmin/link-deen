@@ -1,4 +1,4 @@
-import { createPost, getRecentPosts } from '@/api/posts';
+import { createPost, getRecentPosts, likePost } from '@/api/posts';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import {
   useInfiniteQuery,
@@ -33,5 +33,33 @@ export const useGetRecentPosts = () => {
     queryFn: getRecentPosts,
     initialPageParam: null,
     getNextPageParam: (lastPage) => lastPage.nextCursor,
+  });
+};
+
+export const useLikePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: likePost,
+    onSuccess: (updatedPost) => {
+      queryClient.setQueryData(
+        [QUERY_KEYS.GET_RECENT_POSTS],
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          return {
+            ...oldData,
+            pages: oldData.pages.map((page: any) => ({
+              ...page,
+              posts: page.posts.map((post: any) => 
+                 post._id === updatedPost._id ? updatedPost : post
+              ),
+            })),
+          };
+        }
+      );
+    },
+    
+    onError: () => {
+      toast.error('Failed to like post');
+    },
   });
 };
