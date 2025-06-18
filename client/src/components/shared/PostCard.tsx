@@ -5,6 +5,7 @@ import { SquarePen } from 'lucide-react';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
+import { useLikePost } from '@/hooks/usePostApis';
 
 type PostCardProps = {
   post: Post;
@@ -13,10 +14,14 @@ type PostCardProps = {
 const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
   ({ post }, ref) => {
     const { user } = useAuth();
-    console.log(user?._id)
-    console.log(post.author._id)
-    console.log(post);
-    console.log('post.$createdAt:', post.createdAt, typeof post.createdAt);
+    const { mutate: likePost } = useLikePost();
+
+    const isLiked = user?._id ? post.likes.includes(user._id) : false;
+    const likeCount = post.likes.length;
+
+    const handleLike = () => {
+      likePost(post._id);
+    };
     return (
       <div
         ref={ref}
@@ -76,10 +81,11 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
         </Link>
 
         <PostStats
-          likes={post.likesCount || 0}
+          likes={likeCount}
           comments={post.commentsCount || 0}
-          isLiked={post.isLiked}
+          isLiked={isLiked}
           isSaved={post.isSaved}
+           onLike={handleLike} 
         />
       </div>
     );

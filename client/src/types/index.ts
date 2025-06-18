@@ -15,6 +15,7 @@ export interface Post {
   tags: string[];
   author: User;
   createdAt: string;
+  likes: string[];
   likesCount: number;
   commentsCount: number;
   isLiked: boolean;
