@@ -21,3 +21,25 @@ export interface Post {
   isLiked: boolean;
   isSaved: boolean;
 }
+
+export type Comment = {
+  _id: string;
+  user: {
+    _id: string;
+    username: string;
+    name: string;
+    imageUrl?: string;
+  };
+  content: string;
+  createdAt: string;
+  updatedAt?: string;
+};
+
+export type PaginatedComments = {
+  comments: Comment[];
+  pagination: {
+    currentPage: number;
+    totalComments: number;
+    hasMore: boolean;
+  };
+};
