@@ -2,10 +2,11 @@ import { useAuth } from '@/context/AuthContext';
 import { formatDateString } from '@/lib/utils';
 import { Post } from '@/types';
 import { SquarePen } from 'lucide-react';
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
 import { useLikePost } from '@/hooks/usePostApis';
+import CommentsSection from './CommentsSection';
 
 type PostCardProps = {
   post: Post;
@@ -22,6 +23,10 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
     const handleLike = () => {
       likePost(post._id);
     };
+
+    const [showComments, setShowComments] = useState(false);
+    const toggleComments = () => setShowComments((prev) => !prev);
+    const commentCount = post.comments.length;
     return (
       <div
         ref={ref}
@@ -82,11 +87,14 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
 
         <PostStats
           likes={likeCount}
-          comments={post.commentsCount || 0}
+          comments={commentCount}
           isLiked={isLiked}
           isSaved={post.isSaved}
-           onLike={handleLike} 
+          onLike={handleLike}
+          onToggleComments={toggleComments}
+          // showComments={showComments}
         />
+        {showComments && <CommentsSection postId={post._id} />}
       </div>
     );
   }

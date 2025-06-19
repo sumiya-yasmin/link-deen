@@ -17,6 +17,7 @@ export interface Post {
   createdAt: string;
   likes: string[];
   likesCount: number;
+  comments: string[];
   commentsCount: number;
   isLiked: boolean;
   isSaved: boolean;
