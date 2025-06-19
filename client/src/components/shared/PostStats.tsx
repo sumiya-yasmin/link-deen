@@ -16,7 +16,7 @@ const PostStats = ({
   likes = 0,
   comments = 0,
   isLiked = true,
-  isSaved = true,
+  isSaved = false,
   onLike,
   onSave,
   onShare,
@@ -28,10 +28,10 @@ PostStatsProps) => {
       <div className="flex gap-2 mr-5">
         <button
           onClick={onLike}
-          className="flex items-center gap-2 hover:text-primary"
+          className="flex items-center gap-2 hover:bg-dark-3 md:px-8 md:py-4 rounded-2xl group"
         >
           <Heart
-            className={`w-6 h-6 cursor-pointer ${
+            className={`w-6 h-6 cursor-pointer group-hover:text-[#CD7F32] ${
               isLiked ? 'fill-[#CD7F32] text-[#CD7F32]' : ''
             }`}
           />
@@ -40,15 +40,15 @@ PostStatsProps) => {
           </span>
         </button>
       </div>
-      <div className="flex items-center gap-2" onClick={onToggleComments}>
-        <MessageCircle className="w-6 h-6" />
+      <div className="flex items-center gap-2 group hover:bg-dark-3 md:px-8 md:py-4 rounded-2xl" onClick={onToggleComments}>
+        <MessageCircle className="w-6 h-6 group-hover:text-[#CD7F32]" />
         <span>{comments}</span>
       </div>
-      <div className="flex gap-4">
-        <button onClick={onShare}>
-          <Share2 className="w-5 h-5" />
+      <div className="flex gap-8">
+        <button onClick={onShare} className='hover:bg-dark-3 md:p-4 rounded-2xl hover:text-[#CD7F32]'>
+          <Share2 className="w-5 h-5 " />
         </button>
-        <button onClick={onSave}>
+        <button onClick={onSave} className='hover:text-[#CD7F32] hover:bg-dark-3 md:p-4 rounded-2xl'>
           <Bookmark
             className={`w-5 h-5 ${
               isSaved ? 'fill-[#CD7F32] text-[#CD7F32]' : ''
