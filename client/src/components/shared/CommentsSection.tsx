@@ -1,4 +1,4 @@
-import { useAddComment, useGetComments } from "@/hooks/useCommentApis";
+import { useAddComment, useGetComments, useUpdateComment } from "@/hooks/useCommentApis";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import CommentItem from "./CommentItem";
@@ -8,6 +8,7 @@ const CommentsSection = ({ postId }: { postId: string }) => {
   const [newComment, setNewComment] = useState("");
   const { data, isLoading } = useGetComments(postId);
   const { mutate: addComment } = useAddComment(postId);
+  const {mutate: updateComment} =useUpdateComment(postId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -47,7 +48,9 @@ const CommentsSection = ({ postId }: { postId: string }) => {
           <CommentItem 
            key={comment._id}
             comment={comment}
-            user={user}/>
+            user={user}
+            onUpdateComment ={updateComment}
+            />
         ))}
       </div>
     </div>
