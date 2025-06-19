@@ -19,3 +19,4 @@ postRouter.post('/:id/like', postController.likePost);
 postRouter.post('/:postId/comments', commentController.addComment);
 postRouter.get('/:postId/comments', commentController.getComments);
 postRouter.delete('/:postId/comments/:commentId', commentController.deleteComment);
+postRouter.patch('/:postId/comments/:commentId', commentController.updateComment);

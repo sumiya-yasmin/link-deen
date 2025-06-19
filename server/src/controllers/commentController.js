@@ -3,7 +3,7 @@ import commentServices from '../services/commentServices.js';
 class CommentController {
   async addComment(req, res) {
     try {
-      const postId = req.params.id;
+      const {postId} = req.params;
       const userId = req._id;
       const {content} = req.body;
       if (!content?.trim()) {
