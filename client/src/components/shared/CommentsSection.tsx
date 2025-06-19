@@ -1,6 +1,7 @@
 import { useAddComment, useGetComments } from "@/hooks/useCommentApis";
 import { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import CommentItem from "./CommentItem";
 
 const CommentsSection = ({ postId }: { postId: string }) => {
   const { user } = useAuth();
@@ -43,17 +44,10 @@ const CommentsSection = ({ postId }: { postId: string }) => {
       <div className="space-y-3">
         {data?.comments?.length === 0 && <p className="text-light-4">No comments yet.</p>}
         {data?.comments?.map((comment) => (
-          <div key={comment._id} className="text-light-2">
-            <div className="flex gap-2">
-             <img
-              src="/assets/profile-placeholder.png"
-              alt="profile"
-              className="h-6 w-6 rounded-full border-2 border-[#CD7F32]"
-            />
-            <p className="text-sm font-medium">{comment.user.name}</p>
-            </div>
-            <p className="text-xs pl-8 ">{comment.content}</p>
-          </div>
+          <CommentItem 
+           key={comment._id}
+            comment={comment}
+            user={user}/>
         ))}
       </div>
     </div>
