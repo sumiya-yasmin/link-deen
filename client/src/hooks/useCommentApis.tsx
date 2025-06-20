@@ -43,6 +43,7 @@ export const useUpdateComment = (postId: string) => {
       content: string;
     }) => updateComment({ postId, commentId, content }),
     onSuccess: () => {
+      toast.success('Your comment has been updated successfully');
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
       });
@@ -54,8 +55,9 @@ export const useDeleteComment = (postId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (commentId: string) => deleteComment({ postId, commentId }),
+    mutationFn: ({commentId}:{commentId: string}) => deleteComment({ postId, commentId }),
     onSuccess: () => {
+      toast.success('Your comment has been deleted successfully');
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_COMMENTS, postId],
       });
