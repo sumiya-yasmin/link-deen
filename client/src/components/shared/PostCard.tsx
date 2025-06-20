@@ -1,12 +1,13 @@
 import { useAuth } from '@/context/AuthContext';
 import { formatDateString } from '@/lib/utils';
 import { Post } from '@/types';
-import { SquarePen } from 'lucide-react';
+// import { Settings, SquarePen } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
 import { useLikePost } from '@/hooks/usePostApis';
 import CommentsSection from './CommentsSection';
+import PostSettings from './PostSettings';
 
 type PostCardProps = {
   post: Post;
@@ -19,6 +20,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
 
     const isLiked = user?._id ? post.likes.includes(user._id) : false;
     const likeCount = post.likes.length;
+      const isOwner = user?._id === post.author._id;
 
     const handleLike = () => {
       likePost(post._id);
@@ -58,12 +60,20 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               </div>
             </div>
           </div>
-          <Link
+          {/* <Link
             to={`/update-post/${post._id}`}
             className={`${user?._id === post.author._id ? '' : 'hidden'}`}
           >
             <SquarePen className="w-6 h-6" />
-          </Link>
+          </Link> */}
+           {isOwner && (
+              <PostSettings
+              user={user}
+              post={post}
+              />
+           )
+           }
+
         </div>
         <Link to={`/post/${post._id}`}>
           <div className="text-[14px] lg:text-[16px] font-medium leading-[140%] py-5">
