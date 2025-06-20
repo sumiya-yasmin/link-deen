@@ -1,14 +1,17 @@
 import { Post, User } from '@/types';
 import { Settings } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
+import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
 
 interface PostSettingsProps {
   post: Post;
   user: User;
+  onDeletePost: (postId: string ) => void;
 }
 
-const PostSettings = ({ post, user }: PostSettingsProps) => {
+const PostSettings = ({ post, user, onDeletePost  }: PostSettingsProps) => {
   const [showOptions, setShowOptions] = useState(false);
+   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
   const handleOptionsClick = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -34,7 +37,22 @@ const PostSettings = ({ post, user }: PostSettingsProps) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [showOptions]);
+
+ const handleDeleteClick = () => {
+    setShowDeleteDialog(true);
+    setShowOptions(false);
+  };
+
+  const handleConfirmDelete = () => {
+     onDeletePost( post._id );
+    setShowDeleteDialog(false);
+  };
+
+  const handleCancelDelete = () => {
+    setShowDeleteDialog(false);
+  };
   return (
+    <>
     <div className="relative" ref={optionsRef}>
       <Settings
         className="w-6 h-6 cursor-pointer"
@@ -51,13 +69,21 @@ const PostSettings = ({ post, user }: PostSettingsProps) => {
 
           <button
             className="block w-full text-left px-3 py-2 text-l text-red-500 hover:bg-dark-3 transition-colors"
-            // onClick={handleDeleteClick}
+            onClick={handleDeleteClick}
           >
             Delete Post
           </button>
         </div>
       )}
     </div>
+    {showDeleteDialog && (
+            <DeleteConfirmDialog
+              isOpen={showDeleteDialog}
+              onConfirm={handleConfirmDelete}
+              onCancel={handleCancelDelete}
+            />
+          )}
+          </>
   );
 };
 

@@ -1,4 +1,4 @@
-import { createPost, getRecentPosts, likePost } from '@/api/posts';
+import { createPost, deletePost, getRecentPosts, likePost } from '@/api/posts';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import {
   useInfiniteQuery,
@@ -63,3 +63,24 @@ export const useLikePost = () => {
     },
   });
 };
+
+export const useDeletePost = () =>{
+    const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: deletePost,
+     onMutate: () => {
+    toast.loading('Deleting post...');
+  },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success('Post Deleted successfully');
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      toast.error(error.response?.data.message || 'Failed to delete post.');
+    },
+
+  })
+}

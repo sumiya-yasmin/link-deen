@@ -5,7 +5,7 @@ import { Post } from '@/types';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
-import { useLikePost } from '@/hooks/usePostApis';
+import { useDeletePost, useLikePost } from '@/hooks/usePostApis';
 import CommentsSection from './CommentsSection';
 import PostSettings from './PostSettings';
 
@@ -17,6 +17,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
   ({ post }, ref) => {
     const { user } = useAuth();
     const { mutate: likePost } = useLikePost();
+    const {mutate: deletePost} = useDeletePost();
 
     const isLiked = user?._id ? post.likes.includes(user._id) : false;
     const likeCount = post.likes.length;
@@ -70,6 +71,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               <PostSettings
               user={user}
               post={post}
+              onDeletePost ={(deleteData: string)=>deletePost(deleteData)}
               />
            )
            }
