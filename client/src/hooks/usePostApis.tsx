@@ -1,4 +1,10 @@
-import { createPost, deletePost, getRecentPosts, likePost } from '@/api/posts';
+import {
+  createPost,
+  deletePost,
+  getRecentPosts,
+  likePost,
+  updatePost,
+} from '@/api/posts';
 import { QUERY_KEYS } from '@/constants/queryKeys';
 import {
   useInfiniteQuery,
@@ -49,28 +55,48 @@ export const useLikePost = () => {
             ...oldData,
             pages: oldData.pages.map((page: any) => ({
               ...page,
-              posts: page.posts.map((post: any) => 
-                 post._id === updatedPost._id ? updatedPost : post
+              posts: page.posts.map((post: any) =>
+                post._id === updatedPost._id ? updatedPost : post
               ),
             })),
           };
         }
       );
     },
-    
+
     onError: () => {
       toast.error('Failed to like post');
     },
   });
 };
 
-export const useDeletePost = () =>{
-    const queryClient = useQueryClient();
+export const useUpdatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: updatePost,
+    onMutate: () => {
+      toast.loading('Updating post...');
+    },
+    onSuccess: () => {
+      toast.dismiss();
+      toast.success('Post updated successfully');
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+      });
+    },
+    onError: (error: AxiosError<{ message?: string }>) => {
+      toast.error(error.response?.data.message || 'Post update failed');
+    },
+  });
+};
+
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: deletePost,
-     onMutate: () => {
-    toast.loading('Deleting post...');
-  },
+    onMutate: () => {
+      toast.loading('Deleting post...');
+    },
     onSuccess: () => {
       toast.dismiss();
       toast.success('Post Deleted successfully');
@@ -81,6 +107,5 @@ export const useDeletePost = () =>{
     onError: (error: AxiosError<{ message?: string }>) => {
       toast.error(error.response?.data.message || 'Failed to delete post.');
     },
-
-  })
-}
+  });
+};
