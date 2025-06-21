@@ -32,6 +32,7 @@ class PostController {
       const postId = req.params.id;
       const userId = req._id;
       const { caption, location, tags, removeImage } = req.body;
+      const tagsArray = tags?.split(',').map((tag) => tag.trim()) || [];
       const existingPost = await postServices.getPostById(postId);
       let imageUrl = existingPost?.image;
 
@@ -48,7 +49,7 @@ class PostController {
       const updateData = {
         caption,
         location,
-        tags: tags ? JSON.parse(tags) : [],
+        tags: tagsArray,
         image: imageUrl,
       };
 
