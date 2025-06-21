@@ -85,6 +85,7 @@ export const useUpdatePost = () => {
       });
     },
     onError: (error: AxiosError<{ message?: string }>) => {
+       toast.dismiss();
       toast.error(error.response?.data.message || 'Post update failed');
     },
   });

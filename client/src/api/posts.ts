@@ -27,7 +27,7 @@ export const likePost = async(postId : string) =>{
 }
 
 export const updatePost = async({postId, formData}:{postId: string; formData: FormData;}) =>{
-  const response = await API.post(`/post/${postId}`, formData, {
+  const response = await API.put(`/post/${postId}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
