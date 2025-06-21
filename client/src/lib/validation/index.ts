@@ -27,7 +27,6 @@ export const postFormSchema = z.object({
   caption: z.string().max(200, {
     message: 'Caption cant be more than 200 characters.',
   }),
-  file: z.custom<File[]>(),
   location: z.string().max(100),
   tags: z.string(),
 });
