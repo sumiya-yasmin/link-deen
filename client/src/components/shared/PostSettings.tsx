@@ -2,16 +2,18 @@ import { Post, User } from '@/types';
 import { Settings } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
+import PostEditDialog from './PostEditDialog';
 
 interface PostSettingsProps {
   post: Post;
   user: User;
-  onDeletePost: (postId: string ) => void;
+  onDeletePost: (postId: string) => void;
 }
 
-const PostSettings = ({ post, user, onDeletePost  }: PostSettingsProps) => {
+const PostSettings = ({ post, user, onDeletePost }: PostSettingsProps) => {
   const [showOptions, setShowOptions] = useState(false);
-   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
 
   const handleOptionsClick = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -38,13 +40,18 @@ const PostSettings = ({ post, user, onDeletePost  }: PostSettingsProps) => {
     };
   }, [showOptions]);
 
- const handleDeleteClick = () => {
+  const handleEditClick = () => {
+    setShowOptions(false);
+    setShowEditDialog(true);
+  };
+
+  const handleDeleteClick = () => {
     setShowDeleteDialog(true);
     setShowOptions(false);
   };
 
   const handleConfirmDelete = () => {
-     onDeletePost( post._id );
+    onDeletePost(post._id);
     setShowDeleteDialog(false);
   };
 
@@ -53,37 +60,46 @@ const PostSettings = ({ post, user, onDeletePost  }: PostSettingsProps) => {
   };
   return (
     <>
-    <div className="relative" ref={optionsRef}>
-      <Settings
-        className="w-6 h-6 cursor-pointer"
-        onClick={handleOptionsClick}
-      />
-      {showOptions && (
-        <div className="absolute right-0 top-full mt-1 w-42 p-2 bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden">
-          <button
-            className="block w-full text-left px-3 py-2 text-l text-light-2 hover:bg-dark-3 transition-colors"
-            // onClick={handleEditClick}
-          >
-            Edit Post
-          </button>
+      <div className="relative" ref={optionsRef}>
+        <Settings
+          className="w-6 h-6 cursor-pointer"
+          onClick={handleOptionsClick}
+        />
+        {showOptions && (
+          <div className="absolute right-0 top-full mt-1 w-42 p-2 bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden">
+            <button
+              className="block w-full text-left px-3 py-2 text-l text-light-2 hover:bg-dark-3 transition-colors"
+              onClick={handleEditClick}
+            >
+              Edit Post
+            </button>
 
-          <button
-            className="block w-full text-left px-3 py-2 text-l text-red-500 hover:bg-dark-3 transition-colors"
-            onClick={handleDeleteClick}
-          >
-            Delete Post
-          </button>
-        </div>
+            <button
+              className="block w-full text-left px-3 py-2 text-l text-red-500 hover:bg-dark-3 transition-colors"
+              onClick={handleDeleteClick}
+            >
+              Delete Post
+            </button>
+          </div>
+        )}
+      </div>
+
+      {showEditDialog && (
+        <PostEditDialog
+          post={post}
+          open={showEditDialog}
+          onOpenChange={setShowEditDialog}
+        />
       )}
-    </div>
-    {showDeleteDialog && (
-            <DeleteConfirmDialog
-              isOpen={showDeleteDialog}
-              onConfirm={handleConfirmDelete}
-              onCancel={handleCancelDelete}
-            />
-          )}
-          </>
+
+      {showDeleteDialog && (
+        <DeleteConfirmDialog
+          isOpen={showDeleteDialog}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+        />
+      )}
+    </>
   );
 };
 
