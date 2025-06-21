@@ -26,6 +26,15 @@ export const likePost = async(postId : string) =>{
   return response.data;
 }
 
+export const updatePost = async({postId, formData}:{postId: string; formData: FormData;}) =>{
+  const response = await API.post(`/post/${postId}`, formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
+}
+
 export const deletePost = async(postId : string)=>{
   return await API.delete(`/post/${postId}`);
 }
