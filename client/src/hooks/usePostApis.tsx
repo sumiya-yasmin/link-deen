@@ -72,6 +72,7 @@ export const useLikePost = () => {
 
 export const useUpdatePost = () => {
   const queryClient = useQueryClient();
+   const navigate = useNavigate();
   return useMutation({
     mutationFn: updatePost,
     onMutate: () => {
@@ -83,6 +84,7 @@ export const useUpdatePost = () => {
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
       });
+       navigate('/');
     },
     onError: (error: AxiosError<{ message?: string }>) => {
        toast.dismiss();

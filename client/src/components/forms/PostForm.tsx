@@ -57,6 +57,7 @@ function PostForm({ post, onCancel }: PostFormProps) {
 
     if (post) {
       updatePost({ postId: post._id, formData });
+      onCancel()
     } else {
       createPost(formData);
     }
