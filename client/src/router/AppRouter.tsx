@@ -13,6 +13,7 @@ import ChangePassword from '@/pages/settings/ChangePassword';
 import Theme from '@/pages/settings/Theme';
 import DangerZone from '@/pages/settings/DangerZone';
 import CreatePostPage from '@/pages/CreatePostPage';
+import PostPage from '@/pages/PostPage';
 
 export default function AppRouter() {
   return (
@@ -40,6 +41,7 @@ export default function AppRouter() {
             <Route path="danger" element={<DangerZone />} />
           </Route>
           < Route path="/create" element={<CreatePostPage />}/>
+           <Route path="/post/:id" element={<PostPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
