@@ -49,6 +49,12 @@ export const useLikePost = () => {
   return useMutation({
     mutationFn: likePost,
     onSuccess: (updatedPost) => {
+  const postId = updatedPost._id;
+       queryClient.setQueryData(
+        [QUERY_KEYS.GET_POST_BY_ID, postId],
+        updatedPost
+      );
+
       queryClient.setQueryData(
         [QUERY_KEYS.GET_RECENT_POSTS],
         (oldData: any) => {
