@@ -1,6 +1,7 @@
 import {
   createPost,
   deletePost,
+  getPostById,
   getRecentPosts,
   likePost,
   updatePost,
@@ -9,6 +10,7 @@ import { QUERY_KEYS } from '@/constants/queryKeys';
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -112,3 +114,11 @@ export const useDeletePost = () => {
     },
   });
 };
+
+export const useGetPostById = (postId:string, enabled = true) =>{
+  return useQuery({
+    queryKey: [QUERY_KEYS.GET_POST_BY_ID, postId],
+    queryFn: ()=> getPostById(postId),
+    enabled: !!postId && enabled,
+  })
+}
