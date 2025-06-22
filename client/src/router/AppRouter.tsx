@@ -33,15 +33,15 @@ export default function AppRouter() {
         >
           {/* <Route path="/" element={<RootLayout />}> */}
           <Route index element={<HomePage />} />
-          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/profile/:id" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />}>
             <Route path="profile" element={<EditProfile />} />
             <Route path="password" element={<ChangePassword />} />
             <Route path="theme" element={<Theme />} />
             <Route path="danger" element={<DangerZone />} />
           </Route>
-          < Route path="/create" element={<CreatePostPage />}/>
-           <Route path="/post/:id" element={<PostPage />} />
+          <Route path="/create" element={<CreatePostPage />} />
+          <Route path="/post/:id" element={<PostPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

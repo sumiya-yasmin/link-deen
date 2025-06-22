@@ -36,7 +36,7 @@ function Sidebar() {
         <Link to="/" className="flex items-center ">
           <img src="/assets/logo5.png" className="" width={170} height={30} />
         </Link>
-        <Link to="/profile" className="flex items-center gap-2">
+        <Link to={`/profile/${user?._id}`} className="flex items-center gap-2">
           <img
             src="/assets/profile-placeholder.png"
             alt="profile"
