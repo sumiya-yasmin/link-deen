@@ -4,8 +4,17 @@ export interface User {
   email: string;
   name: string;
   imageUrl: string;
+  bio: string;
+  createdAt: string;
 }
 
+export interface UserProfile extends User {
+  stats: {
+    postsCount: number;
+    followersCount: number;
+    followingCount: number;
+  };
+}
 
 export interface Post {
   _id: string;
@@ -42,5 +51,16 @@ export type PaginatedComments = {
     currentPage: number;
     totalComments: number;
     hasMore: boolean;
+  };
+};
+
+export type PaginatedPostsResponse = {
+  posts: Post[];
+  pagination: {
+    currentPage: number;
+    totalPages: number;
+    totalPosts: number;
+    hasNextPage: boolean;
+    hasPrevPage: boolean;
   };
 };
