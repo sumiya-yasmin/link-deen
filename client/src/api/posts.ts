@@ -38,3 +38,8 @@ export const updatePost = async({postId, formData}:{postId: string; formData: Fo
 export const deletePost = async(postId : string)=>{
   return await API.delete(`/post/${postId}`);
 }
+
+export  const getPostById = async(postId: string) =>{
+  const response= await API.get(`/post/${postId}`);
+  return response.data;
+}
