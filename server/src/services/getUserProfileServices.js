@@ -8,3 +8,7 @@ export const getAuthenticatedUserProfileById = async(id) => {
   return profile;
 };
 
+export const getUserProfileById = async(id) =>{
+  const profile = await User.findById(id).select('-password -refreshToken');
+  return profile;
+}

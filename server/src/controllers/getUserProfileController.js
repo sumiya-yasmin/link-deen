@@ -1,4 +1,4 @@
-import { getAuthenticatedUserProfileById } from "../services/getUserProfileServices.js";
+import { getAuthenticatedUserProfileById, getUserProfileById } from "../services/getUserProfileServices.js";
 
 
 export const getAuthenticatedUserProfile = async (req, res) => {
@@ -22,6 +22,23 @@ export const getAuthenticatedUserProfile = async (req, res) => {
 };
 
 
-export const getUserProfileById = async(req,res) =>{
-  
+export const getUserProfile = async(req,res) =>{
+  try {
+      const { id } = req.params;
+    const profile = await getUserProfileById(id);
+    if (!profile) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      _id: profile._id,
+      name: profile.name,
+      username: profile.username,
+      imageUrl: profile.imageUrl || '/assets/profile-placeholder.png',
+    });
+  } catch (error) {
+      console.error('Get public user error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+
 }
