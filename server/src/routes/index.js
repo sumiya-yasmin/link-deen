@@ -5,7 +5,7 @@ import profileRouter from './profileRouter.js';
 
 const configureRouter = (app) => {
   app.use('/auth', authRouter);
-  app.use('/auth', profileRouter);
+  app.use('/', profileRouter);
   app.use('/post', authenticate, postRouter);
 };
 
