@@ -1,7 +1,6 @@
 import { useAuth } from '@/context/AuthContext';
 import { formatDateString } from '@/lib/utils';
 import { Post } from '@/types';
-// import { Settings, SquarePen } from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import PostStats from './PostStats';
@@ -11,29 +10,32 @@ import PostSettings from './PostSettings';
 
 type PostCardProps = {
   post: Post;
+  mode?: "preview" | "details";
 };
 
 const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
-  ({ post }, ref) => {
+  ({ post, mode = "preview" }, ref) => {
     const { user } = useAuth();
     const { mutate: likePost } = useLikePost();
     const {mutate: deletePost} = useDeletePost();
 
     const isLiked = user?._id ? post.likes.includes(user._id) : false;
     const likeCount = post.likes.length;
-      const isOwner = user?._id === post.author._id;
+    const isOwner = user?._id === post.author._id;
+
+    const [showComments, setShowComments] = useState(mode ==="details");
+    const toggleComments = () => setShowComments((prev) => !prev);
+    const commentCount = post.comments.length;
 
     const handleLike = () => {
       likePost(post._id);
     };
-
-    const [showComments, setShowComments] = useState(false);
-    const toggleComments = () => setShowComments((prev) => !prev);
-    const commentCount = post.comments.length;
+    
+    const wrapperClass = mode==="details"? "w-full max-w-3xl px-2 md:px-0" : "bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm"
     return (
       <div
         ref={ref}
-        className="bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm;"
+        className={wrapperClass}
       >
         <div className="flex justify-between gap-8 items-center">
           <div className="flex items-center gap-3">
@@ -61,12 +63,6 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               </div>
             </div>
           </div>
-          {/* <Link
-            to={`/update-post/${post._id}`}
-            className={`${user?._id === post.author._id ? '' : 'hidden'}`}
-          >
-            <SquarePen className="w-6 h-6" />
-          </Link> */}
            {isOwner && (
               <PostSettings
               user={user}
@@ -75,10 +71,29 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               />
            )
            }
-
         </div>
-        <Link to={`/post/${post._id}`}>
+        {mode === "preview"? (
+       <Link to={`/post/${post._id}`}>
           <div className="text-[14px] lg:text-[16px] font-medium leading-[140%] py-5">
+            <p>{post.caption}</p>
+            <ul className="flex gap-1 mt-2">
+              {post.tags.map((tag) => (
+                <li key={tag} className="text-light-3">
+                  #{tag}
+                </li>
+              ))}
+            </ul>
+            {post.image && (
+              <img
+              src={post.image}
+              alt="Post Image"
+              className="w-full max-h-[500px] object-cover rounded-xl mt-4"
+              />
+            )}
+          </div>
+        </Link>
+            ):(
+               <div className="text-[14px] lg:text-[16px] font-medium leading-[140%] py-5">
             <p>{post.caption}</p>
             <ul className="flex gap-1 mt-2">
               {post.tags.map((tag) => (
@@ -95,7 +110,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               />
             )}
           </div>
-        </Link>
+            )}
 
         <PostStats
           likes={likeCount}

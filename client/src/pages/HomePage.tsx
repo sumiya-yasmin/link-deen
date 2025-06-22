@@ -61,7 +61,7 @@ const HomePage = () => {
                     pageIndex === data!.pages.length - 1 &&
                     postIndex === page.posts.length - 1;
                   return <div ref={isLastPost? ref : undefined} key={post._id}>
-                      <PostCard post={post} />
+                      <PostCard post={post} mode="preview"/>
                   </div>;
                 })}
               </React.Fragment>
