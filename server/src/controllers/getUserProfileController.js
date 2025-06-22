@@ -1,5 +1,7 @@
-import { getAuthenticatedUserProfileById, getUserProfileById } from "../services/getUserProfileServices.js";
-
+import {
+  getAuthenticatedUserProfileById,
+  getUserProfileById,
+} from '../services/getUserProfileServices.js';
 
 export const getAuthenticatedUserProfile = async (req, res) => {
   const id = req._id;
@@ -13,7 +15,7 @@ export const getAuthenticatedUserProfile = async (req, res) => {
       name: profile.name,
       email: profile.email,
       username: profile.username,
-      imageUrl: profile.imageUrl || '/assets/profile-placeholder.png'
+      imageUrl: profile.imageUrl || '/assets/profile-placeholder.png',
     });
   } catch (error) {
     console.error('Get user error:', error);
@@ -21,10 +23,9 @@ export const getAuthenticatedUserProfile = async (req, res) => {
   }
 };
 
-
-export const getUserProfile = async(req,res) =>{
+export const getUserProfile = async (req, res) => {
   try {
-      const { id } = req.params;
+    const { id } = req.params;
     const profile = await getUserProfileById(id);
     if (!profile) {
       return res.status(404).json({ message: 'User not found' });
@@ -33,12 +34,14 @@ export const getUserProfile = async(req,res) =>{
     res.json({
       _id: profile._id,
       name: profile.name,
+      email: profile.email,
       username: profile.username,
       imageUrl: profile.imageUrl || '/assets/profile-placeholder.png',
+      bio: profile.bio,
+      createdAt: profile.createdAt,
     });
   } catch (error) {
-      console.error('Get public user error:', error);
+    console.error('Get public user error:', error);
     res.status(500).json({ message: 'Server error' });
   }
-
-}
+};
