@@ -70,6 +70,21 @@ export const useLikePost = () => {
           };
         }
       );
+      queryClient.setQueryData(
+    [QUERY_KEYS.GET_USER_POSTS, updatedPost.author._id, 10], // <- same key used in `useGetUserPosts`
+    (oldData: any) => {
+      if (!oldData) return oldData;
+      return {
+        ...oldData,
+        pages: oldData.pages.map((page: any) => ({
+          ...page,
+          posts: page.posts.map((post: any) =>
+            post._id === postId ? updatedPost : post
+          ),
+        })),
+      };
+    }
+  );
     },
 
     onError: () => {
