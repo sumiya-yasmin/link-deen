@@ -1,7 +1,9 @@
 import API from '@/lib/axios';
 import { PaginatedPostsResponse, User, UserProfile } from '@/types';
 
-export const getProfileById = async (profileId: string): Promise<UserProfile> => {
+export const getProfileById = async (
+  profileId: string
+): Promise<UserProfile> => {
   const response = await API.get(`/profile/${profileId}`);
   return response.data as UserProfile;
 };
@@ -15,8 +17,28 @@ export const getUserPosts = async ({
   page?: number;
   limit?: number;
 }): Promise<PaginatedPostsResponse> => {
-  const response = await API.get(`/post/user/${userId}`,{
+  const response = await API.get(`/post/user/${userId}`, {
     params: { page, limit },
-});
+  });
+  return response.data;
+};
+
+export const uploadProfileImage = async ({
+  file,
+  imageType,
+}: {
+  file: File;
+  imageType: 'profile' | 'cover';
+}): Promise<{ imageUrl: string }> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('imageType', imageType);
+
+   const response = await API.post("/profile/upload/image", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
   return response.data;
 };
