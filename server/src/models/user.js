@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     password: { type: String, required: true },
     refreshToken: { type: String },
     imageUrl: { type: String, default: '' },
+    coverImageUrl: { type: String, default: '' },
     bio: { type: String, default: '' },
   },
   { timestamps: true }

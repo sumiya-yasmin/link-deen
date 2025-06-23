@@ -1,7 +1,9 @@
+import User from '../models/user.js';
 import {
   getAuthenticatedUserProfileById,
   getUserProfileById,
 } from '../services/getUserProfileServices.js';
+import uploadService from '../services/uploadService.js';
 
 export const getAuthenticatedUserProfile = async (req, res) => {
   const id = req._id;
@@ -45,3 +47,20 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+export const uploadUserImage = async() =>{
+  try {
+    const {imageType} = req.body;
+    const userId = req._id;
+    if(!req.file || !['profile', 'cover'].includes(imageType)){
+      return res.status(400).json({error: 'Invalid upload request'})
+    }
+    const imageUrl = await uploadService.uploadImage(req.file);
+    const updatedData = imageType ==='profile'? {imageUrl} :{coverImageUrl: imageUrl};
+    const updatedUser= await User.findByIdAndUpdate(userId,{$set: updatedData}, {new: true}).select('imageUrl coverImageUrl');
+       res.status(200).json(updatedUser);
+  } catch (error) {
+    console.error('Upload error:', error.message);
+    res.status(500).json({ error: 'Failed to upload image' });
+  }
+}
