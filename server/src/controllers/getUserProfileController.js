@@ -39,6 +39,7 @@ export const getUserProfile = async (req, res) => {
       email: profile.email,
       username: profile.username,
       imageUrl: profile.imageUrl || '/assets/profile-placeholder.png',
+      coverImageUrl: profile.coverImageUrl,
       bio: profile.bio,
       createdAt: profile.createdAt,
     });
@@ -48,19 +49,28 @@ export const getUserProfile = async (req, res) => {
   }
 };
 
-export const uploadUserImage = async() =>{
+export const uploadUserImage = async (req, res) => {
   try {
-    const {imageType} = req.body;
+    const { imageType } = req.body;
     const userId = req._id;
-    if(!req.file || !['profile', 'cover'].includes(imageType)){
-      return res.status(400).json({error: 'Invalid upload request'})
+    if (!req.file || !['profile', 'cover'].includes(imageType)) {
+      return res.status(400).json({ error: 'Invalid upload request' });
     }
     const imageUrl = await uploadService.uploadImage(req.file);
-    const updatedData = imageType ==='profile'? {imageUrl} :{coverImageUrl: imageUrl};
-    const updatedUser= await User.findByIdAndUpdate(userId,{$set: updatedData}, {new: true}).select('imageUrl coverImageUrl');
-       res.status(200).json(updatedUser);
+    const updatedData =
+      imageType === 'profile' ? { imageUrl } : { coverImageUrl: imageUrl };
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updatedData },
+      { new: true }
+    ).select('imageUrl coverImageUrl name username');
+    res.status(200).json({
+      success: true,
+      imageUrl: imageUrl,
+      user: updatedUser,
+    });
   } catch (error) {
     console.error('Upload error:', error.message);
     res.status(500).json({ error: 'Failed to upload image' });
   }
-}
+};
