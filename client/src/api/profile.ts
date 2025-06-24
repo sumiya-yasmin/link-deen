@@ -29,14 +29,14 @@ export const uploadProfileImage = async ({
 }: {
   file: File;
   imageType: 'profile' | 'cover';
-}): Promise<{ imageUrl: string }> => {
+}): Promise<{ imageUrl: string; success: boolean; user: User }> => {
   const formData = new FormData();
   formData.append('file', file);
   formData.append('imageType', imageType);
 
-   const response = await API.post("/profile/upload/image", formData, {
+  const response = await API.post('/profile/upload/image', formData, {
     headers: {
-      "Content-Type": "multipart/form-data",
+      'Content-Type': 'multipart/form-data',
     },
   });
 
