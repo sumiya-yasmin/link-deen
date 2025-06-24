@@ -49,9 +49,11 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               />
             </Link>
             <div className="flex flex-col">
+              <Link to={`/profile/${post.author._id}`}>
               <p className="text-[16px] font-medium leading-[140%] lg:text-[18px] lg:font-bold text-light-1">
                 {post.author.name}
               </p>
+              </Link>
               <div className="flex-center gap-2 text-light-3">
                 <p className="text-[12px] font-semibold leading-[140%] lg:text-[14px] lg:font-normal">
                   {formatDateString(post.createdAt)}
