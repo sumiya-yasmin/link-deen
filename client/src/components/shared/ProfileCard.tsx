@@ -1,8 +1,9 @@
 import { useAuth } from '@/context/AuthContext';
 import { useGetProfileById } from '@/hooks/useProfileApi';
 import { formatDate, formatNumber } from '@/lib/utils';
-import { Calendar, Heart, MessageCircle, User, Users } from 'lucide-react';
+import { Calendar, MessageCircle, User } from 'lucide-react';
 import { useParams } from 'react-router-dom';
+import ProfileImageUploader from './ProfileImageUploader';
 
 export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
   const { id } = useParams<{ id: string }>();
@@ -15,40 +16,68 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
   const isCurrentUser = profile._id === user?._id;
 
   return (
-    <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-      <div className="h-32 bg-gradient-to-r from-blue-500 to-purple-600"></div>
-
-      <div className="relative px-6 pb-6">
-        <div className="absolute -top-16 left-6">
-          <div className="w-24 h-24 rounded-full border-4 border-white bg-gray-200 overflow-hidden">
-            {profile.imageUrl ? (
+    <div className=" rounded-2xl w-full shadow-md overflow-hidden ">
+      <div className="relative h-56">
+        {isCurrentUser ? (
+          <ProfileImageUploader
+            type="cover"
+            currentImage={profile.coverImageUrl}
+            className="h-56 w-full"
+          />
+        ) : (
+          <div className="h-56 w-full bg-gradient-to-r from-blue-500 to-purple-600">
+            {profile.coverImageUrl && (
               <img
-                src={profile.imageUrl}
-                alt={profile.name}
+                src={profile.coverImageUrl}
+                alt="Cover"
                 className="w-full h-full object-cover"
               />
+            )}
+          </div>
+        )}
+      </div>
+
+      <div className="relative px-6 pb-6 bg-dark-2">
+        <div className="absolute -top-16 left-6">
+          <div className="w-40 h-40 rounded-full border-4 border-white bg-gray-200 overflow-hidden">
+            {isCurrentUser ? (
+              <ProfileImageUploader
+                type="profile"
+                currentImage={profile.imageUrl}
+                className="w-40 h-40 rounded-full"
+              />
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-300">
-                <User className="w-8 h-8 text-gray-600" />
-              </div>
+              <>
+                {profile.imageUrl ? (
+                  <img
+                    src={profile.imageUrl}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gray-300">
+                    <User className="w-8 h-8 text-gray-600" />
+                  </div>
+                )}
+              </>
             )}
           </div>
         </div>
 
-        <div className="pt-4 flex justify-end">
-          {/* {!isCurrentUser && (
-            <button className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors duration-200">
-              Follow
-            </button>
-          )} */}
-          {isCurrentUser && (
+        <div className="pt-4 flex gap-2 justify-end">
+          {isCurrentUser? (
             <button className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full font-medium hover:bg-gray-300 transition-colors duration-200">
               Edit Profile
             </button>
+
+          ): (
+          <button className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors duration-200">
+            Follow
+          </button>
           )}
         </div>
-
-        <div className="mt-4">
+         
+        <div className="mt-12">
           <h1 className="text-2xl font-bold text-gray-900">{profile.name}</h1>
           <p className="text-gray-600">@{profile.username}</p>
 
@@ -63,7 +92,6 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
             </span>
           </div>
 
-          {/* Stats */}
           <div className="flex items-center gap-6 mt-4">
             <div className="flex items-center text-gray-700">
               <MessageCircle className="w-4 h-4 mr-1" />
