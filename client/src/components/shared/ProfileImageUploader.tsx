@@ -1,7 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useUploadProfileImage } from '@/hooks/useProfileApi';
-import { Camera, Loader2, User, X, Check, Eye, Trash } from 'lucide-react';
+import {
+  Camera,
+  Loader2,
+  User,
+  X,
+  Check,
+  Eye,
+  Trash,
+  Settings,
+  CircleX,
+} from 'lucide-react';
 
 type Props = {
   type: 'profile' | 'cover';
@@ -17,6 +27,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [viewImage, setViewImage] = useState(false);
+  const [showViewImageOptions, setShowViewImageOptions] = useState(false);
+  const imageOptionsRef = useRef<HTMLDivElement>(null);
 
   const uploadMutation = useUploadProfileImage();
 
@@ -71,6 +83,29 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
       setPreviewUrl(null);
     }
   };
+  const handleViewImageOptionsClick = (e: React.MouseEvent<SVGSVGElement>) => {
+    e.stopPropagation();
+    setShowViewImageOptions((prev) => !prev);
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (
+        imageOptionsRef.current &&
+        !imageOptionsRef.current.contains(e.target as Node)
+      ) {
+        setShowViewImageOptions(false);
+      }
+    };
+    if (showViewImageOptions) {
+      document.addEventListener('mousedown', handleClickOutside);
+    } else {
+      document.removeEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showViewImageOptions]);
 
   const handleDelete = () => {};
 
@@ -106,57 +141,52 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       {showOptionsMenu && (
-        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
-           <div className="bg-dark-4 rounded-lg shadow p-3 space-y-3 w-52 text-center">
-          <p className='text-gray-500 '>Choose an action</p>
-          {currentImage && (
-            <button
-              onClick={() => {
-                setViewImage(true);
-                setShowOptionsMenu(false);
-              }}
-              className="w-full hover:underline flex items-center justify-center gap-2"
-            >
-              <Eye className="w-6 h-6 text-[#CD7F32]  " /> View {type}
-            </button>
-          )}
-          <label 
-          className="flex  items-center justify-center text-white text-sm cursor-pointer  duration-200">
-            <div className="flex gap-2 justify-center items-center">
-              <Camera className="w-6 h-6 text-[#CD7F32]  " />
-              <span>{currentImage ? `Change ${type}` : `Add ${type}`}</span>
-            </div>
+        <div className={`absolute ${type === "cover" ? "top-4 right-14": "left-40 top-14"} bg-black/40 z-20 flex items-center justify-center`}>
+          <div className="bg-dark-4 rounded-lg shadow p-3 space-y-3 w-52 text-center ">
+            <p className="text-gray-500 ">Choose an action</p>
+            {currentImage && (
+              <button
+                onClick={() => {
+                  setViewImage(true);
+                  setShowOptionsMenu(false);
+                }}
+                className="w-full hover:underline flex items-center justify-center gap-2"
+              >
+                <Eye className="w-6 h-6 text-[#CD7F32]  " /> View {type}
+              </button>
+            )}
+            <label className="flex  items-center justify-center text-white text-sm cursor-pointer  duration-200">
+              <div className="flex gap-2 justify-center items-center">
+                <Camera className="w-6 h-6 text-[#CD7F32]  " />
+                <span>{currentImage ? `Change ${type}` : `Add ${type}`}</span>
+              </div>
 
-            <input
-              type="file"
-              accept="image/*"
-              className="hidden"
-              onChange={handleFileSelect}
-            />
-          </label>
-          <button
-            onClick={() => setShowOptionsMenu(false)}
-            className="w-full text-gray-500 hover:underline"
-          >
-            Cancel
-          </button>
-            </div>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+            </label>
+            <button
+              onClick={() => setShowOptionsMenu(false)}
+              className="w-full text-gray-500 hover:underline"
+            >
+              Cancel
+            </button>
+          </div>
         </div>
       )}
-  
 
-    
       {error && (
         <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-xs p-2 text-center">
           {error}
         </div>
       )}
 
-  
       {showUploadModal && showPreview && previewUrl && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
           <div className="bg-dark-4 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-          
             <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <h3 className="text-lg font-semibold">
                 Update {type === 'profile' ? 'Profile Picture' : 'Cover Photo'}
@@ -169,7 +199,6 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               </button>
             </div>
 
-        
             <div className="p-4">
               <div
                 className={cn(
@@ -189,7 +218,6 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               </div>
             </div>
 
-            
             <div className="flex items-center justify-end gap-3 p-4 border-t border-gray-600 bg-dark-4">
               <button
                 onClick={handleCancel}
@@ -220,35 +248,46 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
         </div>
       )}
 
-      {viewImage && currentImage &&(
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
-          <div className="relative max-w-xl w-full h-screen">
+      {viewImage && currentImage && (
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4" >
+          <div className={`relative w-full flex flex-col items-center justify-center ${type=== "cover" ? "max-w-5xl": "max-w-3xl"}`}>
+            <div className={`absolute z-20 top-4 right-50`}>
+              <Settings
+                className="w-6 h-6 cursor-pointer text-light-2 hover:text-white"
+                onClick={handleViewImageOptionsClick}
+              />
+            </div>
             <img
               src={currentImage}
               alt="Full View"
-              className="w-full h-auto rounded-md shadow-lg"
+              className="w-auto max-h-[90vh] rounded-md shadow-lg object-contain"
             />
-            <div className="absolute top-4 right-4 flex gap-2">
-              <button
-                onClick={handleDelete}
-                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
-              >
-                <Trash className="w-4 h-4" /> Delete
-              </button>
-              <button
-                onClick={() => setViewImage(false)}
-                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
-              >
-                Close
-              </button>
-            </div>
+            {showViewImageOptions && (
+              <div 
+              ref={imageOptionsRef}
+              className={`absolute top-4 right-14 mt-1 w-42 p-2 flex flex-col items-center bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden`}>
+                <button
+                  onClick={handleDelete}
+                  className="flex justify-center text-l font-bold items-center gap-2 w-full text-center px-3 py-2 text-red-500  hover:bg-dark-3 transition-colors"
+                >
+                  <Trash className="w-6 h-6" /> Delete
+                </button>
+                <button
+                  onClick={() => setViewImage(false)}
+                  className="flex justify-center w-full gap-2 px-3 py-2 text-l text-gray-500 font-bold hover:bg-dark-3 transition-colors"
+                >
+                  <CircleX className="w-6 h-6"/> Close
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
 
-
       {error && (
-        <div className="mt-1 text-sm text-red-500 text-center animate-pulse">{error}</div>
+        <div className="mt-1 text-sm text-red-500 text-center animate-pulse">
+          {error}
+        </div>
       )}
     </>
   );
