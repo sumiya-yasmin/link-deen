@@ -12,6 +12,7 @@ import {
   Settings,
   CircleX,
 } from 'lucide-react';
+import { useClickOutside } from "@/hooks/useClickOutside";
 
 type Props = {
   type: 'profile' | 'cover';
@@ -85,36 +86,10 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
       setPreviewUrl(null);
     }
   };
-  const handleViewImageOptionsClick = (e: React.MouseEvent<SVGSVGElement>) => {
-    e.stopPropagation();
-    setTimeout(() => {
-      setShowViewImageOptions((prev) => !prev);
-    }, 0);
-  };
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        optionsMenuRef.current &&
-        !optionsMenuRef.current.contains(e.target as Node)
-      ) {
-        setShowOptionsMenu(false);
-      }
+useClickOutside(optionsMenuRef, () => setShowOptionsMenu(false));
 
-      if (
-        imageOptionsRef.current &&
-        !imageOptionsRef.current.contains(e.target as Node)
-      ) {
-        setShowViewImageOptions(false);
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [showOptionsMenu, showViewImageOptions]);
-
+useClickOutside(imageOptionsRef, () => setShowViewImageOptions(false));
   const handleDelete = () => {};
 
   return (
@@ -267,10 +242,13 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               type === 'cover' ? 'max-w-5xl' : 'max-w-3xl'
             }`}
           >
-            <div className={`absolute z-20 top-4 right-50`}>
+            <div  className={`absolute z-20 top-4 right-50`}>
               <Settings
                 className="w-6 h-6 cursor-pointer text-light-2 hover:text-white"
-                onClick={handleViewImageOptionsClick}
+                onClick={(e) => {
+            e.stopPropagation();
+            setShowViewImageOptions((prev) => !prev);
+          }}
               />
             </div>
             <img
@@ -280,7 +258,7 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
             />
             {showViewImageOptions && (
               <div
-                ref={imageOptionsRef}
+               ref={imageOptionsRef}
                 className={`absolute top-4 right-14 mt-1 w-42 p-2 flex flex-col items-center bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden`}
               >
                 <button
