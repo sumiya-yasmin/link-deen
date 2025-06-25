@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useUploadProfileImage } from '@/hooks/useProfileApi';
-import { Camera, Loader2, User, X, Check } from 'lucide-react';
+import { Camera, Loader2, User, X, Check, Eye, Trash } from 'lucide-react';
 
 type Props = {
   type: 'profile' | 'cover';
@@ -14,22 +14,22 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [showPreview, setShowPreview] = useState(false);
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
+  const [showUploadModal, setShowUploadModal] = useState(false);
+  const [viewImage, setViewImage] = useState(false);
 
-  // Use the React Query mutation
   const uploadMutation = useUploadProfileImage();
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file size (5MB limit)
     if (file.size > 5 * 1024 * 1024) {
       setError('File size must be less than 5MB');
       setTimeout(() => setError(null), 3000);
       return;
     }
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       setError('Please select a valid image file');
       setTimeout(() => setError(null), 3000);
@@ -39,10 +39,12 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
     setError(null);
     setSelectedFile(file);
 
-    // Create preview URL
     const url = URL.createObjectURL(file);
     setPreviewUrl(url);
     setShowPreview(true);
+
+    setShowUploadModal(true);
+    setShowOptionsMenu(false);
   };
 
   const handleUpload = () => {
@@ -55,7 +57,7 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
       },
       {
         onSuccess: () => {
-          handleCancel(); // Close preview modal
+          handleCancel();
         },
       }
     );
@@ -70,6 +72,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
     }
   };
 
+  const handleDelete = () => {};
+
   return (
     <>
       <div
@@ -77,8 +81,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
           'group relative overflow-hidden cursor-pointer',
           className
         )}
+        onClick={() => setShowOptionsMenu(true)}
       >
-        {/* Display current image or placeholder */}
         {currentImage ? (
           <img
             src={currentImage}
@@ -98,35 +102,62 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
           </div>
         )}
 
-        {/* Overlay for upload */}
-        <label className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center text-white text-sm cursor-pointer transition-opacity duration-200">
-          <div className="flex flex-col items-center">
-            <Camera className="w-6 h-6 mb-2" />
-            <span>{currentImage ? `Change ${type}` : `Add ${type}`}</span>
-          </div>
-
-          <input
-            type="file"
-            accept="image/*"
-            className="hidden"
-            onChange={handleFileSelect}
-          />
-        </label>
-
-        {/* Error message */}
-        {error && (
-          <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-xs p-2 text-center">
-            {error}
-          </div>
-        )}
+        {/* Hover Overlay (optional) */}
+        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
+      {showOptionsMenu && (
+        <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center">
+           <div className="bg-dark-4 rounded-lg shadow p-3 space-y-3 w-52 text-center">
+          <p className='text-gray-500 '>Choose an action</p>
+          {currentImage && (
+            <button
+              onClick={() => {
+                setViewImage(true);
+                setShowOptionsMenu(false);
+              }}
+              className="w-full hover:underline flex items-center justify-center gap-2"
+            >
+              <Eye className="w-6 h-6 text-[#CD7F32]  " /> View {type}
+            </button>
+          )}
+          <label 
+          className="flex  items-center justify-center text-white text-sm cursor-pointer  duration-200">
+            <div className="flex gap-2 justify-center items-center">
+              <Camera className="w-6 h-6 text-[#CD7F32]  " />
+              <span>{currentImage ? `Change ${type}` : `Add ${type}`}</span>
+            </div>
 
-      {/* Preview Modal */}
-      {showPreview && (
+            <input
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileSelect}
+            />
+          </label>
+          <button
+            onClick={() => setShowOptionsMenu(false)}
+            className="w-full text-gray-500 hover:underline"
+          >
+            Cancel
+          </button>
+            </div>
+        </div>
+      )}
+  
+
+    
+      {error && (
+        <div className="absolute bottom-0 left-0 right-0 bg-red-500 text-white text-xs p-2 text-center">
+          {error}
+        </div>
+      )}
+
+  
+      {showUploadModal && showPreview && previewUrl && (
         <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b">
+          <div className="bg-dark-4 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-hidden">
+          
+            <div className="flex items-center justify-between p-4 border-b border-gray-600">
               <h3 className="text-lg font-semibold">
                 Update {type === 'profile' ? 'Profile Picture' : 'Cover Photo'}
               </h3>
@@ -138,7 +169,7 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               </button>
             </div>
 
-            {/* Preview */}
+        
             <div className="p-4">
               <div
                 className={cn(
@@ -158,8 +189,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-end gap-3 p-4 border-t bg-gray-50">
+            
+            <div className="flex items-center justify-end gap-3 p-4 border-t border-gray-600 bg-dark-4">
               <button
                 onClick={handleCancel}
                 className="px-4 py-2 text-gray-600 border border-gray-300 rounded-md hover:bg-gray-100 transition-colors"
@@ -187,6 +218,37 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
             </div>
           </div>
         </div>
+      )}
+
+      {viewImage && currentImage &&(
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div className="relative max-w-xl w-full h-screen">
+            <img
+              src={currentImage}
+              alt="Full View"
+              className="w-full h-auto rounded-md shadow-lg"
+            />
+            <div className="absolute top-4 right-4 flex gap-2">
+              <button
+                onClick={handleDelete}
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 flex items-center gap-1"
+              >
+                <Trash className="w-4 h-4" /> Delete
+              </button>
+              <button
+                onClick={() => setViewImage(false)}
+                className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+
+      {error && (
+        <div className="mt-1 text-sm text-red-500 text-center animate-pulse">{error}</div>
       )}
     </>
   );
