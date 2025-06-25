@@ -28,6 +28,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [viewImage, setViewImage] = useState(false);
   const [showViewImageOptions, setShowViewImageOptions] = useState(false);
+
+  const optionsMenuRef = useRef<HTMLDivElement>(null);
   const imageOptionsRef = useRef<HTMLDivElement>(null);
 
   const uploadMutation = useUploadProfileImage();
@@ -91,21 +93,25 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
+        optionsMenuRef.current &&
+        !optionsMenuRef.current.contains(e.target as Node)
+      ) {
+        setShowOptionsMenu(false);
+      }
+
+      if (
         imageOptionsRef.current &&
         !imageOptionsRef.current.contains(e.target as Node)
       ) {
         setShowViewImageOptions(false);
       }
     };
-    if (showViewImageOptions) {
+    
       document.addEventListener('mousedown', handleClickOutside);
-    } else {
-      document.removeEventListener('mousedown', handleClickOutside);
-    }
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [showViewImageOptions]);
+  }, [showOptionsMenu, showViewImageOptions]);
 
   const handleDelete = () => {};
 
@@ -137,11 +143,15 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
           </div>
         )}
 
-        {/* Hover Overlay (optional) */}
         <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       {showOptionsMenu && (
-        <div className={`absolute ${type === "cover" ? "top-4 right-14": "left-40 top-14"} bg-black/40 z-20 flex items-center justify-center`}>
+        <div
+          ref={optionsMenuRef}
+          className={`absolute ${
+            type === 'cover' ? 'top-4 right-14' : 'left-40 top-14'
+          } bg-black/40 z-20 flex items-center justify-center`}
+        >
           <div className="bg-dark-4 rounded-lg shadow p-3 space-y-3 w-52 text-center ">
             <p className="text-gray-500 ">Choose an action</p>
             {currentImage && (
@@ -249,8 +259,12 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
       )}
 
       {viewImage && currentImage && (
-        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4" >
-          <div className={`relative w-full flex flex-col items-center justify-center ${type=== "cover" ? "max-w-5xl": "max-w-3xl"}`}>
+        <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-50 p-4">
+          <div
+            className={`relative w-full flex flex-col items-center justify-center ${
+              type === 'cover' ? 'max-w-5xl' : 'max-w-3xl'
+            }`}
+          >
             <div className={`absolute z-20 top-4 right-50`}>
               <Settings
                 className="w-6 h-6 cursor-pointer text-light-2 hover:text-white"
@@ -263,9 +277,10 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
               className="w-auto max-h-[90vh] rounded-md shadow-lg object-contain"
             />
             {showViewImageOptions && (
-              <div 
-              ref={imageOptionsRef}
-              className={`absolute top-4 right-14 mt-1 w-42 p-2 flex flex-col items-center bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden`}>
+              <div
+                ref={imageOptionsRef}
+                className={`absolute top-4 right-14 mt-1 w-42 p-2 flex flex-col items-center bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden`}
+              >
                 <button
                   onClick={handleDelete}
                   className="flex justify-center text-l font-bold items-center gap-2 w-full text-center px-3 py-2 text-red-500  hover:bg-dark-3 transition-colors"
@@ -276,7 +291,7 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
                   onClick={() => setViewImage(false)}
                   className="flex justify-center w-full gap-2 px-3 py-2 text-l text-gray-500 font-bold hover:bg-dark-3 transition-colors"
                 >
-                  <CircleX className="w-6 h-6"/> Close
+                  <CircleX className="w-6 h-6" /> Close
                 </button>
               </div>
             )}
