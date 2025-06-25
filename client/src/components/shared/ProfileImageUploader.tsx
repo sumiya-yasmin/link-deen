@@ -87,7 +87,9 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
   };
   const handleViewImageOptionsClick = (e: React.MouseEvent<SVGSVGElement>) => {
     e.stopPropagation();
-    setShowViewImageOptions((prev) => !prev);
+    setTimeout(() => {
+      setShowViewImageOptions((prev) => !prev);
+    }, 0);
   };
 
   useEffect(() => {
@@ -106,8 +108,8 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
         setShowViewImageOptions(false);
       }
     };
-    
-      document.addEventListener('mousedown', handleClickOutside);
+
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
