@@ -74,3 +74,35 @@ export const uploadUserImage = async (req, res) => {
     res.status(500).json({ error: 'Failed to upload image' });
   }
 };
+
+
+export const deleteUserImage = async(req, res) =>{
+   try {
+     const userId = req._id;
+    const { imageUrl, imageType } = req.body;
+
+     if (!imageUrl || !['profile', 'cover'].includes(imageType)) {
+      return res.status(400).json({ error: 'Invalid deletion request' });
+    }
+
+    await uploadService.deleteImage(imageUrl);
+const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      {
+        $unset: {
+          [imageType === 'profile' ? 'imageUrl' : 'coverImageUrl']: 1,
+        },
+      },
+      { new: true }
+    ).select('imageUrl coverImageUrl name username');
+
+    res.status(200).json({
+      success: true,
+      message: `${imageType} image deleted successfully`,
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error('Image deletion error:', error.message);
+    res.status(500).json({ error: 'Failed to delete image' });
+  }
+};
