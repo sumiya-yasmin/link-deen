@@ -1,6 +1,6 @@
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useUploadProfileImage } from '@/hooks/useProfileApi';
+import { useDeleteProfileImage, useUploadProfileImage } from '@/hooks/useProfileApi';
 import {
   Camera,
   Loader2,
@@ -32,9 +32,10 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
 
   const optionsMenuRef = useRef<HTMLDivElement>(null);
   const imageOptionsRef = useRef<HTMLDivElement>(null);
-
+  
   const uploadMutation = useUploadProfileImage();
-
+  const {mutate: deleteProfileImage, isPending} = useDeleteProfileImage();
+  
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -90,7 +91,9 @@ const ProfileImageUploader = ({ type, currentImage, className }: Props) => {
 useClickOutside(optionsMenuRef, () => setShowOptionsMenu(false));
 
 useClickOutside(imageOptionsRef, () => setShowViewImageOptions(false));
-  const handleDelete = () => {};
+  const handleDelete = (imageUrl: string, imageType: 'profile' | 'cover') => {
+    deleteProfileImage({ imageUrl, imageType });
+  };
 
   return (
     <>
@@ -262,10 +265,10 @@ useClickOutside(imageOptionsRef, () => setShowViewImageOptions(false));
                 className={`absolute top-4 right-14 mt-1 w-42 p-2 flex flex-col items-center bg-dark-2 border border-dark-4 rounded-md shadow-lg z-10 overflow-hidden`}
               >
                 <button
-                  onClick={handleDelete}
+                  onClick={()=>handleDelete(currentImage || '', type)}
                   className="flex justify-center text-l font-bold items-center gap-2 w-full text-center px-3 py-2 text-red-500  hover:bg-dark-3 transition-colors"
                 >
-                  <Trash className="w-6 h-6" /> Delete
+                  <Trash className="w-6 h-6" /> {isPending? 'Deleting' : 'Delete'}
                 </button>
                 <button
                   onClick={() => setViewImage(false)}
