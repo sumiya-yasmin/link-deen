@@ -1,4 +1,5 @@
 import {
+  deleteProfileImage,
   getProfileById,
   getUserPosts,
   uploadProfileImage,
@@ -69,6 +70,41 @@ export const useUploadProfileImage = () => {
       const errorMessage =
         error.response?.data?.message ||
         'Failed to upload image. Please try again.';
+      toast.error(errorMessage);
+    },
+  });
+};
+
+export const useDeleteProfileImage = () => {
+  const queryClient = useQueryClient();
+  const { id: profileId } = useParams<{ id: string }>();
+
+  return useMutation({
+    mutationFn: deleteProfileImage,
+    onSuccess: (data, variables) => {
+      if (data.user && profileId) {
+        queryClient.setQueryData(
+          [QUERY_KEYS.GET_PROFILE_BY_ID, profileId],
+          data.user
+        );
+      }
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_USER_POSTS],
+      });
+      toast.success(
+        `${
+          variables.imageType === 'profile' ? 'Profile picture' : 'Cover photo'
+        } deleted successfully!`
+      );
+    },
+    onError: (error: any) => {
+      const errorMessage =
+        error.response?.data?.message ||
+        'Failed to delete image. Please try again.';
       toast.error(errorMessage);
     },
   });
