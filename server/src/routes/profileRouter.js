@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  deleteUserImage,
   getAuthenticatedUserProfile,
   getUserProfile,
   uploadUserImage,
@@ -16,3 +17,5 @@ profileRouter.post(
   uploadUserImage
 );
 export default profileRouter;
+
+profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
