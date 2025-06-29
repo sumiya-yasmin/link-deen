@@ -2,6 +2,7 @@ import {
   deleteProfileImage,
   getProfileById,
   getUserPosts,
+  updateProfileBio,
   uploadProfileImage,
 } from '@/api/profile';
 import { QUERY_KEYS } from '@/constants/queryKeys';
@@ -109,3 +110,26 @@ export const useDeleteProfileImage = () => {
     },
   });
 };
+
+
+export const useUpdateBio = () =>{
+  const queryClient = useQueryClient();
+  const {id: profileId} = useParams<{id: string}>();
+  return useMutation({
+        mutationFn: updateProfileBio,
+        onSuccess: (data)=>{
+           if (profileId) {
+        queryClient.setQueryData([QUERY_KEYS.GET_PROFILE_BY_ID, profileId], data.user);
+      }
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID],
+      });
+      toast.success('Bio updated successfully!');
+        },
+         onError: (err: any) => {
+      const msg =
+        err.response?.data?.error || 'Failed to update bio. Please try again.';
+      toast.error(msg);
+    },
+  })
+}
