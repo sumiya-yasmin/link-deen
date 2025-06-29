@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema(
     refreshToken: { type: String },
     imageUrl: { type: String, default: '' },
     coverImageUrl: { type: String, default: '' },
-    bio: { type: String, default: '' },
+    bio: { type: String, default: '' , maxlength: 300},
   },
   { timestamps: true }
 );
