@@ -2,6 +2,7 @@ import User from '../models/user.js';
 import {
   getAuthenticatedUserProfileById,
   getUserProfileById,
+  updateUserBioService,
 } from '../services/getUserProfileServices.js';
 import uploadService from '../services/uploadService.js';
 
@@ -75,18 +76,17 @@ export const uploadUserImage = async (req, res) => {
   }
 };
 
-
-export const deleteUserImage = async(req, res) =>{
-   try {
-     const userId = req._id;
+export const deleteUserImage = async (req, res) => {
+  try {
+    const userId = req._id;
     const { imageUrl, imageType } = req.body;
 
-     if (!imageUrl || !['profile', 'cover'].includes(imageType)) {
+    if (!imageUrl || !['profile', 'cover'].includes(imageType)) {
       return res.status(400).json({ error: 'Invalid deletion request' });
     }
 
     await uploadService.deleteImage(imageUrl);
-const updatedUser = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       userId,
       {
         $unset: {
@@ -104,5 +104,31 @@ const updatedUser = await User.findByIdAndUpdate(
   } catch (error) {
     console.error('Image deletion error:', error.message);
     res.status(500).json({ error: 'Failed to delete image' });
+  }
+};
+
+export const updateUserBio = async (req, res) => {
+  const id = req._id;
+  const { bio } = req.body;
+
+  if (typeof bio !== 'string' || bio.length > 300) {
+    return res
+      .status(400)
+      .json({ error: 'Bio must be a string up to 300 characters.' });
+  }
+  try {
+    const profile = await updateUserBioService(id, bio);
+
+    if (!profile) {
+      return res.status(404).json({ error: 'User not found.' });
+    }
+    res.status(200).json({
+      success: true,
+      message: 'Bio updated successfully',
+      profile,
+    });
+  } catch (error) {
+    console.error('Update bio error:', error.message);
+    res.status(500).json({ error: 'Server error updating bio.' });
   }
 };
