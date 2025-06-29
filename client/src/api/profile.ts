@@ -55,3 +55,8 @@ export const deleteProfileImage = async ({
   });
   return res.data;
 };
+
+export const updateProfileBio = async(bio: string) =>{
+  const res = await API.put('/profile/bio', { bio });
+  return res.data;
+}
