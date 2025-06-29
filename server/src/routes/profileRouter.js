@@ -3,6 +3,7 @@ import {
   deleteUserImage,
   getAuthenticatedUserProfile,
   getUserProfile,
+  updateUserBio,
   uploadUserImage,
 } from '../controllers/getUserProfileController.js';
 import { authenticate } from '../middlewares/Authenticate.js';
@@ -19,3 +20,4 @@ profileRouter.post(
 export default profileRouter;
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
+profileRouter.put('/profile/bio', authenticate, updateUserBio);
