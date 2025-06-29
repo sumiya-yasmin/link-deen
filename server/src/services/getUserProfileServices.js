@@ -1,6 +1,6 @@
 import User from '../models/user.js';
 
-export const getAuthenticatedUserProfileById = async(id) => {
+export const getAuthenticatedUserProfileById = async (id) => {
   const profile = await User.findById(id).select('-password -refreshToken');
   if (!profile) {
     throw new Error('User not found');
@@ -8,7 +8,16 @@ export const getAuthenticatedUserProfileById = async(id) => {
   return profile;
 };
 
-export const getUserProfileById = async(id) =>{
+export const getUserProfileById = async (id) => {
   const profile = await User.findById(id).select('-password -refreshToken');
   return profile;
-}
+};
+
+export const updateUserBioService = async (id, bio) => {
+  const updatedProfile = await User.findByIdAndUpdate(
+    id,
+    { bio },
+    { new: true }
+  ).select('-password -refreshToken');
+  return updatedProfile;
+};
