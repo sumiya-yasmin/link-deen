@@ -13,10 +13,18 @@ export const getUserProfileById = async (id) => {
   return profile;
 };
 
-export const updateUserBioService = async (id, bio) => {
+export const updateUserProfileService = async (id, updates) => {
+
+  const allowedFields = ['name', 'username', 'bio'];
+  const filteredUpdates = {};
+  for(const key of allowedFields){
+    if(key in updates){
+      filteredUpdates[key] = updates[key];
+    }
+  }
   const updatedProfile = await User.findByIdAndUpdate(
     id,
-    { bio },
+    filteredUpdates,
     { new: true }
   ).select('-password -refreshToken');
   return updatedProfile;
