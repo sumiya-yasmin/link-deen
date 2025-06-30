@@ -107,28 +107,37 @@ export const deleteUserImage = async (req, res) => {
   }
 };
 
-export const updateUserBio = async (req, res) => {
+export const updateUserProfile = async (req, res) => {
   const id = req._id;
-  const { bio } = req.body;
+  const { name, username, bio } = req.body;
 
-  if (typeof bio !== 'string' || bio.length > 300) {
+  if (bio && (typeof bio !== 'string' || bio.length > 300)) {
     return res
       .status(400)
       .json({ error: 'Bio must be a string up to 300 characters.' });
   }
+
+   if (name && typeof name !== 'string') {
+    return res.status(400).json({ error: 'Name must be a string.' });
+  }
+
+  if (username && typeof username !== 'string') {
+    return res.status(400).json({ error: 'Username must be a string.' });
+  }
+
   try {
-    const profile = await updateUserBioService(id, bio);
+    const profile = await updateUserBioService(id, {name, username, bio});
 
     if (!profile) {
       return res.status(404).json({ error: 'User not found.' });
     }
     res.status(200).json({
       success: true,
-      message: 'Bio updated successfully',
+      message: 'Profile updated successfully',
       profile,
     });
   } catch (error) {
-    console.error('Update bio error:', error.message);
-    res.status(500).json({ error: 'Server error updating bio.' });
+    console.error('Update profile error:', error.message);
+    res.status(500).json({ error: 'Server error updating profile.' });
   }
 };
