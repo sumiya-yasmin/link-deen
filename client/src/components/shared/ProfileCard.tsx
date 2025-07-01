@@ -4,8 +4,11 @@ import { formatDate, formatNumber } from '@/lib/utils';
 import { Calendar, MessageCircle, User } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import ProfileImageUploader from './ProfileImageUploader';
+import EditProfileModal from './EditProfile';
+import { useState } from 'react';
 
 export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
+  const [editOpen, setEditOpen] = useState(false);
   const { id } = useParams<{ id: string }>();
   const { data: profile, isPending: userLoading } = useGetProfileById(id!);
   const { user } = useAuth();
@@ -65,18 +68,28 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
         </div>
 
         <div className="pt-4 flex gap-2 justify-end">
-          {isCurrentUser? (
-            <button className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full font-medium hover:bg-gray-300 transition-colors duration-200">
+          {isCurrentUser ? (
+            <button
+              onClick={() => setEditOpen(true)}
+              className="px-6 py-2 bg-gray-200 text-gray-800 rounded-full font-medium hover:bg-gray-300 transition-colors duration-200"
+            >
               Edit Profile
             </button>
-
-          ): (
-          <button className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors duration-200">
-            Follow
-          </button>
+          ) : (
+            <button className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors duration-200">
+              Follow
+            </button>
           )}
         </div>
-         
+        <EditProfileModal
+          isOpen={editOpen}
+          onClose={() => setEditOpen(false)}
+          defaultValues={{
+            name: profile.name,
+            username: profile.username,
+            bio: profile.bio || '',
+          }}
+        />
         <div className="mt-12">
           <h1 className="text-2xl font-bold text-gray-900">{profile.name}</h1>
           <p className="text-gray-600">@{profile.username}</p>
