@@ -2,7 +2,8 @@ import User from '../models/user.js';
 import {
   getAuthenticatedUserProfileById,
   getUserProfileById,
-  updateUserBioService,
+  updateUserProfileService,
+
 } from '../services/getUserProfileServices.js';
 import uploadService from '../services/uploadService.js';
 
@@ -126,7 +127,7 @@ export const updateUserProfile = async (req, res) => {
   }
 
   try {
-    const profile = await updateUserBioService(id, {name, username, bio});
+    const profile = await updateUserProfileService(id, {name, username, bio});
 
     if (!profile) {
       return res.status(404).json({ error: 'User not found.' });
