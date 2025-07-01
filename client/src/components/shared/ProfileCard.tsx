@@ -9,6 +9,7 @@ import { useState } from 'react';
 
 export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
   const [editOpen, setEditOpen] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
   const { id } = useParams<{ id: string }>();
   const { data: profile, isPending: userLoading } = useGetProfileById(id!);
   const { user } = useAuth();
@@ -17,6 +18,15 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
   if (!profile) return <p>User not found</p>;
 
   const isCurrentUser = profile._id === user?._id;
+
+  const handleShowDetails = () => {
+    if (!showDetails) {
+      setShowDetails(true);
+    }
+    if (showDetails) {
+      setShowDetails(false);
+    }
+  };
 
   return (
     <div className=" rounded-2xl w-full shadow-md overflow-hidden ">
@@ -98,13 +108,6 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
             <p className="mt-3 text-gray-700 leading-relaxed">{profile.bio}</p>
           )}
 
-          <div className="flex items-center mt-3 text-gray-500">
-            <Calendar className="w-4 h-4 mr-2" />
-            <span className="text-sm">
-              Joined {formatDate(profile.createdAt)}
-            </span>
-          </div>
-
           <div className="flex items-center gap-6 mt-4">
             <div className="flex items-center text-gray-700">
               <MessageCircle className="w-4 h-4 mr-1" />
@@ -121,11 +124,25 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
             </div>
             
             <div className="flex items-center text-gray-700">
-              <Heart className="w-4 h-4 mr-1" />
+            <Heart className="w-4 h-4 mr-1" />
               <span className="font-semibold">{formatNumber(profile.stats.followersCount)}</span>
               <span className="text-gray-500 ml-1">Followers</span>
-            </div> */}
+              </div> */}
           </div>
+          <div
+            className="text-center text-gray-600"
+            onClick={() => handleShowDetails()}
+          >
+            Show more info
+          </div>
+          {showDetails && (
+            <div className="flex items-center mt-3 text-gray-500">
+              <Calendar className="w-4 h-4 mr-2" />
+              <span className="text-sm">
+                Joined {formatDate(profile.createdAt)}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
