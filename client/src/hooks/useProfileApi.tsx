@@ -112,7 +112,7 @@ export const useDeleteProfileImage = () => {
 };
 
 
-export const useUpdateProfile = () =>{
+export const useEditProfile = () =>{
   const queryClient = useQueryClient();
   const {id: profileId} = useParams<{id: string}>();
   return useMutation({
