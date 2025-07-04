@@ -8,7 +8,10 @@ class PostService {
       author: userId,
     });
     await post.save();
-    return await Post.findById(post._id).populate('author', '_id username name imageUrl');
+    return await Post.findById(post._id).populate(
+      'author',
+      '_id username name imageUrl'
+    );
   }
 
   async updatePost(postId, postData, userId) {
@@ -137,6 +140,32 @@ class PostService {
       posts: slicedPosts,
       nextCursor,
     };
+  }
+
+  async getPopularPosts(limit=10, cursor, timeframe = 'today') {
+    const date = new Date();
+    if (timeframe === 'today') date.setDate(date.getDate() - 1);
+  else if (timeframe === 'week') date.setDate(date.getDate() - 7);
+  else if (timeframe === 'month') date.setMonth(date.getMonth() - 1);
+
+   const query = { createdAt: { $gte: date } };
+  if (cursor) {
+    query.createdAt.$lt = new Date(cursor);
+  }
+
+    const posts = await Post.find(query)
+      .sort({ likesCount: -1, createdAt: -1 })
+      .limit(limit+1)
+      .select('-__v')
+      .populate('author', '_id username name imageUrl');;
+
+        const hasNextPage = posts.length > limit;
+  const slicedPosts = hasNextPage ? posts.slice(0, limit) : posts;
+  const nextCursor = hasNextPage
+    ? slicedPosts[slicedPosts.length - 1].createdAt.toISOString()
+    : null;
+
+  return { posts: slicedPosts, nextCursor };
   }
 }
 

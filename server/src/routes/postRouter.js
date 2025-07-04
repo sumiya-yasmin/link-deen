@@ -8,6 +8,7 @@ postRouter.post('/', upload.single('imageFile'), postController.createPost);
 postRouter.get('/', postController.getAllPosts);
 postRouter.get('/user/:userId', postController.getUserPosts);
 postRouter.get('/recent', postController.getRecentPosts);
+postRouter.get('/popular', postController.getPopularPosts);
 
 postRouter.get('/:id',  postController.getPostById);
 postRouter.put('/:id', upload.single('imageFile'), postController.updatePost);

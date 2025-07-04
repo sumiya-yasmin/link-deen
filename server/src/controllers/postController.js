@@ -151,6 +151,21 @@ class PostController {
       res.status(500).json({ error: 'Failed to upload image' });
     }
   }
+
+  async getPopularPosts(req, res) {
+      const { cursor } = req.query;
+  const limit = parseInt(req.query.limit) || 10;
+  const timeframe = req.query.timeframe || 'today';
+
+    try {
+      const result = await postServices.getPopularPosts(limit,
+      cursor,timeframe);
+      res.status(200).json(result);
+    } catch (error) {
+      console.error('Popular posts error:', error.message);
+      res.status(500).json({ error: 'Failed to fetch popular posts.' });
+    }
+  }
 }
 
 export default new PostController();
