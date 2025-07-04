@@ -7,7 +7,36 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/AuthContext";
+import { useEditProfile, useGetProfileById } from "@/hooks/useProfileApi";
+import { useEffect, useState } from "react";
+import { Textarea } from "@/components/ui/textarea";
+import { Loader2 } from "lucide-react";
 function EditProfile() {
+
+  const {user} = useAuth();
+  const { data: profile, isPending } = useGetProfileById(user?._id!);
+  const editProfileMutation = useEditProfile();
+  const [name, setName] = useState('');
+   const [username, setUsername] = useState('');
+  const [bio, setBio] = useState('');
+
+  useEffect(()=>{
+    if(profile){
+      setName(profile.name || '');
+      setUsername(profile.username || '');
+      setBio(profile.bio || '');
+    }
+  }, [profile]);
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    editProfileMutation.mutate({ name, username, bio });
+  };
+
+  if (isPending) return <p>Loading profile...</p>;
+
+
   return (
      <>
       <div className="space-y-8 ">
@@ -19,29 +48,41 @@ function EditProfile() {
           <div className="grid gap-4">
             <div className="grid gap-2">
               <Label htmlFor="name">Display Name</Label>
-              <Input id="name" defaultValue="Sumiya Yasmin" />
+              <Input id="name" value={name} onChange={(e)=> setName(e.target.value)} />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="email">Email</Label>
-              <Input id="email" type="email" defaultValue="sumiya@example.com" />
+              <Input id="email" value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required />
             </div>
             <div className="grid gap-2">
               <Label htmlFor="bio">Bio</Label>
-              <Input id="bio" placeholder="Your Islamic journey..." />
+              <Textarea id="bio" value={bio}
+                  onChange={(e) => setBio(e.target.value)}
+                  rows={4}
+                  maxLength={300} />
+                   <p className="text-right text-sm text-muted-foreground">{bio.length}/300</p>
             </div>
           </div>
-          <Button>Update Profile</Button>
+          <div className="flex justify-end gap-3 pt-2">
+           <Button type="button" variant="ghost" >
+              Cancel
+            </Button>
+          <Button type="submit" onClick={handleUpdate} disabled={editProfileMutation.isPending} className="">
+              {editProfileMutation.isPending ? (
+                <>
+                 <span className="flex items-center gap-2">
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" /> Updating...
+                  </span>
+                </>
+              ) : (
+                "Update Profile"
+              )}
+            </Button>
+            </div>
         </CardContent>
       </Card>
-
-      {/* Password Change */}
-
-
-      {/* Theme & Logout */}
-     
-
-      {/* Danger Zone */}
-  
       </div>
       </>
   )
