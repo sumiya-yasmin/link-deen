@@ -14,6 +14,7 @@ import Theme from '@/pages/settings/Theme';
 import DangerZone from '@/pages/settings/DangerZone';
 import CreatePostPage from '@/pages/CreatePostPage';
 import PostPage from '@/pages/PostPage';
+import ExplorePage from '@/pages/ExplorePage';
 
 export default function AppRouter() {
   return (
@@ -42,6 +43,7 @@ export default function AppRouter() {
           </Route>
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/post/:id" element={<PostPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
