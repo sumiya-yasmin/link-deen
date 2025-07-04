@@ -43,3 +43,14 @@ export  const getPostById = async(postId: string) =>{
   const response= await API.get(`/post/${postId}`);
   return response.data;
 }
+
+export const getPopularPosts = async({ pageParam = null, timeframe = 'today' }) =>{
+  const res= await API.get('/post/popular', {
+    params: {
+      cursor: pageParam,
+      limit: 10,
+      timeframe,
+    },
+});
+  return res.data;
+}
