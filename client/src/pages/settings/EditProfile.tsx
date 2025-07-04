@@ -34,6 +34,15 @@ function EditProfile() {
     editProfileMutation.mutate({ name, username, bio });
   };
 
+  const handleCancel = () => {
+  if (profile) {
+    setName(profile.name || '');
+    setUsername(profile.username || '');
+    setBio(profile.bio || '');
+  }
+};
+
+
   if (isPending) return <p>Loading profile...</p>;
 
 
@@ -66,16 +75,14 @@ function EditProfile() {
             </div>
           </div>
           <div className="flex justify-end gap-3 pt-2">
-           <Button type="button" variant="ghost" >
+           <Button type="button" variant="ghost" onClick={handleCancel} className={`hover:bg-gray-700 rounded-md bg-dark-4`}>
               Cancel
             </Button>
-          <Button type="submit" onClick={handleUpdate} disabled={editProfileMutation.isPending} className="">
+          <Button type="submit" onClick={handleUpdate} disabled={editProfileMutation.isPending} className={`hover:bg-[#CD7F32] rounded-md bg-dark-4`}>
               {editProfileMutation.isPending ? (
-                <>
                  <span className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin mr-2" /> Updating...
                   </span>
-                </>
               ) : (
                 "Update Profile"
               )}
