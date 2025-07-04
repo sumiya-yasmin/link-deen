@@ -1,6 +1,7 @@
 import {
   createPost,
   deletePost,
+  getPopularPosts,
   getPostById,
   getRecentPosts,
   likePost,
@@ -142,4 +143,13 @@ export const useGetPostById = (postId:string, enabled = true) =>{
     queryFn: ()=> getPostById(postId),
     enabled: !!postId && enabled,
   })
+}
+
+export const useGetPopularPosts = (timeframe: 'today' | 'week' | 'month' = 'today')=>{
+  return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_POPULAR_POSTS, timeframe],
+    queryFn: ({ pageParam }) => getPopularPosts({ pageParam, timeframe }),
+        getNextPageParam: (lastPage) => lastPage.nextCursor,
+         initialPageParam: null,
+  });
 }
