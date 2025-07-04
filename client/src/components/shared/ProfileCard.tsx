@@ -130,7 +130,7 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
               </div> */}
           </div>
           <div
-            className="text-center text-gray-600"
+            className="text-center text-gray-600 cursor-pointer"
             onClick={() => handleShowDetails()}
           >
             Show more info

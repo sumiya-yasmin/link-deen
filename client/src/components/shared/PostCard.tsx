@@ -7,10 +7,11 @@ import PostStats from './PostStats';
 import { useDeletePost, useLikePost } from '@/hooks/usePostApis';
 import CommentsSection from './CommentsSection';
 import PostSettings from './PostSettings';
+import { MessageCircle } from 'lucide-react';
 
 type PostCardProps = {
   post: Post;
-  mode?: "preview" | "details";
+  mode?: "preview" | "details" | "minimal";
 };
 
 const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
@@ -31,7 +32,44 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
       likePost(post._id);
     };
     
-    const wrapperClass = mode==="details"? "w-full max-w-3xl px-2 md:px-0" : "bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm"
+    const wrapperClass = mode==="details"? "w-full max-w-3xl px-2 md:px-0" : mode === 'minimal'
+        ? 'w-full max-w-xs' : "bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm"
+
+        
+    if (mode === 'minimal') {
+      return (
+        <Link
+          to={`/post/${post._id}`}
+          ref={ref}
+          className={`${wrapperClass} group hover:shadow-lg transition-shadow duration-200 rounded-md overflow-hidden`}
+        >
+          {post.image && (
+            <img
+              src={post.image}
+              alt="Post"
+              className="w-full h-[250px] object-cover rounded-md"
+            />
+          )}
+          {!post.image && (
+            <div className='w-full h-[250px] p-10'>{post?.caption}</div>
+          )}
+          <div className="px-3 py-2 flex items-center justify-between bg-dark-3">
+            <div className="flex items-center gap-2">
+              <img
+                src={post?.author?.imageUrl || '/assets/profile-placeholder.png'}
+                alt="avatar"
+                className="h-6 w-6 rounded-full"
+              />
+              <p className="text-sm text-light-1 truncate">{post.author.username}</p>
+            </div>
+            <div className="flex gap-3 text-muted-foreground text-xs">
+              <span>❤️ {likeCount}</span>
+              <span className='flex gap-1'> <MessageCircle className='h-3 w-3'/> {commentCount}</span>
+            </div>
+          </div>
+        </Link>
+      );
+    }
     return (
       <div
         ref={ref}
