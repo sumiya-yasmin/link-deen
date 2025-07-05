@@ -4,6 +4,7 @@ import {
   getPopularPosts,
   getPostById,
   getRecentPosts,
+  getSearchedPosts,
   likePost,
   updatePost,
 } from '@/api/posts';
@@ -152,4 +153,14 @@ export const useGetPopularPosts = (timeframe: 'today' | 'week' | 'month' = 'toda
         getNextPageParam: (lastPage) => lastPage.nextCursor,
          initialPageParam: null,
   });
+}
+
+export const useSearchPosts = (searchText: string)=>{
+   return useInfiniteQuery({
+    queryKey: [QUERY_KEYS.GET_SEARCHED_POSTS, searchText],
+    queryFn: ({pageParam})=> getSearchedPosts({query: searchText, pageParam}),
+    getNextPageParam: (lastPage) => lastPage.nextCursor,
+    enabled: !!searchText.trim(),
+    initialPageParam: null,
+   })
 }
