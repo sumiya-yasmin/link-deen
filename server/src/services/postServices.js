@@ -142,56 +142,88 @@ class PostService {
     };
   }
 
-  async getPopularPosts(limit=10, cursor, timeframe = 'today') {
+  async getPopularPosts(limit = 10, cursor, timeframe = 'today') {
     const date = new Date();
     if (timeframe === 'today') date.setDate(date.getDate() - 1);
-  else if (timeframe === 'week') date.setDate(date.getDate() - 7);
-  else if (timeframe === 'month') date.setMonth(date.getMonth() - 1);
+    else if (timeframe === 'week') date.setDate(date.getDate() - 7);
+    else if (timeframe === 'month') date.setMonth(date.getMonth() - 1);
 
-   const matchCondition = {
-    createdAt: { $gte: date },
-  };
+    const matchCondition = {
+      createdAt: { $gte: date },
+    };
 
-  
-  if (cursor) {
-    const [likesCountCursor, createdAtCursor] = cursor.split('|');
-    matchCondition.$or = [
-      { likesCount: { $lt: parseInt(likesCountCursor) } },
+    if (cursor) {
+      const [likesCountCursor, createdAtCursor] = cursor.split('|');
+      matchCondition.$or = [
+        { likesCount: { $lt: parseInt(likesCountCursor) } },
+        {
+          likesCount: parseInt(likesCountCursor),
+          createdAt: { $lt: new Date(createdAtCursor) },
+        },
+      ];
+    }
+
+    const aggregatedPosts = await Post.aggregate([
       {
-        likesCount: parseInt(likesCountCursor),
-        createdAt: { $lt: new Date(createdAtCursor) },
+        $addFields: {
+          likesCount: { $size: '$likes' },
+          commentsCount: { $size: '$comments' },
+        },
       },
-    ];
+      { $match: matchCondition },
+      { $sort: { likesCount: -1, createdAt: -1 } },
+      { $limit: limit + 1 },
+    ]);
+
+    const populatedPosts = await Post.populate(aggregatedPosts, {
+      path: 'author',
+      select: '_id name username imageUrl',
+    });
+
+    const hasNextPage = populatedPosts.length > limit;
+    const slicedPosts = hasNextPage
+      ? populatedPosts.slice(0, limit)
+      : populatedPosts;
+
+    const nextCursor = hasNextPage
+      ? `${slicedPosts[slicedPosts.length - 1].likesCount}|${slicedPosts[
+          slicedPosts.length - 1
+        ].createdAt.toISOString()}`
+      : null;
+
+    return { posts: slicedPosts, nextCursor };
   }
 
-  
-  const aggregatedPosts = await Post.aggregate([
-    {
-      $addFields: {
-        likesCount: { $size: '$likes' },
-        commentsCount: { $size: '$comments' },
-      },
-    },
-    { $match: matchCondition },
-    { $sort: { likesCount: -1, createdAt: -1 } },
-    { $limit: limit + 1 },
-  ]);
+  async getSearchedPosts(query, limit = 10, cursor) {
+    if (!query || !query.trim()) {
+      throw new Error('Search query is required');
+    }
 
-  
-  const populatedPosts = await Post.populate(aggregatedPosts, {
-    path: 'author',
-    select: '_id name username imageUrl',
-  });
+    const searchRegex = new RegExp(query, 'i');
+    const matchFilter = {
+      $or: [
+        { caption: { $regex: searchRegex } },
+        { location: { $regex: searchRegex } },
+        { tags: { $in: [searchRegex] } },
+      ],
+    };
 
-  const hasNextPage = populatedPosts.length > limit;
-  const slicedPosts = hasNextPage ? populatedPosts.slice(0, limit) : populatedPosts;
+    if (cursor) {
+      matchFilter.createdAt = { $lt: new Date(cursor) };
+    }
 
-  
-  const nextCursor = hasNextPage
-    ? `${slicedPosts[slicedPosts.length - 1].likesCount}|${slicedPosts[slicedPosts.length - 1].createdAt.toISOString()}`
-    : null;
+    const posts = await Post.find(matchFilter)
+      .sort({ createdAt: -1 })
+      .limit(limit + 1)
+      .populate('author', '_id name username imageUrl');
 
-  return { posts: slicedPosts, nextCursor };
+      const hasNextPage = posts.length> limit;
+      const slicedPosts = hasNextPage? posts.slice(0, limit) : posts;
+      const nextCursor = hasNextPage? slicedPosts[slicedPosts.length -1].createdAt.toISOString() : null;
+      return{
+        posts: slicedPosts,
+        nextCursor,
+      }
   }
 }
 
