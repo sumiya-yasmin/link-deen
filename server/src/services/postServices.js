@@ -148,21 +148,47 @@ class PostService {
   else if (timeframe === 'week') date.setDate(date.getDate() - 7);
   else if (timeframe === 'month') date.setMonth(date.getMonth() - 1);
 
-   const query = { createdAt: { $gte: date } };
+   const matchCondition = {
+    createdAt: { $gte: date },
+  };
+
+  
   if (cursor) {
-    query.createdAt.$lt = new Date(cursor);
+    const [likesCountCursor, createdAtCursor] = cursor.split('|');
+    matchCondition.$or = [
+      { likesCount: { $lt: parseInt(likesCountCursor) } },
+      {
+        likesCount: parseInt(likesCountCursor),
+        createdAt: { $lt: new Date(createdAtCursor) },
+      },
+    ];
   }
 
-    const posts = await Post.find(query)
-      .sort({ likesCount: -1, createdAt: -1 })
-      .limit(limit+1)
-      .select('-__v')
-      .populate('author', '_id username name imageUrl');;
+  
+  const aggregatedPosts = await Post.aggregate([
+    {
+      $addFields: {
+        likesCount: { $size: '$likes' },
+        commentsCount: { $size: '$comments' },
+      },
+    },
+    { $match: matchCondition },
+    { $sort: { likesCount: -1, createdAt: -1 } },
+    { $limit: limit + 1 },
+  ]);
 
-        const hasNextPage = posts.length > limit;
-  const slicedPosts = hasNextPage ? posts.slice(0, limit) : posts;
+  
+  const populatedPosts = await Post.populate(aggregatedPosts, {
+    path: 'author',
+    select: '_id name username imageUrl',
+  });
+
+  const hasNextPage = populatedPosts.length > limit;
+  const slicedPosts = hasNextPage ? populatedPosts.slice(0, limit) : populatedPosts;
+
+  
   const nextCursor = hasNextPage
-    ? slicedPosts[slicedPosts.length - 1].createdAt.toISOString()
+    ? `${slicedPosts[slicedPosts.length - 1].likesCount}|${slicedPosts[slicedPosts.length - 1].createdAt.toISOString()}`
     : null;
 
   return { posts: slicedPosts, nextCursor };
