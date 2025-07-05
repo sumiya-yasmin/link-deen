@@ -5,6 +5,7 @@ export const QUERY_KEYS = {
   GET_USER_POSTS: 'get-user-posts',
   GET_RECENT_POSTS: 'get-recent-posts',
   GET_POPULAR_POSTS: 'get-popular-posts',
+  GET_SEARCHED_POSTS: 'get-searched-posts',
   
   GET_COMMENTS: 'getComments',
 };
