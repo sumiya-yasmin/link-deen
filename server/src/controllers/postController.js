@@ -153,17 +153,34 @@ class PostController {
   }
 
   async getPopularPosts(req, res) {
-      const { cursor } = req.query;
-  const limit = parseInt(req.query.limit) || 10;
-  const timeframe = req.query.timeframe || 'today';
+    const { cursor } = req.query;
+    const limit = parseInt(req.query.limit) || 10;
+    const timeframe = req.query.timeframe || 'today';
 
     try {
-      const result = await postServices.getPopularPosts(limit,
-      cursor,timeframe);
+      const result = await postServices.getPopularPosts(
+        limit,
+        cursor,
+        timeframe
+      );
       res.status(200).json(result);
     } catch (error) {
       console.error('Popular posts error:', error.message);
       res.status(500).json({ error: 'Failed to fetch popular posts.' });
+    }
+  }
+
+  async getSearchedPosts(req, res) {
+    try {
+      const { query, limit = 10, cursor } = req.query;
+      const posts = await postServices.getSearchedPosts(
+        query,
+        parseInt(limit),
+        cursor
+      );
+      res.status(200).json(posts);
+    } catch (error) {
+      next(error);
     }
   }
 }
