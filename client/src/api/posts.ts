@@ -54,3 +54,14 @@ export const getPopularPosts = async({ pageParam = null, timeframe = 'today' }) 
 });
   return res.data;
 }
+
+export const getSearchedPosts = async({query, pageParam =null}:{query: string, pageParam?: string | null}) =>{
+  const response = await API.get('/post/search', {
+    params:{
+      query,
+      cursor: pageParam,
+      limit: 10,
+    },
+  });
+  return response.data;
+}
