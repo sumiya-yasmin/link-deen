@@ -19,10 +19,12 @@ export interface UserProfile extends User {
 
 export interface Post {
   _id: string;
+  type: 'post' | 'hikmah';
   caption: string;
   image: string;
   location: string;
   tags: string[];
+  source?: string;
   author: User;
   createdAt: string;
   likes: string[];
