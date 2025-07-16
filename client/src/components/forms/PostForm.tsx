@@ -14,17 +14,17 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '../ui/textarea';
 import FileUploader from '../shared/FileUploader';
 import { postFormSchema } from '@/lib/validation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useCreatePost, useUpdatePost } from '@/hooks/usePostApis';
 import { Post } from '@/types';
-
 
 type PostFormProps = {
   post?: Post;
   onCancel: () => void;
+  type: 'post' | 'hikmah';
 };
 
-function PostForm({ post, onCancel }: PostFormProps) {
+function PostForm({ post, onCancel, type }: PostFormProps) {
   const [clearFilePreview, setClearFilePreview] = useState<() => void>(
     () => () => {}
   );
@@ -35,12 +35,38 @@ function PostForm({ post, onCancel }: PostFormProps) {
 
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
-    defaultValues: {
+    defaultValues: type ==='post'? {
+        type: 'post',
       caption: post ? post?.caption : '',
       location: post ? post?.location : '',
       tags: post ? post.tags.join(',') : '',
+    }:{
+      type: 'hikmah',
+        caption: post?.caption || '',
+        tags: (post?.tags?.[0] as any) || 'dua',
+        source: post?.source || '',
     },
   });
+
+  useEffect(() => {
+  form.reset(
+    type === 'post'
+      ? {
+          type: 'post',
+          caption: post?.caption || '',
+          location: post?.location || '',
+          tags: post?.tags.join(',') || '',
+        }
+      : {
+          type: 'hikmah',
+          caption: post?.caption || '',
+          tags: (post?.tags?.[0] as 'ayah' | 'hadith' | 'dua' | 'reflection') || 'dua',
+          source: post?.source || '',
+        }
+  );
+}, [type]);
+
+  const selectedTag = form.watch('tags') ?? ''
 
   const { mutate: createPost, isPending: isCreating } = useCreatePost();
   const { mutate: updatePost, isPending: isUpdating } = useUpdatePost();
@@ -48,16 +74,25 @@ function PostForm({ post, onCancel }: PostFormProps) {
   async function onSubmit(data: z.infer<typeof postFormSchema>) {
     // setIsUploading(true);
     const formData = new FormData();
-    Object.keys(data).forEach((key) => {
-      formData.append(key, data[key as keyof typeof data] as string);
-    });
+    formData.append('type', data.type);
+    formData.append('caption', data.caption);
+
+  if (data.type === 'post') {
+    formData.append('location', data.location || '');
+    formData.append('tags', data.tags || '');
+  } else {
+    formData.append('tags', data.tags);
+    if (data.source) {
+      formData.append('source', data.source);
+    }
+  }
 
     if (imageFile) formData.append('imageFile', imageFile);
     if (removeImage) formData.append('removeImage', 'true');
 
     if (post) {
       updatePost({ postId: post._id, formData });
-      onCancel()
+      onCancel();
     } else {
       createPost(formData);
     }
@@ -73,13 +108,14 @@ function PostForm({ post, onCancel }: PostFormProps) {
   };
 
   const handleCancel = () => {
-  form.reset();
-  setPreview(null);
-  setImageFile(null);
-  setRemoveImage(false);
-  clearFilePreview();
-  onCancel();
-};
+    form.reset();
+    setPreview(null);
+    setImageFile(null);
+    setRemoveImage(false);
+    clearFilePreview();
+    onCancel();
+  };
+  
   return (
     <>
       <Form {...form}>
@@ -112,39 +148,94 @@ function PostForm({ post, onCancel }: PostFormProps) {
               setClearFilePreview={setClearFilePreview}
             />
           </FormItem>
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">Add Location</FormLabel>
-                <FormControl>
-                  <Input type="text" className="" {...field} />
-                </FormControl>
-                <FormMessage className="text-red" />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="tags"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-white">
-                  Add Tags(separated by comma",")
-                </FormLabel>
-                <FormControl>
-                  <Input
-                    type="text"
-                    className=""
-                    placeholder="React, Js, NextJs "
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage className="text-red" />
-              </FormItem>
-            )}
-          />
+          {type === 'post' && (
+            <>
+              <FormField
+                control={form.control}
+                name="location"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">Add Location</FormLabel>
+                    <FormControl>
+                      <Input type="text" className="" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-red" />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="tags"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">
+                      Add Tags(separated by comma",")
+                    </FormLabel>
+                    <FormControl>
+                      <Input
+                        type="text"
+                        className=""
+                        placeholder="React, Js, NextJs "
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red" />
+                  </FormItem>
+                )}
+              />
+            </>
+          )}
+          {type === 'hikmah' && (
+            <>
+              {/* Dropdown for tag */}
+              <FormField
+                control={form.control}
+                name="tags" // reuse tags field
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-white">
+                      Select Category
+                    </FormLabel>
+                    <FormControl>
+                      <select
+                        value={field.value}
+                        onChange={(e) => field.onChange(e.target.value)}
+                        className="bg-dark-3 text-white px-4 py-2 rounded-md border border-dark-4"
+                      >
+                        <option value="dua">Dua</option>
+                        <option value="ayah">Ayah</option>
+                        <option value="hadith">Hadith</option>
+                        <option value="reflection">Reflection</option>
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              {/* Source field, only if tag is ayah or hadith */}
+              {['ayah', 'hadith'].includes(selectedTag) && (
+                <FormField
+                  control={form.control}
+                  name="source"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="text-white">Source</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Surah Al-Baqarah 2:286 or Sahih Bukhari 1:2"
+                          className="bg-dark-3 text-white"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
+            </>
+          )}
+
           <div className="flex gap-4 items-center justify-end">
             <Button
               type="button"
