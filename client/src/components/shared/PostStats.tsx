@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Bookmark, Share2 } from 'lucide-react';
+import { Heart, MessageCircle, Bookmark, Share2, Moon } from 'lucide-react';
 
 type PostStatsProps = {
   likes?: number;
@@ -10,6 +10,7 @@ type PostStatsProps = {
   onShare?: () => void;
   onToggleComments?: () => void;
   showComments?: boolean;
+    variant?: 'default' | 'hikmah';
 };
 
 const PostStats = ({
@@ -21,6 +22,7 @@ const PostStats = ({
   onSave,
   onShare,
   onToggleComments,
+   variant = 'default',
 }: //  showComments = true,
 PostStatsProps) => {
   return (
@@ -30,11 +32,20 @@ PostStatsProps) => {
           onClick={onLike}
           className="flex items-center gap-2 hover:bg-dark-3 md:px-8 md:py-4 rounded-2xl group"
         >
+          {variant === 'default' ? (
           <Heart
             className={`w-6 h-6 cursor-pointer group-hover:text-[#CD7F32] ${
               isLiked ? 'fill-[#CD7F32] text-[#CD7F32]' : ''
             }`}
           />
+          ):(
+            <Moon 
+             className={`w-6 h-6 cursor-pointer group-hover:text-[#CD7F32] ${
+              isLiked ? 'fill-yellow-500 text-yellow-500' : ''
+            }`}
+            />
+          )
+         }
           <span className="text-[14px] font-medium leading-[140%] lg:text-[16px]">
             {likes}
           </span>
@@ -42,6 +53,9 @@ PostStatsProps) => {
       </div>
       <div className="flex items-center gap-2 group hover:bg-dark-3 md:px-8 md:py-4 rounded-2xl" onClick={onToggleComments}>
         <MessageCircle className="w-6 h-6 group-hover:text-[#CD7F32]" />
+        {variant === 'hikmah' && (
+          <span>Reflections</span>
+        )}
         <span>{comments}</span>
       </div>
       <div className="flex gap-8">
