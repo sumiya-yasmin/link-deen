@@ -23,10 +23,19 @@ export const signinFormSchema = z.object({
     .min(8, { message: 'Password must be at least 6 characters' }),
 });
 
-export const postFormSchema = z.object({
-  caption: z.string().max(200, {
-    message: 'Caption cant be more than 200 characters.',
+export const postFormSchema = z.discriminatedUnion('type' ,[
+  z.object({
+    type: z.literal('post'),
+    caption: z.string().max(2200, {
+      message: 'Caption cant be more than 2200 characters.',
+    }),
+    location: z.string().max(100),
+    tags: z.string(),
   }),
-  location: z.string().max(100),
-  tags: z.string(),
-});
+  z.object({
+    type: z.literal('hikmah'),
+    caption: z.string().min(1),
+    tags: z.enum(['ayah', 'hadith', 'dua', 'reflection']),
+    source: z.string().optional(),
+  }),
+]);
