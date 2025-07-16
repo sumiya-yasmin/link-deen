@@ -6,6 +6,7 @@ const PostSchema = new mongoose.Schema(
     image: { type: String },
     location: { type: String, maxlength: 100, trim: true },
     tags: [{ type: String, trim: true }],
+    source: { type: String, trim: true },
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User',
@@ -35,8 +36,12 @@ const PostSchema = new mongoose.Schema(
       }
     )
     ],
+    type: {
+      type: String,
+      enum: ['post', 'hikmah'],
+      default: 'post',
   },
-
+},
   { timestamps: true }
 );
 
