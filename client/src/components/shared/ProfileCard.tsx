@@ -7,7 +7,7 @@ import ProfileImageUploader from './ProfileImageUploader';
 import EditProfileModal from './EditProfile';
 import { useState } from 'react';
 
-export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
+export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { totalPosts: number, postCount: number , hikmahCount: number}) => {
   const [editOpen, setEditOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const { id } = useParams<{ id: string }>();
@@ -108,13 +108,36 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
             <p className="mt-3 text-gray-700 leading-relaxed">{profile.bio}</p>
           )}
 
+          <div
+            className="text-center text-gray-600 cursor-pointer"
+            onClick={() => handleShowDetails()}
+          >
+            Show more info
+          </div>
+          {showDetails && (
+            <>
           <div className="flex items-center gap-6 mt-4">
             <div className="flex items-center text-gray-700">
               <MessageCircle className="w-4 h-4 mr-1" />
               <span className="font-semibold">
                 {formatNumber(totalPosts ?? 0)}
               </span>
+              <span className="text-gray-500 ml-1">Contents</span>
+            </div>
+
+             <div className="flex items-center text-gray-700">
+              <MessageCircle className="w-4 h-4 mr-1" />
+              <span className="font-semibold">
+                {formatNumber(postCount ?? 0)}
+              </span>
               <span className="text-gray-500 ml-1">Posts</span>
+            </div>
+             <div className="flex items-center text-gray-700">
+              <MessageCircle className="w-4 h-4 mr-1" />
+              <span className="font-semibold">
+                {formatNumber(hikmahCount ?? 0)}
+              </span>
+              <span className="text-gray-500 ml-1">Hikmahs</span>
             </div>
 
             {/* <div className="flex items-center text-gray-700">
@@ -129,19 +152,13 @@ export const ProfileCard = ({ totalPosts = 0 }: { totalPosts: number }) => {
               <span className="text-gray-500 ml-1">Followers</span>
               </div> */}
           </div>
-          <div
-            className="text-center text-gray-600 cursor-pointer"
-            onClick={() => handleShowDetails()}
-          >
-            Show more info
-          </div>
-          {showDetails && (
             <div className="flex items-center mt-3 text-gray-500">
               <Calendar className="w-4 h-4 mr-2" />
               <span className="text-sm">
                 Joined {formatDate(profile.createdAt)}
               </span>
             </div>
+            </>
           )}
         </div>
       </div>
