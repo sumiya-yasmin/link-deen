@@ -5,7 +5,7 @@ class PostController {
   async createPost(req, res) {
     try {
       const userId = req._id;
-      const { caption, location, tags } = req.body;
+      const { caption, location, tags, type, source } = req.body;
       const tagsArray = tags?.split(',').map((tag) => tag.trim()) || [];
 
       let imageUrl = '';
@@ -15,8 +15,10 @@ class PostController {
 
       const postData = {
         caption,
-        location,
+        type: type || 'post',
         tags: tagsArray,
+        location: type === 'post' ? location : undefined,
+        source: type === 'hikmah' ? source : undefined,
         image: imageUrl,
       };
       const post = await postServices.createPost(postData, userId);
