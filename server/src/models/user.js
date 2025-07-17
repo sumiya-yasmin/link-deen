@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import { Schema } from 'mongoose';
+
 
 const userSchema = new mongoose.Schema(
   {
@@ -11,6 +13,8 @@ const userSchema = new mongoose.Schema(
     imageUrl: { type: String, default: '' },
     coverImageUrl: { type: String, default: '' },
     bio: { type: String, default: '' , maxlength: 300},
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
   },
   { timestamps: true }
 );
