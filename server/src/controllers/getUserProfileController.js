@@ -1,9 +1,10 @@
 import User from '../models/user.js';
 import {
+  followUserService,
   getAuthenticatedUserProfileById,
   getUserProfileById,
+  unfollowUserService,
   updateUserProfileService,
-
 } from '../services/getUserProfileServices.js';
 import uploadService from '../services/uploadService.js';
 
@@ -118,7 +119,7 @@ export const updateUserProfile = async (req, res) => {
       .json({ error: 'Bio must be a string up to 300 characters.' });
   }
 
-   if (name && typeof name !== 'string') {
+  if (name && typeof name !== 'string') {
     return res.status(400).json({ error: 'Name must be a string.' });
   }
 
@@ -127,7 +128,7 @@ export const updateUserProfile = async (req, res) => {
   }
 
   try {
-    const profile = await updateUserProfileService(id, {name, username, bio});
+    const profile = await updateUserProfileService(id, { name, username, bio });
 
     if (!profile) {
       return res.status(404).json({ error: 'User not found.' });
@@ -141,4 +142,32 @@ export const updateUserProfile = async (req, res) => {
     console.error('Update profile error:', error.message);
     res.status(500).json({ error: 'Server error updating profile.' });
   }
+};
+
+export const followUserController = async (req, res) => {
+  const currentUserId = req.user._id;
+  const { userId: targetUserId } = req.params;
+
+ const { currentUser, targetUser } = await followUserService(currentUserId, targetUserId);
+  res
+    .status(200)
+    .json({
+      message: 'Followed successfully',
+      followersCount: targetUser.followers.length,
+      followingCount: currentUser.following.length,
+    });
+};
+
+export const unfollowUserController = async (req, res) => {
+  const currentUserId = req.user._id;
+  const { userId: targetUserId } = req.params;
+
+  const { currentUser, targetUser } = await unfollowUserService(currentUserId, targetUserId);
+  res
+    .status(200)
+    .json({
+      message: 'Unfollowed successfully',
+      followersCount: targetUser.followers.length,
+      followingCount: currentUser.following.length,
+    });
 };
