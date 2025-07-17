@@ -1,8 +1,10 @@
 import express from 'express';
 import {
   deleteUserImage,
+  followUserController,
   getAuthenticatedUserProfile,
   getUserProfile,
+  unfollowUserController,
   updateUserProfile,
   uploadUserImage,
 } from '../controllers/getUserProfileController.js';
@@ -21,3 +23,5 @@ export default profileRouter;
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);
+profileRouter.put('/:userId/follow', authenticate, followUserController);
+profileRouter.put('/:userId/unfollow', authenticate, unfollowUserController);
