@@ -60,3 +60,13 @@ export const updateProfile = async(data : {bio?: string; name?: string; username
   const res = await API.put('/profile', data);
   return res.data;
 }
+
+export const followProfile = async(targetUserId: string)=>{
+  const res = await API.put(`/${targetUserId}/follow`);
+  return res.data;
+}
+
+export const unfollowProfile = async(targetUserId: string)=>{
+  const res = await API.put(`/${targetUserId}/unfollow`);
+  return res.data;
+}
