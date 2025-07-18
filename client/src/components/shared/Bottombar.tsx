@@ -16,7 +16,7 @@ const bottomNavItems = [
   // { icon: PlusSquare, label: 'Create Post', path: '/create' },
   { icon: Telescope, label: 'Explore', path: '/explore' },
   // { icon: Users, label: 'Friends', path: '/people' },
-  { icon: Files, label: 'Dua Board', path: '/blogs' },
+  { icon: Files, label: 'Hikmah Board', path: '/hikmah-board' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
 
