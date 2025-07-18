@@ -15,6 +15,7 @@ import DangerZone from '@/pages/settings/DangerZone';
 import CreatePostPage from '@/pages/CreatePostPage';
 import PostPage from '@/pages/PostPage';
 import ExplorePage from '@/pages/ExplorePage';
+import HikmahPage from '@/pages/HikmahPage';
 
 export default function AppRouter() {
   return (
@@ -44,6 +45,7 @@ export default function AppRouter() {
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/explore" element={<ExplorePage />} />
+           <Route path="/hikmah-board" element={<HikmahPage />} />
         </Route>
       </Routes>
     </BrowserRouter>
