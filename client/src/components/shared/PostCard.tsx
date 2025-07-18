@@ -86,7 +86,6 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
           ref={ref}
           className={`${wrapperClass} bg-gradient-to-br from-[#1A202C] to-[#2D3748] text-[#E2E8F0]`}
         >
-          <Link to={`/post/${post._id}`}>
             <div className="flex items-start justify-between mb-4 p-4">
               <div className="flex flex-col items-start">
                 <span className="inline-block px-3 py-1 text-xs font-semibold bg-[#8B5E3C]/20 text-[#8B5E3C] rounded-full mb-2">
@@ -104,6 +103,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
               )}
             </div>
 
+          <Link to={`/post/${post._id}`}>
             <div className="text-center my-6 p-4">
               <p className="italic font-serif text-xl leading-relaxed text-[#F7FAFC]">
                 “{post.caption}”
@@ -121,6 +121,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
                 />
               )}
             </div>
+              </Link>
             <div className="flex items-center gap-3 justify-end mt-10 p-4">
               <div className="flex flex-col">
                 <Link to={`/profile/${post.author._id}`}>
@@ -138,7 +139,6 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
             />
           </Link> */}
             </div>
-          </Link>
           <div className="p-4 mt-4">
             <PostStats
               likes={likeCount}
