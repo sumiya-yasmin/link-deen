@@ -1,3 +1,4 @@
+import { followProfile, unfollowProfile } from '@/api/profile';
 import {
   deleteProfileImage,
   getProfileById,
@@ -133,3 +134,44 @@ export const useEditProfile = () =>{
     },
   })
 }
+
+
+export const useFollowProfile = (targetUserId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => followProfile(targetUserId),
+    onSuccess: (data) => {
+      toast.success(data.message || 'Followed successfully');
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+      });
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Something went wrong. Try again.'
+      );
+    },
+  });
+};
+
+
+
+export const useUnfollowProfile = (targetUserId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: () => unfollowProfile(targetUserId),
+    onSuccess: (data) => {
+      toast.success(data.message || 'Followed successfully');
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+      });
+    },
+    onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Something went wrong. Try again.'
+      );
+    },
+  });
+};
