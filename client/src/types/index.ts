@@ -15,6 +15,7 @@ export interface UserProfile extends User {
     followersCount: number;
     followingCount: number;
     followers: string[];
+    following: string[];
   };
 }
 
