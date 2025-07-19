@@ -5,7 +5,7 @@ import {
   useUnfollowProfile,
 } from '@/hooks/useProfileApi';
 import { formatDate, formatNumber } from '@/lib/utils';
-import { Calendar, MessageCircle, User } from 'lucide-react';
+import { Calendar, Heart, MessageCircle, User, Users } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import ProfileImageUploader from './ProfileImageUploader';
 import EditProfileModal from './EditProfile';
@@ -182,41 +182,48 @@ export const ProfileCard = ({
           </div>
           {showDetails && (
             <>
-              <div className="flex items-center gap-6 mt-4">
-                <div className="flex items-center text-gray-700">
-                  <MessageCircle className="w-4 h-4 mr-1" />
-                  <span className="font-semibold">
-                    {formatNumber(totalPosts ?? 0)}
-                  </span>
-                  <span className="text-gray-500 ml-1">Contents</span>
-                </div>
+              <div className="flex flex-col gap-4 mt-4">
+                <div className="flex gap-6">
+                  <div className="flex items-center text-gray-700">
+                    <MessageCircle className="w-4 h-4 mr-1" />
+                    <span className="font-semibold">
+                      {formatNumber(totalPosts ?? 0)}
+                    </span>
+                    <span className="text-gray-500 ml-1">Contents</span>
+                  </div>
 
-                <div className="flex items-center text-gray-700">
-                  <MessageCircle className="w-4 h-4 mr-1" />
-                  <span className="font-semibold">
-                    {formatNumber(postCount ?? 0)}
-                  </span>
-                  <span className="text-gray-500 ml-1">Posts</span>
+                  <div className="flex items-center text-gray-700">
+                    <MessageCircle className="w-4 h-4 mr-1" />
+                    <span className="font-semibold">
+                      {formatNumber(postCount ?? 0)}
+                    </span>
+                    <span className="text-gray-500 ml-1">Posts</span>
+                  </div>
+                  <div className="flex items-center text-gray-700">
+                    <MessageCircle className="w-4 h-4 mr-1" />
+                    <span className="font-semibold">
+                      {formatNumber(hikmahCount ?? 0)}
+                    </span>
+                    <span className="text-gray-500 ml-1">Hikmahs</span>
+                  </div>
                 </div>
-                <div className="flex items-center text-gray-700">
-                  <MessageCircle className="w-4 h-4 mr-1" />
-                  <span className="font-semibold">
-                    {formatNumber(hikmahCount ?? 0)}
-                  </span>
-                  <span className="text-gray-500 ml-1">Hikmahs</span>
-                </div>
+                <div className="flex gap-6">
+                  <div className="flex items-center text-gray-700">
+                    <Users className="w-4 h-4 mr-1" />
+                    <span className="font-semibold">
+                      {formatNumber(profile.stats.followingCount)}
+                    </span>
+                    <span className="text-gray-500 ml-1">Following</span>
+                  </div>
 
-                {/* <div className="flex items-center text-gray-700">
-              <Users className="w-4 h-4 mr-1" />
-              <span className="font-semibold">{formatNumber(profile.stats.followingCount)}</span>
-              <span className="text-gray-500 ml-1">Following</span>
-            </div>
-            
-            <div className="flex items-center text-gray-700">
-            <Heart className="w-4 h-4 mr-1" />
-              <span className="font-semibold">{formatNumber(profile.stats.followersCount)}</span>
-              <span className="text-gray-500 ml-1">Followers</span>
-              </div> */}
+                  <div className="flex items-center text-gray-700">
+                    <Heart className="w-4 h-4 mr-1" />
+                    <span className="font-semibold">
+                      {formatNumber(profile.stats.followersCount)}
+                    </span>
+                    <span className="text-gray-500 ml-1">Followers</span>
+                  </div>
+                </div>
               </div>
               <div className="flex items-center mt-3 text-gray-500">
                 <Calendar className="w-4 h-4 mr-2" />
