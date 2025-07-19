@@ -143,6 +143,23 @@ export const useFollowProfile = (targetUserId: string) => {
     mutationFn: () => followProfile(targetUserId),
     onSuccess: (data) => {
       toast.success(data.message || 'Followed successfully');
+      queryClient.setQueryData(
+        [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          
+          return {
+            ...oldData,
+            stats: {
+              ...oldData.stats,
+              followersCount: data.followersCount,
+              followingCount: data.followingCount,
+              followers: data.followers, 
+              following: data.following, 
+            }
+          };
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
       });
@@ -164,6 +181,23 @@ export const useUnfollowProfile = (targetUserId: string) => {
     mutationFn: () => unfollowProfile(targetUserId),
     onSuccess: (data) => {
       toast.success(data.message || 'Followed successfully');
+       queryClient.setQueryData(
+        [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+        (oldData: any) => {
+          if (!oldData) return oldData;
+          
+          return {
+            ...oldData,
+            stats: {
+              ...oldData.stats,
+              followersCount: data.followersCount,
+              followingCount: data.followingCount,
+              followers: data.followers,
+              following: data.following, 
+            }
+          };
+        }
+      );
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
       });
