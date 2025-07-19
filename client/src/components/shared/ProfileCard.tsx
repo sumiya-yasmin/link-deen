@@ -1,5 +1,9 @@
 import { useAuth } from '@/context/AuthContext';
-import { useGetProfileById } from '@/hooks/useProfileApi';
+import {
+  useFollowProfile,
+  useGetProfileById,
+  useUnfollowProfile,
+} from '@/hooks/useProfileApi';
 import { formatDate, formatNumber } from '@/lib/utils';
 import { Calendar, MessageCircle, User } from 'lucide-react';
 import { useParams } from 'react-router-dom';
@@ -7,12 +11,23 @@ import ProfileImageUploader from './ProfileImageUploader';
 import EditProfileModal from './EditProfile';
 import { useState } from 'react';
 
-export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { totalPosts: number, postCount: number , hikmahCount: number}) => {
+export const ProfileCard = ({
+  totalPosts = 0,
+  postCount = 0,
+  hikmahCount = 0,
+}: {
+  totalPosts: number;
+  postCount: number;
+  hikmahCount: number;
+}) => {
   const [editOpen, setEditOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
+  const [showUnfollowConfirm, setShowUnfollowConfirm] = useState(false);
   const { id } = useParams<{ id: string }>();
   const { data: profile, isPending: userLoading } = useGetProfileById(id!);
   const { user } = useAuth();
+  const followMutation = useFollowProfile(profile?._id || '');
+  const unfollowMutation = useUnfollowProfile(profile?._id || '');
 
   if (userLoading) return <p>Loading...</p>;
   if (!profile) return <p>User not found</p>;
@@ -26,6 +41,18 @@ export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { to
     if (showDetails) {
       setShowDetails(false);
     }
+  };
+
+  const isFollowing = user?._id
+    ? profile.stats?.followers?.includes(user._id)
+    : false;
+
+  const handleFollow = () => {
+    followMutation.mutate();
+    setShowUnfollowConfirm(false);
+  };
+  const handleUnfollow = () => {
+    unfollowMutation.mutate();
   };
 
   return (
@@ -86,9 +113,48 @@ export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { to
               Edit Profile
             </button>
           ) : (
-            <button className="px-6 py-2 bg-blue-500 text-white rounded-full font-medium hover:bg-blue-600 transition-colors duration-200">
-              Follow
-            </button>
+            <>
+              {isFollowing ? (
+                <>
+                  <button
+                    className="px-6 py-2 rounded-full bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 transition"
+                    onClick={() => setShowUnfollowConfirm(true)}
+                  >
+                    Following
+                  </button>
+                  {showUnfollowConfirm && (
+                    <div className="absolute mt-10 bg-dark-4 border border-gray-600 rounded shadow p-4 z-50">
+                      <p className="mb-2 text-sm text-gray-400">
+                        Unfollow @{profile?.username}?
+                      </p>
+                      <div className="flex flex-col gap-2">
+                        <button
+                          onClick={handleUnfollow}
+                          className="px-2 py-1 text-sm rounded  bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+                          disabled={unfollowMutation.isPending}
+                        >
+                          Unfollow
+                        </button>
+                        <button
+                          onClick={() => setShowUnfollowConfirm(false)}
+                          className="px-2 py-1 text-sm rounded  bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 "
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <button
+                  className="px-6 py-2 rounded-full bg-blue-500 text-white font-medium hover:bg-blue-600 transition"
+                  onClick={handleFollow}
+                  disabled={followMutation.isPending}
+                >
+                  Follow
+                </button>
+              )}
+            </>
           )}
         </div>
         <EditProfileModal
@@ -116,31 +182,31 @@ export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { to
           </div>
           {showDetails && (
             <>
-          <div className="flex items-center gap-6 mt-4">
-            <div className="flex items-center text-gray-700">
-              <MessageCircle className="w-4 h-4 mr-1" />
-              <span className="font-semibold">
-                {formatNumber(totalPosts ?? 0)}
-              </span>
-              <span className="text-gray-500 ml-1">Contents</span>
-            </div>
+              <div className="flex items-center gap-6 mt-4">
+                <div className="flex items-center text-gray-700">
+                  <MessageCircle className="w-4 h-4 mr-1" />
+                  <span className="font-semibold">
+                    {formatNumber(totalPosts ?? 0)}
+                  </span>
+                  <span className="text-gray-500 ml-1">Contents</span>
+                </div>
 
-             <div className="flex items-center text-gray-700">
-              <MessageCircle className="w-4 h-4 mr-1" />
-              <span className="font-semibold">
-                {formatNumber(postCount ?? 0)}
-              </span>
-              <span className="text-gray-500 ml-1">Posts</span>
-            </div>
-             <div className="flex items-center text-gray-700">
-              <MessageCircle className="w-4 h-4 mr-1" />
-              <span className="font-semibold">
-                {formatNumber(hikmahCount ?? 0)}
-              </span>
-              <span className="text-gray-500 ml-1">Hikmahs</span>
-            </div>
+                <div className="flex items-center text-gray-700">
+                  <MessageCircle className="w-4 h-4 mr-1" />
+                  <span className="font-semibold">
+                    {formatNumber(postCount ?? 0)}
+                  </span>
+                  <span className="text-gray-500 ml-1">Posts</span>
+                </div>
+                <div className="flex items-center text-gray-700">
+                  <MessageCircle className="w-4 h-4 mr-1" />
+                  <span className="font-semibold">
+                    {formatNumber(hikmahCount ?? 0)}
+                  </span>
+                  <span className="text-gray-500 ml-1">Hikmahs</span>
+                </div>
 
-            {/* <div className="flex items-center text-gray-700">
+                {/* <div className="flex items-center text-gray-700">
               <Users className="w-4 h-4 mr-1" />
               <span className="font-semibold">{formatNumber(profile.stats.followingCount)}</span>
               <span className="text-gray-500 ml-1">Following</span>
@@ -151,13 +217,13 @@ export const ProfileCard = ({ totalPosts = 0, postCount=0, hikmahCount=0 }: { to
               <span className="font-semibold">{formatNumber(profile.stats.followersCount)}</span>
               <span className="text-gray-500 ml-1">Followers</span>
               </div> */}
-          </div>
-            <div className="flex items-center mt-3 text-gray-500">
-              <Calendar className="w-4 h-4 mr-2" />
-              <span className="text-sm">
-                Joined {formatDate(profile.createdAt)}
-              </span>
-            </div>
+              </div>
+              <div className="flex items-center mt-3 text-gray-500">
+                <Calendar className="w-4 h-4 mr-2" />
+                <span className="text-sm">
+                  Joined {formatDate(profile.createdAt)}
+                </span>
+              </div>
             </>
           )}
         </div>
