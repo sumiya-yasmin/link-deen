@@ -45,6 +45,12 @@ export const getUserProfile = async (req, res) => {
       coverImageUrl: profile.coverImageUrl,
       bio: profile.bio,
       createdAt: profile.createdAt,
+      stats: {
+        postsCount: profile.posts?.length || 0,
+      followersCount: profile.followers?.length || 0,
+      followingCount: profile.following?.length || 0,
+      followers: profile.followers || []
+      },
     });
   } catch (error) {
     console.error('Get public user error:', error);
@@ -145,7 +151,7 @@ export const updateUserProfile = async (req, res) => {
 };
 
 export const followUserController = async (req, res) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req._id;
   const { userId: targetUserId } = req.params;
 
  const { currentUser, targetUser } = await followUserService(currentUserId, targetUserId);
@@ -159,7 +165,7 @@ export const followUserController = async (req, res) => {
 };
 
 export const unfollowUserController = async (req, res) => {
-  const currentUserId = req.user._id;
+  const currentUserId = req._id;
   const { userId: targetUserId } = req.params;
 
   const { currentUser, targetUser } = await unfollowUserService(currentUserId, targetUserId);
