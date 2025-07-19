@@ -49,7 +49,8 @@ export const getUserProfile = async (req, res) => {
         postsCount: profile.posts?.length || 0,
       followersCount: profile.followers?.length || 0,
       followingCount: profile.following?.length || 0,
-      followers: profile.followers || []
+      followers: (profile.followers || []).map(f => f._id ? f._id.toString() : f.toString()),
+      following: (profile.following || []).map(f => f._id ? f._id.toString() : f.toString()),
       },
     });
   } catch (error) {
@@ -153,21 +154,31 @@ export const updateUserProfile = async (req, res) => {
 export const followUserController = async (req, res) => {
   const currentUserId = req._id;
   const { userId: targetUserId } = req.params;
-
- const { currentUser, targetUser } = await followUserService(currentUserId, targetUserId);
-  res
-    .status(200)
-    .json({
-      message: 'Followed successfully',
-      followersCount: targetUser.followers.length,
-      followingCount: currentUser.following.length,
-    });
+try {
+  
+  const { currentUser, targetUser } = await followUserService(currentUserId, targetUserId);
+   res
+     .status(200)
+     .json({
+       message: 'Followed successfully',
+       followersCount: targetUser.followers.length,
+       followingCount: currentUser.following.length,
+       followers: targetUser.followers.map(f => f.toString ? f.toString() : f),
+       following: currentUser.following.map(f => f.toString ? f.toString() : f),
+     });
+} catch (error) {
+  console.error('Follow user error:', error.message);
+    if (error.message.includes('Cannot follow yourself') || error.message.includes('Already following')) {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Server error' });
+}
 };
 
 export const unfollowUserController = async (req, res) => {
   const currentUserId = req._id;
   const { userId: targetUserId } = req.params;
-
+try {
   const { currentUser, targetUser } = await unfollowUserService(currentUserId, targetUserId);
   res
     .status(200)
@@ -175,5 +186,15 @@ export const unfollowUserController = async (req, res) => {
       message: 'Unfollowed successfully',
       followersCount: targetUser.followers.length,
       followingCount: currentUser.following.length,
+      followers: targetUser.followers.map(f => f.toString ? f.toString() : f),
+      following: currentUser.following.map(f => f.toString ? f.toString() : f),
     });
+  
+} catch (error) {
+  console.error('Unfollow user error:', error.message);
+    if (error.message.includes('Cannot unfollow yourself')) {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
 };

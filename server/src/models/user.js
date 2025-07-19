@@ -13,8 +13,8 @@ const userSchema = new mongoose.Schema(
     imageUrl: { type: String, default: '' },
     coverImageUrl: { type: String, default: '' },
     bio: { type: String, default: '' , maxlength: 300},
-    followers: [{ type: Schema.Types.ObjectId, ref: 'User' }],
-    following: [{ type: Schema.Types.ObjectId, ref: 'User' }],
+    followers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
+    following: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
   },
   { timestamps: true }
 );
