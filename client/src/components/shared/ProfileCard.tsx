@@ -10,6 +10,7 @@ import { useParams } from 'react-router-dom';
 import ProfileImageUploader from './ProfileImageUploader';
 import EditProfileModal from './EditProfile';
 import { useState } from 'react';
+import FollowModal from './FollowModal';
 
 export const ProfileCard = ({
   totalPosts = 0,
@@ -23,6 +24,8 @@ export const ProfileCard = ({
   const [editOpen, setEditOpen] = useState(false);
   const [showDetails, setShowDetails] = useState(false);
   const [showUnfollowConfirm, setShowUnfollowConfirm] = useState(false);
+  const [showFollowModal, setShowFollowModal] = useState(false);
+  const [followModalTab, setFollowModalTab] = useState<'followers' | 'following'>('followers');
   const { id } = useParams<{ id: string }>();
   const { data: profile, isPending: userLoading } = useGetProfileById(id!);
   const { user } = useAuth();
@@ -51,9 +54,20 @@ export const ProfileCard = ({
     followMutation.mutate();
     setShowUnfollowConfirm(false);
   };
+
   const handleUnfollow = () => {
     unfollowMutation.mutate();
   };
+
+  const handleFollowersClick = () =>{
+    setShowFollowModal(true);
+    setFollowModalTab('followers');
+  }
+
+   const handleFollowingClick = () =>{
+    setShowFollowModal(true);
+    setFollowModalTab('following');
+  }
 
   return (
     <div className=" rounded-2xl w-full shadow-md overflow-hidden ">
@@ -208,7 +222,7 @@ export const ProfileCard = ({
                   </div>
                 </div>
                 <div className="flex gap-6">
-                  <div className="flex items-center text-gray-700">
+                  <div className="flex items-center text-gray-700 cursor-pointer" onClick={handleFollowingClick}>
                     <Users className="w-4 h-4 mr-1" />
                     <span className="font-semibold">
                       {formatNumber(profile.stats.followingCount)}
@@ -216,7 +230,7 @@ export const ProfileCard = ({
                     <span className="text-gray-500 ml-1">Following</span>
                   </div>
 
-                  <div className="flex items-center text-gray-700">
+                  <div className="flex items-center text-gray-700 cursor-pointer" onClick={handleFollowersClick}>
                     <Heart className="w-4 h-4 mr-1" />
                     <span className="font-semibold">
                       {formatNumber(profile.stats.followersCount)}
@@ -235,6 +249,15 @@ export const ProfileCard = ({
           )}
         </div>
       </div>
+       <FollowModal
+        isOpen={showFollowModal}
+        onClose={() => setShowFollowModal(false)}
+        followers={profile.stats.followers}
+        following={profile.stats.following}
+        initialTab={followModalTab}
+        profileName={profile.name}
+        currentUserId={user?._id?? null}
+      />
     </div>
   );
 };
