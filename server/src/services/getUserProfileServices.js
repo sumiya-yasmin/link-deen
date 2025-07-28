@@ -110,5 +110,32 @@ export const getSuggestedUsersService = async (currentUserId, page, limit) => {
       _id: { $nin: [currentUserId, ...followingIds] },
     }),
   ]);
-  return { suggestedUsers, total, currentPage: page, totalPages: Math.ceil(total / limit) };
+  return {
+    suggestedUsers,
+    total,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+  };
+};
+
+export const getSearchedUsersService = async (query, page, limit) => {
+  const regex = new RegExp(query, 'i');
+  const skip = (page - 1) * limit;
+  const [users, total] = await Promise.all([
+    User.find({
+      $or: [{ username: regex }, { name: regex }],
+    })
+      .select(-password - refreshToken)
+      .skip(skip)
+      .limit(limit),
+    User.countDocuments({
+      $or: [{ username: regex }, { name: regex }],
+    }),
+  ]);
+  return {
+    users,
+    total,
+    currentPage: page,
+    totalPages: Math.ceil(total / limit),
+  };
 };
