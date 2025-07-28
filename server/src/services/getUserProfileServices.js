@@ -87,3 +87,28 @@ export const unfollowUserService = async (currentUserId, targetUserId) => {
   }
   return { currentUser: updatedCurrentUser, targetUser: updatedTargetUser };
 };
+
+export const getSuggestedUsersService = async (currentUserId, page, limit) => {
+  const currentUser = await User.find(currentUserId).populate(
+    'following',
+    '_id'
+  );
+  if (!currentUser) throw new Error('User Not Found');
+  const followingUsersIds = currentUser.following.map((user) =>
+    user._id.toString()
+  );
+  const skip = (page - 1) * limit;
+  const [suggestedUsers, total] = await Promise.all([
+    User.find({
+      _id: { $nin: [currentUser, ...followingUsersIds] },
+    })
+      .select(-password - refreshToken)
+      .skip(skip)
+      .limit(limit),
+
+    User.countDocuments({
+      _id: { $nin: [currentUserId, ...followingIds] },
+    }),
+  ]);
+  return { suggestedUsers, total, currentPage: page, totalPages: Math.ceil(total / limit) };
+};
