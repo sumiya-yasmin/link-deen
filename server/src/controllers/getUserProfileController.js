@@ -2,6 +2,7 @@ import User from '../models/user.js';
 import {
   followUserService,
   getAuthenticatedUserProfileById,
+  getSearchedUsersService,
   getSuggestedUsersService,
   getUserProfileById,
   unfollowUserService,
@@ -207,10 +208,23 @@ export const getSuggestedUsers = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
 
   try {
-    const users = await getSuggestedUsersService(currentUserId, page, limit);
-    res.status(200).json(users);
+    const result = await getSuggestedUsersService(currentUserId, page, limit);
+    res.status(200).json(result);
   } catch (error) {
     console.error('suggested users error:', error.message);
     res.status(500).json({message : 'error fetching suggested users', error})
+  }
+}
+
+export const getSearchedUsers = async (req, res) => {
+  const query = req.query.que || '';
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 10;
+  try {
+    const result = await getSearchedUsersService(query, page, limit);
+     res.status(200).json(result);
+  } catch (error) {
+    console.error('searched users error:', error.message);
+    res.status(500).json({message : 'error fetching searched users', error})
   }
 }
