@@ -17,6 +17,7 @@ type FollowModalProps = {
   profileName?: string;
   currentUserId: string | null;
   initialTab?: 'followers' | 'following';
+
 };
 
 
@@ -38,7 +39,7 @@ const UserListItem = ({userId , currentUserId, onUserClick} : UserListItemProps)
       return
   }
   const isCurrentUser = userId === currentUserId;
-  const isFollowing = currentUserId && user.stats.followers?.includes(currentUserId)
+  
   return (
     <div 
       className="flex items-center p-3 bg-zinc-900 text-white hover:bg-zinc-800 cursor-pointer transition-colors duration-200 rounded-lg"
@@ -68,11 +69,8 @@ const UserListItem = ({userId , currentUserId, onUserClick} : UserListItemProps)
           )}
         </div>
         <p className="text-sm text-gray-500 truncate">@{user.username}</p>
-        {/* {user.bio && (
-          <p className="text-xs text-gray-500 truncate mt-1">{user.bio}</p>
-        )} */}
       </div>
-      
+{/*       
       <div className="flex items-center gap-2">
         {!isCurrentUser && (
           <button
@@ -89,7 +87,7 @@ const UserListItem = ({userId , currentUserId, onUserClick} : UserListItemProps)
             {isFollowing ? 'Following' : 'Follow'}
           </button>
         )}
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -102,6 +100,7 @@ export const FollowModal = ({
   profileName = '',
   currentUserId = null,
   initialTab = 'followers',
+  
 }: FollowModalProps) => {
   const [activeTab, setActiveTab] = useState(initialTab);
   const navigate = useNavigate();
@@ -125,8 +124,8 @@ export const FollowModal = ({
       onClick={handleBackdropClick}
     >
       <div className="bg-zinc-900 text-white rounded-2xl w-full max-w-md max-h-[80vh] flex flex-col overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-gray-200 flex-shrink-0">
+        
+        <div className="flex items-center justify-between p-4 border-b border-gray-600 flex-shrink-0">
           <h2 className="text-lg font-bold text-gray-200">{profileName}</h2>
           <button
             onClick={onClose}
@@ -136,20 +135,20 @@ export const FollowModal = ({
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="flex border-b border-gray-200 flex-shrink-0">
+        
+        <div className="flex border-b border-gray-600 flex-shrink-0">
           <button
             className={`flex-1 py-3 px-4 text-center font-medium transition-colors duration-200 ${
               activeTab === 'followers'
-                ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                ? 'text-gray-300 border-b-2 border-gray-600 bg-gray-500'
+                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-400'
             }`}
             onClick={() => setActiveTab('followers')}
           >
             <div className="flex items-center justify-center gap-2">
               <Heart className="w-4 h-4" />
               <span>Followers</span>
-              <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full">
+              <span className="bg-gray-300 text-gray-700 text-xs px-2 py-1 rounded-full">
                 {followers.length}
               </span>
             </div>
@@ -157,8 +156,8 @@ export const FollowModal = ({
           <button
             className={`flex-1 py-3 px-4 text-center font-medium transition-colors duration-200 ${
               activeTab === 'following'
-                ? 'text-blue-600 border-b-2 border-blue-600 bg-blue-50'
-                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-50'
+                ? 'text-gray-300 border-b-2 border-gray-600 bg-gray-500'
+                : 'text-gray-600 hover:text-gray-800 hover:bg-gray-400'
             }`}
             onClick={() => setActiveTab('following')}
           >
@@ -172,7 +171,7 @@ export const FollowModal = ({
           </button>
         </div>
 
-        {/* Content */}
+        
         <div className="flex-1 overflow-y-auto min-h-0">
           {activeTab === 'followers' ? (
             followers.length > 0 ? (
