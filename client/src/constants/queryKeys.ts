@@ -8,4 +8,7 @@ export const QUERY_KEYS = {
   GET_SEARCHED_POSTS: 'get-searched-posts',
   
   GET_COMMENTS: 'getComments',
+
+  GET_SUGGESTED_USERS: 'get-suggested-users',
+  GET_SEARCHED_USERS: 'get-searched-users',
 };
