@@ -9,7 +9,7 @@ import { LogOut, PlusSquare } from 'lucide-react';
 // } from '@/components/ui/icons/avatar';
 
 function Topbar() {
-  const { handleSignout } = useAuth();
+  const { user, handleSignout } = useAuth();
   return (
     <section className="sticky md:hidden top-0 z-50  bg-dark-2 w-full">
       <div className="flex justify-between items-center">
@@ -29,7 +29,7 @@ function Topbar() {
               className={`w-8 h-8 text-[#CD7F32] group-hover:text-[#ffffff]`}
             />
           </button>
-          <Link to="/profile" className="flex items-center">
+          <Link to={`/profile/${user?._id}`} className="flex items-center">
             <img
               src="/assets/profile-placeholder.png"
               alt="profile"

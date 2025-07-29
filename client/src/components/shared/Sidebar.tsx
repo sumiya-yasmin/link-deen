@@ -18,7 +18,7 @@ const sideNavItems = [
   { icon: Home, label: 'Home', path: '/' },
   { icon: PlusSquare, label: 'Create Post', path: '/create' },
   { icon: Telescope, label: 'Explore', path: '/explore' },
-  { icon: Users, label: 'Friends', path: '/people' },
+  { icon: Users, label: 'People', path: '/people' },
   { icon: Files, label: `Hikmah Board`, path: '/hikmah-board' },
   { icon: Settings, label: 'Settings', path: '/settings' },
 ];
