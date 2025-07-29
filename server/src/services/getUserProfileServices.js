@@ -89,7 +89,7 @@ export const unfollowUserService = async (currentUserId, targetUserId) => {
 };
 
 export const getSuggestedUsersService = async (currentUserId, page, limit) => {
-  const currentUser = await User.find(currentUserId).populate(
+  const currentUser = await User.findById(currentUserId).populate(
     'following',
     '_id'
   );
@@ -102,12 +102,12 @@ export const getSuggestedUsersService = async (currentUserId, page, limit) => {
     User.find({
       _id: { $nin: [currentUser, ...followingUsersIds] },
     })
-      .select(-password - refreshToken)
+      .select('-password -refreshToken')
       .skip(skip)
       .limit(limit),
 
     User.countDocuments({
-      _id: { $nin: [currentUserId, ...followingIds] },
+      _id: { $nin: [currentUserId, ...followingUsersIds] },
     }),
   ]);
   return {
@@ -125,7 +125,7 @@ export const getSearchedUsersService = async (query, page, limit) => {
     User.find({
       $or: [{ username: regex }, { name: regex }],
     })
-      .select(-password - refreshToken)
+      .select('-password -refreshToken')
       .skip(skip)
       .limit(limit),
     User.countDocuments({
