@@ -16,6 +16,7 @@ import CreatePostPage from '@/pages/CreatePostPage';
 import PostPage from '@/pages/PostPage';
 import ExplorePage from '@/pages/ExplorePage';
 import HikmahPage from '@/pages/HikmahPage';
+import PeoplePage from '@/pages/PeoplePage';
 
 export default function AppRouter() {
   return (
@@ -46,6 +47,7 @@ export default function AppRouter() {
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/explore" element={<ExplorePage />} />
            <Route path="/hikmah-board" element={<HikmahPage />} />
+           <Route path="/people" element={<PeoplePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
