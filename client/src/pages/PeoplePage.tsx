@@ -15,32 +15,34 @@ const PeoplePage = () => {
    if (!user) return <p>No users found.</p>;
 
  const {data: profile, isLoading: isLoading} = useGetProfileById(user?._id);
-  const { data: suggested, isLoading: loadingSuggested } = useSuggestedPeople();
-  const { data: searched, isLoading: loadingSearched } = useSearchedPeople(search);
-
+  const { data: suggestedData, isLoading: loadingSuggested, error } = useSuggestedPeople();
+  console.log(error)
+    console.log(suggestedData)
+  const { data: searchedData, isLoading: loadingSearched } = useSearchedPeople(search);
+  console.log(searchedData)
   return (
-       <div className='p-4'>
+       <div className='p-4 max-w-5xl items-center justify-center flex flex-col mx-auto text-white'>
        <Input 
        placeholder='Search People'
        value={search}
        onChange={(e)=>setSearch(e.target.value)}
-       className='mb-4 bg-dark-4 text-gray-300 '
+       className='mb-6 bg-zinc-800 border border-zinc-700 text-white placeholder-gray-400 w-full'
        />
+       <div className='max-w-5xl mx-auto'>
        {search && (
-        <div className="mb-4">
-          <h3 className="text-lg font-semibold mb-2">Search Results</h3>
-       <PeopleCard users={searched} isLoading={loadingSearched}/>
+        <div className="mb-8">
+         {!loadingSearched && searchedData && <h3 className="text-lg font-semibold mb-3 mt-3">Search Results</h3> }
+       <PeopleCard users={searchedData.users} isLoading={loadingSearched} />
        </div>
        )}
-        <Tabs value={tab} onValueChange={setTab} className="mt-4 bg-dark-4">
-        <TabsList>
+        <Tabs value={tab} onValueChange={setTab} className="mt-4 bg-zinc-900 rounded-lg p-4 shadow">
+        <TabsList className='mb-4'>
           <TabsTrigger value="followers">
             Followers ({profile?.stats.followersCount || 0})
           </TabsTrigger>
           <TabsTrigger value="following">
             Following ({profile?.stats.followingCount || 0})
           </TabsTrigger>
-
         </TabsList>
         
         <TabsContent value="followers">
@@ -57,10 +59,11 @@ const PeoplePage = () => {
           />
         </TabsContent>
       </Tabs>
-           <div className="mb-4">
-            <h3 className="text-lg font-semibold mb-2">Suggested People</h3>
-          <PeopleCard users={suggested} isLoading={loadingSuggested}/>
+           <div className="mt-8">
+            <h3 className="text-lg font-semibold mb-3">Suggested People</h3>
+          <PeopleCard users={suggestedData?.suggestedUsers?? []} isLoading={loadingSuggested}/>
 
+           </div>
            </div>
     </div>
   );
