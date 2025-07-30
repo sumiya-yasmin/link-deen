@@ -32,7 +32,7 @@ const PeoplePage = () => {
        {search && (
         <div className="mb-8">
          {!loadingSearched && searchedData && <h3 className="text-lg font-semibold mb-3 mt-3">Search Results</h3> }
-       <PeopleCard users={searchedData.users} isLoading={loadingSearched} />
+       <PeopleCard users={searchedData?.users ?? []} isLoading={loadingSearched} />
        </div>
        )}
         <Tabs value={tab} onValueChange={setTab} className="mt-4 bg-zinc-900 rounded-lg p-4 shadow">
