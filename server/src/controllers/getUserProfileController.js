@@ -209,6 +209,7 @@ export const getSuggestedUsers = async (req, res) => {
 
   try {
     const result = await getSuggestedUsersService(currentUserId, page, limit);
+    console.log("result from suggested users:", result);
     res.status(200).json(result);
   } catch (error) {
     console.error('suggested users error:', error.message);
@@ -222,7 +223,8 @@ export const getSearchedUsers = async (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   try {
     const result = await getSearchedUsersService(query, page, limit);
-     res.status(200).json(result);
+    console.log("result from searched users:", result);
+    res.status(200).json(result);
   } catch (error) {
     console.error('searched users error:', error.message);
     res.status(500).json({message : 'error fetching searched users', error})
