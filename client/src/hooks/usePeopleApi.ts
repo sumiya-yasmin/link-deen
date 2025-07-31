@@ -1,14 +1,21 @@
 import { getSearchedUsers, getSuggestedUsers } from "@/api/people"
 import { QUERY_KEYS } from "@/constants/queryKeys"
-import { useQuery } from "@tanstack/react-query"
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 
 export const useSuggestedPeople = (page: number=1, limit: number=10) => {
-   return useQuery({
+   return useInfiniteQuery({
      queryKey: [QUERY_KEYS.GET_SUGGESTED_USERS, page, limit],
-     queryFn: () => getSuggestedUsers(page, limit),
+     queryFn: ({pageParam}) => getSuggestedUsers(pageParam || 1, limit),
+     getNextPageParam: (lastPage) => {
+        if(lastPage.currentPage<lastPage.totalPage){
+        return lastPage.currentPage+1;
+        }
+        return undefined;
+     },
      retry: 2,
      staleTime: 5 * 60 * 1000, 
      placeholderData: (previousData) => previousData,
+     initialPageParam: 1,
     })
 }
 
