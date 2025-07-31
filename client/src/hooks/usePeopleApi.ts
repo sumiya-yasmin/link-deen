@@ -8,6 +8,7 @@ export const useSuggestedPeople = (page: number=1, limit: number=10) => {
      queryFn: () => getSuggestedUsers(page, limit),
      retry: 2,
      staleTime: 5 * 60 * 1000, 
+     placeholderData: (previousData) => previousData,
     })
 }
 
@@ -18,5 +19,6 @@ export const useSearchedPeople = (que: string, page: number=1, limit: number=10)
         enabled: !!que,
         retry: 2,
         staleTime: 5 * 60 * 1000, 
+        placeholderData: (previousData) => previousData,
     })
 }
