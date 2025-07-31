@@ -1,10 +1,12 @@
 import API from "@/lib/axios"
 
-
-interface SearchUsersParams {
-  que: string;
+interface PaginationParams {
   page?: number;
   limit?: number;
+}
+
+interface SearchUsersParams extends PaginationParams {
+  que: string;
 }
 
 export const getSuggestedUsers = async (page = 1, limit = 10) => {
