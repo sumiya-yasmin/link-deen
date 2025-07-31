@@ -112,29 +112,31 @@ export const useDeleteProfileImage = () => {
   });
 };
 
-
-export const useEditProfile = () =>{
+export const useEditProfile = () => {
   const queryClient = useQueryClient();
-  const {id: profileId} = useParams<{id: string}>();
+  const { id: profileId } = useParams<{ id: string }>();
   return useMutation({
-        mutationFn: updateProfile,
-        onSuccess: (data)=>{
-           if (profileId) {
-        queryClient.setQueryData([QUERY_KEYS.GET_PROFILE_BY_ID, profileId], data.user);
+    mutationFn: updateProfile,
+    onSuccess: (data) => {
+      if (profileId) {
+        queryClient.setQueryData(
+          [QUERY_KEYS.GET_PROFILE_BY_ID, profileId],
+          data.user
+        );
       }
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID],
       });
       toast.success('Profile updated successfully!');
-        },
-         onError: (err: any) => {
+    },
+    onError: (err: any) => {
       const msg =
-        err.response?.data?.error || 'Failed to update profile. Please try again.';
+        err.response?.data?.error ||
+        'Failed to update profile. Please try again.';
       toast.error(msg);
     },
-  })
-}
-
+  });
+};
 
 export const useFollowProfile = (targetUserId: string) => {
   const queryClient = useQueryClient();
@@ -147,21 +149,24 @@ export const useFollowProfile = (targetUserId: string) => {
         [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
         (oldData: any) => {
           if (!oldData) return oldData;
-          
+
           return {
             ...oldData,
             stats: {
               ...oldData.stats,
               followersCount: data.followersCount,
               followingCount: data.followingCount,
-              followers: data.followers, 
-              following: data.following, 
-            }
+              followers: data.followers,
+              following: data.following,
+            },
           };
         }
       );
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_SUGGESTED_USERS],
       });
     },
     onError: (error: any) => {
@@ -172,8 +177,6 @@ export const useFollowProfile = (targetUserId: string) => {
   });
 };
 
-
-
 export const useUnfollowProfile = (targetUserId: string) => {
   const queryClient = useQueryClient();
 
@@ -181,11 +184,11 @@ export const useUnfollowProfile = (targetUserId: string) => {
     mutationFn: () => unfollowProfile(targetUserId),
     onSuccess: (data) => {
       toast.success(data.message || 'Followed successfully');
-       queryClient.setQueryData(
+      queryClient.setQueryData(
         [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
         (oldData: any) => {
           if (!oldData) return oldData;
-          
+
           return {
             ...oldData,
             stats: {
@@ -193,13 +196,16 @@ export const useUnfollowProfile = (targetUserId: string) => {
               followersCount: data.followersCount,
               followingCount: data.followingCount,
               followers: data.followers,
-              following: data.following, 
-            }
+              following: data.following,
+            },
           };
         }
       );
       queryClient.invalidateQueries({
         queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID, targetUserId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEYS.GET_SUGGESTED_USERS],
       });
     },
     onError: (error: any) => {
