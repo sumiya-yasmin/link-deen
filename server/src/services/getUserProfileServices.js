@@ -139,3 +139,48 @@ export const getSearchedUsersService = async (query, page, limit) => {
     totalPages: Math.ceil(total / limit),
   };
 };
+
+export const getFollowersServices = async (userId, page, limit) => {
+  const user = await User.findById(userId).select('followers');
+  if (!user) throw new NotFoundError('User not found');
+
+  const total = user.followers.length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+  const paginatedFollowersIds = user.followers.slice(start, end);
+
+  const followers = await User.find({
+    _id: { $in: paginatedFollowersIds },
+  }).select('name username imageUrl');
+
+  return {
+    followers,
+    total,
+    currentPage,
+    totalPages,
+  };
+};
+
+export const getFollowingServices = async (userId, page, limit) => {
+  const user = await User.findById(userId).select('following');
+  if (!user) throw new NotFoundError('User not found');
+
+  const total = user.following.length;
+  const totalPages = Math.max(1, Math.ceil(total / limit));
+  const currentPage = Math.min(page, totalPages);
+  const start = (currentPage - 1) * limit;
+  const end = start + limit;
+  const paginatedFollowingIds = user.following.slice(start, end);
+  const following = await User.find({
+    _id: { $in: paginatedFollowingIds },
+  }).select('name username imageUrl');
+
+  return {
+    following,
+    total,
+    currentPage,
+    totalPages,
+  };
+};
