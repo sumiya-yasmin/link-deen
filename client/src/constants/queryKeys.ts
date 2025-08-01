@@ -11,4 +11,6 @@ export const QUERY_KEYS = {
 
   GET_SUGGESTED_USERS: 'get-suggested-users',
   GET_SEARCHED_USERS: 'get-searched-users',
+  GET_FOLLOWERS: 'get-followers',
+  GET_FOLLOWING: 'get-following',
 };
