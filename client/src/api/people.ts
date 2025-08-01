@@ -27,3 +27,21 @@ export const getSearchedUsers = async ({que, page = 1, limit = 10}:SearchUsersPa
 
   return response.data;
 }
+
+export const getfollowers = async (userId : string, page =1, limit=10) => {
+const res = await API.get(`/people/${userId}/followers`, {
+  params: {
+    page, limit,
+  }
+})
+return res.data;
+};
+
+export const getfollowing = async (userId : string, page =1, limit=10) => {
+const res = await API.get(`/people/${userId}/following`, {
+  params: {
+    page, limit,
+  }
+})
+return res.data;
+}
