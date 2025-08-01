@@ -25,9 +25,14 @@ const PeoplePage = () => {
   const allSuggestedUsers =
     suggestedData?.pages?.flatMap((page) => page.suggestedUsers) ?? [];
 
-  const { data: searchedData, isLoading: loadingSearched } =
-    useSearchedPeople(search);
-  console.log(searchedData);
+  const { data: searchedData, isLoading: loadingSearched,
+    hasNextPage: searchedHasNextPage,
+    isFetchingNextPage: searchedIsFetchingNextPage,
+    fetchNextPage: searchedFetchNextPage,
+
+  } =
+    useSearchedPeople(search, limit);
+  const allSearchedUsers = searchedData?.pages?.flatMap((page)=>page.users) ?? [];
   return (
     <div className="p-4 max-w-5xl items-center justify-center flex flex-col mx-auto text-white">
       <Input
@@ -45,8 +50,12 @@ const PeoplePage = () => {
               </h3>
             )}
             <PeopleCard
-              users={searchedData?.users ?? []}
+              users={allSearchedUsers}
               isLoading={loadingSearched}
+               hasNextPage={searchedHasNextPage}
+          isFetchingNextPage={searchedIsFetchingNextPage}
+          fetchNextPage={searchedFetchNextPage}
+
             />
           </div>
         )}
