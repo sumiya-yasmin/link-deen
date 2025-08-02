@@ -236,7 +236,7 @@ export const getFollowers = async (req, res) =>{
    const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   try {
-    const result = await getFollowersServices(userId, limit, page);
+    const result = await getFollowersServices(userId, page, limit);
     res.status(200).json(result);
   } catch (error) {
     console.error('Get followers error:', error.message);
@@ -251,7 +251,7 @@ export const getFollowing = async (req, res) =>{
   console.log("Backend received page:", page);
 
   try {
-    const result = await getFollowingServices(userId, limit, page);
+    const result = await getFollowingServices(userId, page, limit);
     res.status(200).json(result);
   } catch (error) {
     console.error('Get followers error:', error.message);
