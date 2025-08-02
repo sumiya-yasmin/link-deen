@@ -2,9 +2,8 @@ import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 
 import { useAuth } from '@/context/AuthContext';
-import PeopleCard, { UserIdList } from '@/components/shared/PeopleCard';
-import { useSearchedPeople, useSuggestedPeople } from '@/hooks/usePeopleApi';
-import { useGetProfileById } from '@/hooks/useProfileApi';
+import PeopleCard from '@/components/shared/PeopleCard';
+import { useFollowers, useFollowing, useSearchedPeople, useSuggestedPeople } from '@/hooks/usePeopleApi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 const PeoplePage = () => {
@@ -14,7 +13,22 @@ const PeoplePage = () => {
   if (!user) return <p>No users found.</p>;
   const limit = 12;
 
-  const { data: profile, isLoading: isLoading } = useGetProfileById(user?._id);
+
+  const { data: followersData, isLoading: loadingFollowers,
+    hasNextPage: followersHasNextPage,
+    isFetchingNextPage: followersFetchingNextPage,
+    fetchNextPage: followersFetchNextPage, } = useFollowers(user?._id, limit)
+
+    const allFollowersUsers = followersData?.pages?.flatMap((page)=> page.followers) ?? [];
+
+    const { data: followingData, isLoading: loadingFollowing,
+    hasNextPage: followingHasNextPage,
+    isFetchingNextPage: followingFetchingNextPage,
+    fetchNextPage: followingFetchNextPage, } = useFollowing(user?._id, limit)
+
+    const allFollowingUsers = followingData?.pages?.flatMap((page)=> page.following) ?? [];
+
+
   const {
     data: suggestedData,
     isLoading: loadingSuggested,
@@ -66,25 +80,31 @@ const PeoplePage = () => {
         >
           <TabsList className="mb-4">
             <TabsTrigger value="followers">
-              Followers ({profile?.stats.followersCount || 0})
+              Followers ({followersData?.pages[0]?.total || 0})
             </TabsTrigger>
             <TabsTrigger value="following">
-              Following ({profile?.stats.followingCount || 0})
+              Following ({followingData?.pages[0]?.total || 0})
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="followers">
-            <UserIdList
-              userIds={profile?.stats.followers ?? []}
-              isLoading={isLoading}
-            />
+                    <PeopleCard
+          users={allFollowersUsers}
+          isLoading={loadingFollowers}
+          hasNextPage={followersHasNextPage}
+          isFetchingNextPage={followersFetchingNextPage}
+          fetchNextPage={followersFetchNextPage}
+        />
           </TabsContent>
 
           <TabsContent value="following">
-            <UserIdList
-              userIds={profile?.stats.following ?? []}
-              isLoading={isLoading}
-            />
+           <PeopleCard
+          users={allFollowingUsers}
+          isLoading={loadingFollowing}
+          hasNextPage={followingHasNextPage}
+          isFetchingNextPage={followingFetchingNextPage}
+          fetchNextPage={followingFetchNextPage}
+        />
           </TabsContent>
         </Tabs>
       </div>
@@ -103,3 +123,7 @@ const PeoplePage = () => {
 };
 
 export default PeoplePage;
+
+
+
+
