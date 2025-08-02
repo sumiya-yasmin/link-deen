@@ -81,11 +81,12 @@ export function PeopleCard({
   if (!users?.length) return <p>No users found.</p>;
   return (
     <div>
-      <div className="grid grid-cols-4 gap-4 ">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
         {users.map((user: User) => (
           user && (
           <Link to={`/profile/${user?._id}`} key={user._id}>
-            <div className="px-6 py-8 rounded-lg bg-zinc-800 shadow flex gap-4 justify-center items-center w-full max-w-sm hover:bg-zinc-700 transition">
+            <div className="group relative bg-zinc-800/40 backdrop-blur-sm border border-zinc-700/50 rounded-2xl p-6 transition-all duration-300 hover:bg-zinc-700/50 hover:border-zinc-600/50 hover:transform hover:scale-[1.02] hover:shadow-xl hover:shadow-black/20">
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <img
                 src={user?.imageUrl || '/assets/profile-placeholder.png'}
                 className="rounded-full w-16 h-16 object-cover flex-shrink-0"
