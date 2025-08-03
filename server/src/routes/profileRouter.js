@@ -1,5 +1,6 @@
 import express from 'express';
 import {
+  deleteProfile,
   deleteUserImage,
   followUserController,
   getAuthenticatedUserProfile,
@@ -25,3 +26,4 @@ profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);
 profileRouter.put('/:userId/follow', authenticate, followUserController);
 profileRouter.put('/:userId/unfollow', authenticate, unfollowUserController);
+profileRouter.get('/profile/:id', authenticate, deleteProfile);
