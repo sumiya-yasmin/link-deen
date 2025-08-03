@@ -1,5 +1,6 @@
 import User from '../models/user.js';
 import {
+  deleteProfileService,
   followUserService,
   getAuthenticatedUserProfileById,
   getFollowersServices,
@@ -256,5 +257,17 @@ export const getFollowing = async (req, res) =>{
   } catch (error) {
     console.error('Get followers error:', error.message);
     res.status(500).json({ message: 'Error fetching followers', error });
+  }
+}
+
+export const deleteProfile = async(req, res) => {
+  const id = req._id;
+  try {
+    await deleteProfileService(id);
+    res.status(200).json({
+      message: 'User profile deleted successfully.',
+    });
+  } catch (error) {
+     res.status(500).json({ message: 'Error DEleting profile', error });
   }
 }
