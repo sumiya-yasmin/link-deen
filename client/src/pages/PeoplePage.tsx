@@ -90,14 +90,20 @@ const PeoplePage = () => {
         >
           <TabsList className="grid w-full grid-cols-2 mb-8 bg-zinc-800/30 backdrop-blur-md border border-zinc-700/50 rounded-xl p-1">
             <TabsTrigger value="followers"
-            className="data-[state=active]:bg-zinc-700/70 data-[state=active]:text-white text-zinc-300 font-medium py-3 rounded-lg transition-all duration-200 data-[state=active]:shadow-lg"
+            className="data-[state=active]:!bg-zinc-700/70 data-[state=active]:!text-white data-[state=active]:!font-medium !text-zinc-300 !font-medium py-3 rounded-lg transition-all duration-200 data-[state=active]:shadow-lg"
             >
+              <div>
+
               Followers ({followersData?.pages[0]?.total || 0})
+              </div>
             </TabsTrigger>
             <TabsTrigger value="following"
-            className="data-[state=active]:bg-zinc-700/70 data-[state=active]:text-white text-zinc-300 font-medium py-3 rounded-lg transition-all duration-200 data-[state=active]:shadow-lg"
+            className="data-[state=active]:!bg-zinc-700/70 data-[state=active]:!text-white data-[state=active]:!font-medium !text-zinc-300 !font-medium py-3 rounded-lg transition-all duration-200 data-[state=active]:shadow-lg"
             >
+              <div className='flex justify-center items-center'>
+
               Following ({followingData?.pages[0]?.total || 0})
+              </div>
             </TabsTrigger>
           </TabsList>
 

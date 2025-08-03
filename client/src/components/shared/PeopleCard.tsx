@@ -85,7 +85,7 @@ export function PeopleCard({
         {users.map((user: User) => (
           user && (
           <Link to={`/profile/${user?._id}`} key={user._id}>
-            <div className="group relative bg-zinc-800/40 backdrop-blur-sm border border-zinc-700/50 rounded-2xl p-6 transition-all duration-300 hover:bg-zinc-700/50 hover:border-zinc-600/50 hover:transform hover:scale-[1.02] hover:shadow-xl hover:shadow-black/20">
+            <div className="group relative flex flex-col gap-2 bg-zinc-800/40 backdrop-blur-sm border border-zinc-700/50 rounded-2xl p-6 transition-all duration-300 hover:bg-zinc-700/50 hover:border-zinc-600/50 hover:transform hover:scale-[1.02] hover:shadow-xl hover:shadow-black/20">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-purple-500/5 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <img
                 src={user?.imageUrl || '/assets/profile-placeholder.png'}
