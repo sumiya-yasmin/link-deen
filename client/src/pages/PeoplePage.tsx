@@ -48,7 +48,7 @@ const PeoplePage = () => {
     useSearchedPeople(search, limit);
   const allSearchedUsers = searchedData?.pages?.flatMap((page)=>page.users) ?? [];
   return (
-    <div className="min-h-screen bg-dark-3 p-6">
+    <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-white mb-2">Discover People</h1>
@@ -88,7 +88,7 @@ const PeoplePage = () => {
           onValueChange={setTab}
           className="mb-10"
         >
-          <TabsList className="grid w-full grid-cols-2 mb-8 bg-zinc-800/30 backdrop-blur-md border border-zinc-700/50 rounded-xl p-1">
+          <TabsList className="h-auto grid w-full grid-cols-2 mb-8 p-1 border border-zinc-700/40">
             <TabsTrigger value="followers"
             className="data-[state=active]:!bg-zinc-700/70 data-[state=active]:!text-white data-[state=active]:!font-medium !text-zinc-300 !font-medium py-3 rounded-lg transition-all duration-200 data-[state=active]:shadow-lg"
             >
