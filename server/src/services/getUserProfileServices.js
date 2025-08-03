@@ -184,3 +184,10 @@ export const getFollowingServices = async (userId, page, limit) => {
     totalPages,
   };
 };
+
+
+export const deleteProfileService = async(userId) => {
+const user = await User.findById(userId);
+ if (!user) throw new NotFoundError('User not found');
+return await User.findByIdAndDelete(userId);
+} 
