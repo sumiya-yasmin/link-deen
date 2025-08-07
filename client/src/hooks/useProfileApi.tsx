@@ -1,4 +1,4 @@
-import { followProfile, unfollowProfile } from '@/api/profile';
+import { deleteProfile, followProfile, unfollowProfile } from '@/api/profile';
 import {
   deleteProfileImage,
   getProfileById,
@@ -215,3 +215,39 @@ export const useUnfollowProfile = (targetUserId: string) => {
     },
   });
 };
+
+export const useDeleteProfile = (userId: string) => {
+    const queryClient = useQueryClient();
+return useMutation({
+  mutationFn: () => deleteProfile(userId),
+  onSuccess: (data) => {
+    toast.success(data.message || 'Deleted successfully');
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_SEARCHED_USERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_SUGGESTED_USERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_FOLLOWERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_FOLLOWING]
+    });
+      queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_POPULAR_POSTS]
+    });
+      queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
+    });
+  },
+   onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Something went wrong. Try again.'
+      );
+    },
+})
+}
