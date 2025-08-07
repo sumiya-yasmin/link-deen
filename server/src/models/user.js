@@ -15,6 +15,8 @@ const userSchema = new mongoose.Schema(
     bio: { type: String, default: '' , maxlength: 300},
     followers: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
     following: [{ type: Schema.Types.ObjectId, ref: 'User', default: [] }],
+    isDeleted: { type: Boolean, default: false },
+    deletionScheduledAt: { type: Date, default: null },
   },
   { timestamps: true }
 );
