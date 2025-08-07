@@ -20,10 +20,12 @@ profileRouter.post(
   upload.single('file'),
   uploadUserImage
 );
-export default profileRouter;
+profileRouter.delete('/profile/delete/:id', authenticate, deleteProfile);
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);
 profileRouter.put('/:userId/follow', authenticate, followUserController);
 profileRouter.put('/:userId/unfollow', authenticate, unfollowUserController);
-profileRouter.get('/profile/:id', authenticate, deleteProfile);
+
+
+export default profileRouter;
