@@ -8,6 +8,7 @@ import {
   getSearchedUsersService,
   getSuggestedUsersService,
   getUserProfileById,
+  softDeleteProfileService,
   unfollowUserService,
   updateUserProfileService,
 } from '../services/getUserProfileServices.js';
@@ -269,5 +270,22 @@ export const deleteProfile = async(req, res) => {
     });
   } catch (error) {
      res.status(500).json({ message: 'Error DEleting profile', error });
+  }
+}
+
+export const softdeleteProfile = async(req, res) => {
+  const userId = req._id;
+  try {
+    await softDeleteProfileService(userId);
+    res.clearCookie('refreshToken', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
+      path: '/',
+    });
+    res.status(200).json({ message: 'User account deactivated and logged out successfully' });
+  } catch (error) {
+    console.error('Soft delete error:', error);
+    res.status(500).json({ message: 'Internal server error during soft delete' });
   }
 }
