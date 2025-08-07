@@ -5,6 +5,7 @@ import {
   followUserController,
   getAuthenticatedUserProfile,
   getUserProfile,
+  softdeleteProfile,
   unfollowUserController,
   updateUserProfile,
   uploadUserImage,
@@ -20,7 +21,8 @@ profileRouter.post(
   upload.single('file'),
   uploadUserImage
 );
-profileRouter.delete('/profile/delete/:id', authenticate, deleteProfile);
+profileRouter.delete('/profile/hard-delete/:id', authenticate, deleteProfile);
+profileRouter.delete('/profile/delete/:id', authenticate, softdeleteProfile);
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);
