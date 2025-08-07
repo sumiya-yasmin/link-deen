@@ -72,6 +72,6 @@ export const unfollowProfile = async(targetUserId: string)=>{
 }
 
 export const deleteProfile = async(userId: string) =>{
-   const res = await API.delete(`/profile/delete/${userId}`);
+   const res = await API.delete(`/profile/hard-delete/${userId}`);
   return res.data;
 }
