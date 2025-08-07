@@ -70,3 +70,8 @@ export const unfollowProfile = async(targetUserId: string)=>{
   const res = await API.put(`/${targetUserId}/unfollow`);
   return res.data;
 }
+
+export const deleteProfile = async(userId: string) =>{
+   const res = await API.put(`/profile/delete/${userId}`);
+  return res.data;
+}
