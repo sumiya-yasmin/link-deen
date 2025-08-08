@@ -23,8 +23,8 @@ profileRouter.post(
   uploadUserImage
 );
 profileRouter.delete('/profile/hard-delete/:id', authenticate, deleteProfile);
-profileRouter.delete('/profile/delete/:id', authenticate, softdeleteProfile);
-profileRouter.get('/profile/restore/:id', authenticate, restoreSoftDeletedProfile);
+profileRouter.patch('/profile/delete/:id', authenticate, softdeleteProfile);
+profileRouter.patch('/profile/restore/:id', authenticate, restoreSoftDeletedProfile);
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);
