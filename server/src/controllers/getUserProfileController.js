@@ -8,6 +8,7 @@ import {
   getSearchedUsersService,
   getSuggestedUsersService,
   getUserProfileById,
+  restoreSoftDeletedProfileService,
   softDeleteProfileService,
   unfollowUserService,
   updateUserProfileService,
@@ -53,10 +54,14 @@ export const getUserProfile = async (req, res) => {
       createdAt: profile.createdAt,
       stats: {
         postsCount: profile.posts?.length || 0,
-      followersCount: profile.followers?.length || 0,
-      followingCount: profile.following?.length || 0,
-      followers: (profile.followers || []).map(f => f._id ? f._id.toString() : f.toString()),
-      following: (profile.following || []).map(f => f._id ? f._id.toString() : f.toString()),
+        followersCount: profile.followers?.length || 0,
+        followingCount: profile.following?.length || 0,
+        followers: (profile.followers || []).map((f) =>
+          f._id ? f._id.toString() : f.toString()
+        ),
+        following: (profile.following || []).map((f) =>
+          f._id ? f._id.toString() : f.toString()
+        ),
       },
     });
   } catch (error) {
@@ -160,51 +165,61 @@ export const updateUserProfile = async (req, res) => {
 export const followUserController = async (req, res) => {
   const currentUserId = req._id;
   const { userId: targetUserId } = req.params;
-try {
-  
-  const { currentUser, targetUser } = await followUserService(currentUserId, targetUserId);
-   res
-     .status(200)
-     .json({
-       message: 'Followed successfully',
-       followersCount: targetUser.followers.length,
-       followingCount: currentUser.following.length,
-       followers: targetUser.followers.map(f => f.toString ? f.toString() : f),
-       following: currentUser.following.map(f => f.toString ? f.toString() : f),
-     });
-} catch (error) {
-  console.error('Follow user error:', error.message);
-    if (error.message.includes('Cannot follow yourself') || error.message.includes('Already following')) {
-      return res.status(400).json({ message: error.message });
-    }
-    res.status(500).json({ message: 'Server error' });
-}
-};
-
-export const unfollowUserController = async (req, res) => {
-  const currentUserId = req._id;
-  const { userId: targetUserId } = req.params;
-try {
-  const { currentUser, targetUser } = await unfollowUserService(currentUserId, targetUserId);
-  res
-    .status(200)
-    .json({
-      message: 'Unfollowed successfully',
+  try {
+    const { currentUser, targetUser } = await followUserService(
+      currentUserId,
+      targetUserId
+    );
+    res.status(200).json({
+      message: 'Followed successfully',
       followersCount: targetUser.followers.length,
       followingCount: currentUser.following.length,
-      followers: targetUser.followers.map(f => f.toString ? f.toString() : f),
-      following: currentUser.following.map(f => f.toString ? f.toString() : f),
+      followers: targetUser.followers.map((f) =>
+        f.toString ? f.toString() : f
+      ),
+      following: currentUser.following.map((f) =>
+        f.toString ? f.toString() : f
+      ),
     });
-  
-} catch (error) {
-  console.error('Unfollow user error:', error.message);
-    if (error.message.includes('Cannot unfollow yourself')) {
+  } catch (error) {
+    console.error('Follow user error:', error.message);
+    if (
+      error.message.includes('Cannot follow yourself') ||
+      error.message.includes('Already following')
+    ) {
       return res.status(400).json({ message: error.message });
     }
     res.status(500).json({ message: 'Server error' });
   }
 };
 
+export const unfollowUserController = async (req, res) => {
+  const currentUserId = req._id;
+  const { userId: targetUserId } = req.params;
+  try {
+    const { currentUser, targetUser } = await unfollowUserService(
+      currentUserId,
+      targetUserId
+    );
+    res.status(200).json({
+      message: 'Unfollowed successfully',
+      followersCount: targetUser.followers.length,
+      followingCount: currentUser.following.length,
+      followers: targetUser.followers.map((f) =>
+        f.toString ? f.toString() : f
+      ),
+      following: currentUser.following.map((f) =>
+        f.toString ? f.toString() : f
+      ),
+    });
+  } catch (error) {
+    console.error('Unfollow user error:', error.message);
+    if (error.message.includes('Cannot unfollow yourself')) {
+      return res.status(400).json({ message: error.message });
+    }
+    res.status(500).json({ message: 'Server error' });
+  }
+};
 
 export const getSuggestedUsers = async (req, res) => {
   const currentUserId = req._id;
@@ -216,9 +231,9 @@ export const getSuggestedUsers = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error('suggested users error:', error.message);
-    res.status(500).json({message : 'error fetching suggested users', error})
+    res.status(500).json({ message: 'error fetching suggested users', error });
   }
-}
+};
 
 export const getSearchedUsers = async (req, res) => {
   const query = req.query.que || '';
@@ -229,13 +244,13 @@ export const getSearchedUsers = async (req, res) => {
     res.status(200).json(result);
   } catch (error) {
     console.error('searched users error:', error.message);
-    res.status(500).json({message : 'error fetching searched users', error})
+    res.status(500).json({ message: 'error fetching searched users', error });
   }
-}
+};
 
-export const getFollowers = async (req, res) =>{
+export const getFollowers = async (req, res) => {
   const userId = req._id;
-   const page = parseInt(req.query.page) || 1;
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   try {
     const result = await getFollowersServices(userId, page, limit);
@@ -244,13 +259,13 @@ export const getFollowers = async (req, res) =>{
     console.error('Get followers error:', error.message);
     res.status(500).json({ message: 'Error fetching followers', error });
   }
-}
+};
 
-export const getFollowing = async (req, res) =>{
+export const getFollowing = async (req, res) => {
   const userId = req._id;
-   const page = parseInt(req.query.page) || 1;
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  console.log("Backend received page:", page);
+  console.log('Backend received page:', page);
 
   try {
     const result = await getFollowingServices(userId, page, limit);
@@ -259,9 +274,9 @@ export const getFollowing = async (req, res) =>{
     console.error('Get followers error:', error.message);
     res.status(500).json({ message: 'Error fetching followers', error });
   }
-}
+};
 
-export const deleteProfile = async(req, res) => {
+export const deleteProfile = async (req, res) => {
   const id = req._id;
   try {
     await deleteProfileService(id);
@@ -269,11 +284,11 @@ export const deleteProfile = async(req, res) => {
       message: 'User profile deleted successfully.',
     });
   } catch (error) {
-     res.status(500).json({ message: 'Error DEleting profile', error });
+    res.status(500).json({ message: 'Error DEleting profile', error });
   }
-}
+};
 
-export const softdeleteProfile = async(req, res) => {
+export const softdeleteProfile = async (req, res) => {
   const userId = req._id;
   try {
     await softDeleteProfileService(userId);
@@ -283,9 +298,28 @@ export const softdeleteProfile = async(req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       path: '/',
     });
-    res.status(200).json({ message: 'User account deactivated and logged out successfully' });
+    res
+      .status(200)
+      .json({
+        message: 'User account deactivated and logged out successfully',
+      });
   } catch (error) {
     console.error('Soft delete error:', error);
-    res.status(500).json({ message: 'Internal server error during soft delete' });
+    res
+      .status(500)
+      .json({ message: 'Internal server error during soft delete' });
   }
-}
+};
+
+export const restoreSoftDeletedProfile = async (req, res) => {
+  const userId = req.user._id;
+  try {
+    const user = await restoreSoftDeletedProfileService(userId);
+    res.status(200).json({ message: 'Account restored successfully', user });
+  } catch (error) {
+    console.error('Soft delete error:', error);
+    res
+      .status(500)
+      .json({ message: 'Internal server error during restoring' });
+  }
+};
