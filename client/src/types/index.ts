@@ -7,6 +7,8 @@ export interface User {
   coverImageUrl: string;
   bio: string;
   createdAt: string;
+  deletedAt: string;
+  isDeleted: boolean;
 }
 
 export interface UserProfile extends User {
