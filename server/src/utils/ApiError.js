@@ -18,3 +18,11 @@ export class InvalidPasswordError extends ApiError {
     this.name = "InvalidPasswordError";
   }
 }
+
+export class UserSoftDeletedError extends Error {
+  constructor(deletionScheduledAt) {
+    super('User is soft deleted');
+    this.name = 'UserSoftDeletedError';
+    this.restoreAvailableUntil = deletionScheduledAt;
+  }
+}
