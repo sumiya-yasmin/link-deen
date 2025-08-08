@@ -80,3 +80,8 @@ export const deleteProfile = async(userId: string) =>{
   const res = await API.patch(`/profile/delete/${userId}`);
   return res.data;
 }
+
+export const restoreProfile = async(userId: string) => {
+    const res = await API.patch(`/profile/restore/${userId}`);
+  return res.data;
+}
