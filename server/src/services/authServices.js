@@ -1,7 +1,7 @@
 import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 import jwt from 'jsonwebtoken';
-import { InvalidPasswordError, UserNotFoundError } from '../utils/ApiError.js';
+import { InvalidPasswordError, UserNotFoundError, UserSoftDeletedError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
 import { hashToken } from './tokentServices.js';
 
@@ -16,6 +16,9 @@ export const signInServices = async (email, password) => {
   if (!user) {
     throw new UserNotFoundError();
   }
+ if (user.isDeleted) {
+  throw new UserSoftDeletedError(user.deletionScheduledAt);
+}
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
     throw new InvalidPasswordError();
