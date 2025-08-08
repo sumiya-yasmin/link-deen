@@ -15,8 +15,13 @@ export const signInMutation = async(data:{
   email: string;
   password: string;
 }) => {
-  const response = await API.post('/auth/signin', data);
-  return response.data;
+  try {
+    const response = await API.post('/auth/signin', data);
+    return response.data;
+    
+  } catch (error) {
+    throw error;
+  }
 }
 
 export const signOutMutation = async() =>{
