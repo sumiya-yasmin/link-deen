@@ -185,21 +185,39 @@ export const getFollowingServices = async (userId, page, limit) => {
   };
 };
 
+export const deleteProfileService = async (userId) => {
+  const user = await User.findById(userId);
+  if (!user) throw new NotFoundError('User not found');
+  return await User.findByIdAndDelete(userId);
+};
 
-export const deleteProfileService = async(userId) => {
-const user = await User.findById(userId);
- if (!user) throw new NotFoundError('User not found');
-return await User.findByIdAndDelete(userId);
-} 
+export const softDeleteProfileService = async (userId) => {
+  const deleteAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
+  const user = await User.findByIdAndUpdate(
+    userId,
+    {
+      isDeleted: true,
+      deletionScheduledAt: deleteAt,
+      refreshToken: null,
+    },
+    { new: true }
+  );
+  if (!user) throw new Error('User not found');
+};
 
-export const softDeleteProfileService = async(userId) =>{
-  const deleteAt = new Date(Date.now() + 30*24*60*60*1000);
-  const user = await User.findByIdAndUpdate(userId, {
-    isDeleted: true,
-    deletionScheduledAt: deleteAt,
-    refreshToken: null,
-  },
-{ new: true }
-);
-if (!user) throw new Error('User not found');
-}
+export const restoreSoftDeletedProfileService = async (userId) => {
+  const user = await User.findByIdAndUpdate(
+    {
+      _id: userId,
+      isDeleted: true,
+      deletionScheduledAt: { $gt: new Date() },
+    },
+    {
+      isDeleted: false,
+      deleteScheduledAt: null,
+    },
+    {
+      new: true,
+    }
+  );
+};
