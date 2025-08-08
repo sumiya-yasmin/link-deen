@@ -17,6 +17,7 @@ import PostPage from '@/pages/PostPage';
 import ExplorePage from '@/pages/ExplorePage';
 import HikmahPage from '@/pages/HikmahPage';
 import PeoplePage from '@/pages/PeoplePage';
+import RestoreAccountPage from '@/pages/RestoreAccountPage';
 
 export default function AppRouter() {
   return (
@@ -26,6 +27,14 @@ export default function AppRouter() {
           <Route path="sign-up" element={<SignupPage />} />
           <Route path="sign-in" element={<SigninPage />} />
         </Route>
+        <Route
+            path="/restore-account"
+            element={
+              // <RestoreAccountGuard>
+              <RestoreAccountPage />
+              // </RestoreAccountGuard>
+            }
+          />
         <Route
           path="/"
           element={
@@ -46,8 +55,8 @@ export default function AppRouter() {
           <Route path="/create" element={<CreatePostPage />} />
           <Route path="/post/:id" element={<PostPage />} />
           <Route path="/explore" element={<ExplorePage />} />
-           <Route path="/hikmah-board" element={<HikmahPage />} />
-           <Route path="/people" element={<PeoplePage />} />
+          <Route path="/hikmah-board" element={<HikmahPage />} />
+          <Route path="/people" element={<PeoplePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
