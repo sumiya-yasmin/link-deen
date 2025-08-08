@@ -1,4 +1,4 @@
-import {  deleteProfile, followProfile, hardDeleteProfile, unfollowProfile } from '@/api/profile';
+import {  deleteProfile, followProfile, hardDeleteProfile, restoreProfile, unfollowProfile } from '@/api/profile';
 import {
   deleteProfileImage,
   getProfileById,
@@ -14,7 +14,8 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import toast from 'react-hot-toast';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useSignout } from './useSignout';
 
 export const useGetProfileById = (profileId: string, enabled = true) => {
   return useQuery({
@@ -253,10 +254,12 @@ return useMutation({
 }
 export const useDeleteProfile = (userId: string) => {
   const queryClient = useQueryClient();
+  const signout = useSignout();
   return useMutation({
     mutationFn: () => deleteProfile(userId),
-      onSuccess: (data :any) => {
+      onSuccess: async (data) => {
     toast.success(data.message || 'Deleted successfully');
+    await signout();
     queryClient.invalidateQueries({
       queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID]
     });
@@ -287,3 +290,41 @@ export const useDeleteProfile = (userId: string) => {
   })
 }
 
+
+export const useRestoreProfile = (userId: string) => {
+  const queryClient = useQueryClient();
+    const navigate = useNavigate ();
+  return useMutation({
+    mutationFn: () => restoreProfile(userId),
+      onSuccess: (data) => {
+        navigate('/')
+    toast.success(data.message || 'Restored successfully');
+    queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_SEARCHED_USERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_SUGGESTED_USERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_FOLLOWERS]
+    });
+     queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_FOLLOWING]
+    });
+      queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_POPULAR_POSTS]
+    });
+      queryClient.invalidateQueries({
+      queryKey: [QUERY_KEYS.GET_RECENT_POSTS]
+    });
+  },
+   onError: (error: any) => {
+      toast.error(
+        error.response?.data?.message || 'Something went wrong. Try again.'
+      );
+    },
+  })
+}
