@@ -6,7 +6,7 @@ import {
   signOutServices,
 } from '../services/authServices.js';
 import { generateTokens, hashToken } from '../services/tokentServices.js';
-import { ApiError } from '../utils/ApiError.js';
+import { ApiError, UserSoftDeletedError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
 
 const setRefreshToken = (res, refreshToken) => {
@@ -67,6 +67,14 @@ export const signIn = async (req, res) => {
     if (error instanceof ApiError) {
       return res.status(401).json({ message: error.message });
     }
+    if (error instanceof UserSoftDeletedError) {
+      return res.status(403).json({
+        message:
+          'Your account is scheduled for deletion. Please restore to access.',
+        name: error.constructor.name,
+        restoreAvailableUntil: error.restoreAvailableUntil,
+      });
+    }
     return res.status(500).json({ message: 'Internal server error' });
   }
 };
@@ -96,12 +104,10 @@ export const refreshAccessToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
     if (!refreshToken) {
-      return res
-        .status(401)
-        .json({
-          message: 'Refresh token is required',
-          error: 'NO_REFRESH_TOKEN',
-        });
+      return res.status(401).json({
+        message: 'Refresh token is required',
+        error: 'NO_REFRESH_TOKEN',
+      });
     }
     let decoded;
     decoded = jwt.verify(refreshToken, config.JWT_SECRET);

@@ -312,7 +312,7 @@ export const softdeleteProfile = async (req, res) => {
 };
 
 export const restoreSoftDeletedProfile = async (req, res) => {
-  const userId = req.user._id;
+  const userId = req._id;
   try {
     const user = await restoreSoftDeletedProfileService(userId);
     res.status(200).json({ message: 'Account restored successfully', user });
