@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 
 export const getAuthenticatedUserProfileById = async (id) => {
@@ -205,13 +206,22 @@ export const softDeleteProfileService = async (userId) => {
   if (!user) throw new Error('User not found');
 };
 
-export const restoreSoftDeletedProfileService = async (userId) => {
-  const user = await User.findByIdAndUpdate(
-    {
-      _id: userId,
-      isDeleted: true,
-      deletionScheduledAt: { $gt: new Date() },
-    },
+export const restoreSoftDeletedProfileService = async (email, password) => {
+  const user = await User.findOne({
+    email,
+    isDeleted: true,
+    deletionScheduledAt: { $gt: new Date() },
+  }).select('+password');
+  if (!user) {
+    throw new Error('No restorable account found with this email');
+  }
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    throw new Error('Invalid password');
+  }
+
+  const restoredUser = await User.findByIdAndUpdate(
+    user._id,
     {
       isDeleted: false,
       deleteScheduledAt: null,
@@ -220,4 +230,5 @@ export const restoreSoftDeletedProfileService = async (userId) => {
       new: true,
     }
   );
+  return restoredUser;
 };

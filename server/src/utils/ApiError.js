@@ -20,9 +20,10 @@ export class InvalidPasswordError extends ApiError {
 }
 
 export class UserSoftDeletedError extends Error {
-  constructor(deletionScheduledAt) {
+  constructor(user) {
     super('User is soft deleted');
     this.name = 'UserSoftDeletedError';
-    this.restoreAvailableUntil = deletionScheduledAt;
+    this.restoreAvailableUntil = user.deletionScheduledAt;
+    this.email = user.email;
   }
 }

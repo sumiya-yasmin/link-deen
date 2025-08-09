@@ -24,7 +24,7 @@ profileRouter.post(
 );
 profileRouter.delete('/profile/hard-delete/:id', authenticate, deleteProfile);
 profileRouter.patch('/profile/delete/:id', authenticate, softdeleteProfile);
-profileRouter.patch('/profile/restore/:id', authenticate, restoreSoftDeletedProfile);
+profileRouter.patch('/profile/restore', restoreSoftDeletedProfile);
 
 profileRouter.delete('/profile/delete/image', authenticate, deleteUserImage);
 profileRouter.put('/profile', authenticate, updateUserProfile);

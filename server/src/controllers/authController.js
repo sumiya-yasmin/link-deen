@@ -73,6 +73,7 @@ export const signIn = async (req, res) => {
           'Your account is scheduled for deletion. Please restore to access.',
         name: error.constructor.name,
         restoreAvailableUntil: error.restoreAvailableUntil,
+        email: error.email, 
       });
     }
     return res.status(500).json({ message: 'Internal server error' });

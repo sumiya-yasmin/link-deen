@@ -14,6 +14,7 @@ import {
   updateUserProfileService,
 } from '../services/getUserProfileServices.js';
 import uploadService from '../services/uploadService.js';
+import { UserNotFoundError } from '../utils/ApiError.js';
 
 export const getAuthenticatedUserProfile = async (req, res) => {
   const id = req._id;
@@ -298,11 +299,9 @@ export const softdeleteProfile = async (req, res) => {
       sameSite: process.env.NODE_ENV === 'production' ? 'strict' : 'lax',
       path: '/',
     });
-    res
-      .status(200)
-      .json({
-        message: 'User account deactivated and logged out successfully',
-      });
+    res.status(200).json({
+      message: 'User account deactivated and logged out successfully',
+    });
   } catch (error) {
     console.error('Soft delete error:', error);
     res
@@ -312,14 +311,35 @@ export const softdeleteProfile = async (req, res) => {
 };
 
 export const restoreSoftDeletedProfile = async (req, res) => {
-  const userId = req._id;
   try {
-    const user = await restoreSoftDeletedProfileService(userId);
-    res.status(200).json({ message: 'Account restored successfully', user });
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({
+        message: 'Email and password are required',
+      });
+    }
+
+    const user = await restoreSoftDeletedProfileService(email, password);
+    res.status(200).json({
+      message: 'Account restored successfully. Please sign in to continue',
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+      },
+    });
   } catch (error) {
     console.error('Soft delete error:', error);
+
+    if (
+      error.message === 'No restorable account found with this email' ||
+      error.message === 'Invalid password'
+    ) {
+      return res.status(401).json({ message: error.message });
+    }
+
     res
       .status(500)
-      .json({ message: 'Internal server error during restoring' });
+      .json({ message: 'Internal server error during restoration' });
   }
 };

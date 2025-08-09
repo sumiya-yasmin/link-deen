@@ -17,7 +17,7 @@ export const signInServices = async (email, password) => {
     throw new UserNotFoundError();
   }
  if (user.isDeleted) {
-  throw new UserSoftDeletedError(user.deletionScheduledAt);
+  throw new UserSoftDeletedError(user);
 }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
