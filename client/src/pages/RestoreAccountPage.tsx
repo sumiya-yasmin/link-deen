@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useRestoreProfile } from '@/hooks/useProfileApi';
+import { useAuth } from '@/context/AuthContext';
 
 export default function RestoreAccountPage() {
+  const { user } = useAuth(); 
   const location = useLocation();
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
@@ -49,7 +51,27 @@ export default function RestoreAccountPage() {
 
   const isRestorePeriodValid =
     restoreUntil && new Date(restoreUntil) > new Date();
-
+if (user && !user.isDeleted) {
+    return (
+      <div className="h-screen flex justify-center items-center">
+      <div className="bg-dark-4 shadow-lg rounded-lg p-10 max-w-sm text-center">
+        <h1 className="text-6xl font-extrabold text-red-600 mb-4">404</h1>
+        <h2 className="text-2xl font-semibold mb-2">Access Denied</h2>
+        <p className="text-gray-400">You do not have permission to view this page.</p>
+      </div>
+    </div>
+    )}
+    if (!user && !email){
+       return (
+      <div className="h-screen flex justify-center items-center">
+      <div className="bg-dark-4 shadow-lg rounded-lg p-10 max-w-sm text-center">
+        <h1 className="text-6xl font-extrabold text-red-600 mb-4">404</h1>
+        <h2 className="text-2xl font-semibold mb-2">Access Denied</h2>
+        <p className="text-gray-400">You do not have permission to view this page.</p>
+      </div>
+    </div>
+    )
+    }
   return (
     <div className="flex flex-col items-center justify-center h-screen text-center p-4">
       <h1 className="text-2xl font-bold mb-4">

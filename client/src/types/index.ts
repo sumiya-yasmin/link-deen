@@ -9,6 +9,7 @@ export interface User {
   createdAt: string;
   deletedAt: string;
   isDeleted: boolean;
+  deletionScheduledAt: string;
 }
 
 export interface UserProfile extends User {
