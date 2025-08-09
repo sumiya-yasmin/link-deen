@@ -81,7 +81,14 @@ export const deleteProfile = async(userId: string) =>{
   return res.data;
 }
 
-export const restoreProfile = async(userId: string) => {
-    const res = await API.patch(`/profile/restore/${userId}`);
+export const restoreProfile = async({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+    const res = await API.patch(`/profile/restore`,{ email,
+  password,});
   return res.data;
 }

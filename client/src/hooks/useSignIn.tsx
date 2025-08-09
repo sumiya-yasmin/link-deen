@@ -15,7 +15,7 @@ export const useSignin = () => {
       toast.success('Sign in successful. Welcome to Link Deen');
       navigate('/');
     },
-    onError: (error: AxiosError<{ message?: string; name?: string, restoreAvailableUntil?: string  }>, variables) => {
+    onError: (error: AxiosError<{ message?: string; name?: string, restoreAvailableUntil?: string, userId?: string }>, variables) => {
       console.log('Signin error:', error);
   console.log('Variables:', variables);
       const status = error.response?.status;
@@ -35,14 +35,14 @@ export const useSignin = () => {
         const restoreUntil = data.restoreAvailableUntil;
         const email = variables.email;
         
-        console.log('Navigating to restore account with:', { restoreUntil, email });
+        console.log('Navigating to restore account with:', { restoreUntil, email});
         
         toast.error('Account scheduled for deletion. Redirecting...');
         setTimeout(() => {
           navigate('/restore-account', {
-            state: { restoreUntil, email },
+            state: { restoreUntil, email},
           });
-        }, 500);
+        }, 1500);
         return;
       }
       toast.error(

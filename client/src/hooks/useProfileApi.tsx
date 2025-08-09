@@ -291,14 +291,14 @@ export const useDeleteProfile = (userId: string) => {
 }
 
 
-export const useRestoreProfile = (userId: string) => {
+export const useRestoreProfile = () => {
   const queryClient = useQueryClient();
     const navigate = useNavigate ();
   return useMutation({
-    mutationFn: () => restoreProfile(userId),
+    mutationFn: restoreProfile,
       onSuccess: (data) => {
         navigate('/')
-    toast.success(data.message || 'Restored successfully');
+    toast.success(data.message || 'Restored successfully. Please sign in to continue');
     queryClient.invalidateQueries({
       queryKey: [QUERY_KEYS.GET_PROFILE_BY_ID]
     });
