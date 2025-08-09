@@ -5,6 +5,7 @@ import { config } from './config/index.js';
 import connectDB from './config/db.js';
 import configureRouter from './routes/index.js';
 import cloudinary from './config/cloudinary.js';
+import { startAutoDeleteJob } from './jobs/autoDeleteUsers.js';
 
 const app= express();
 const port = config.PORT;
@@ -17,6 +18,7 @@ app.use(cors(config.CORS));
 connectDB();
 cloudinary.config();
 configureRouter(app);
+startAutoDeleteJob();
 app.listen(port, ()=>{
     console.log(`Server running on http://localhost:${port}`);
 })
