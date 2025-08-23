@@ -31,25 +31,26 @@ function Sidebar() {
     await signout();
   };
   return (
-    <nav className="hidden md:flex bg-dark-2 px-6 py-2 min-w-[270px] flex-col justify-between h-full">
-      <div className="flex flex-col gap-6">
+    <nav className="hidden md:flex bg-dark-2 px-6 py-2 min-w-[270px] flex-col justify-between h-screen fixed left-0 top-0">
+      <div className="flex flex-col gap-4">
         <Link to="/" className="flex items-center ">
-          <img src="/assets/logo5.png" className="" width={170} height={30} />
+          <img src="/assets/logo5.png" className="object-contain h-18"  />
         </Link>
-        <Link to={`/profile/${user?._id}`} className="flex items-center gap-2">
+        <Link to={`/profile/${user?._id}`} className="flex items-center gap-3 px-3 rounded-lg hover:bg-gray-800/50 transition-colors">
           <img
             src={user?.imageUrl || '/assets/profile-placeholder.png'}
             alt="profile"
-            className="h-14 w-14 rounded-full"
+            className="h-12 w-12 rounded-full object-cover border-2 border-[#CD7F32]/20"
           />
-          <div className="flex flex-col">
-            <p className="text-[18px] font-bold leading-[140%]">{user?.name}</p>
-            <p className="text-[#ECBF87] text-[14px] font-normal leading-[140%]">
+          <div className="flex flex-col w-35">
+            <p className="text-[18px] font-semibold leading-tight text-white truncate">{user?.name}</p>
+            <p className="text-[#ECBF87] text-sm leading-tight truncate">
               @{user?.username}
             </p>
           </div>
         </Link>
-        <ul className="space-y-6">
+        <hr className='text-gray-500'></hr>
+        <ul className="space-y-2">
           {sideNavItems.map((item) => {
             const Icon = item.icon;
             const isActive =
@@ -59,11 +60,15 @@ function Sidebar() {
             return (
               <li
                 key={item.label}
-                className={`group p-2 ${
-                  isActive ? 'bg-[#CD7F32]' : ''
-                } hover:bg-[#CD7F32] rounded-md`}
+                // className={`group p-2 ${
+                //   isActive ? 'bg-[#CD7F32]' : ''
+                // } hover:bg-[#CD7F32] rounded-md`}
               >
-                <Link to={item.path} className="flex items-center gap-2">
+                <Link to={item.path} className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
+                      isActive
+                        ? 'bg-[#CD7F32] text-white shadow-md'
+                        : 'text-gray-300 hover:bg-gray-800/70 hover:text-white'
+                    }`}>
                   <Icon
                     className={`w-6 h-6 text-[#CD7F32]  ${
                       isActive ? 'text-[#ffffff]' : ''
@@ -75,10 +80,11 @@ function Sidebar() {
             );
           })}
         </ul>
-        <li className={`group p-2 hover:bg-[#CD7F32] rounded-md`}>
+        <hr className='text-gray-500'></hr>
+        <li className={`group px-4 py-3 hover:bg-gray-800/70 rounded-md`}>
           <button
             onClick={handleClick}
-            className="flex items-center justify-items-start gap-2"
+            className="flex items-center justify-items-start gap-2 w-full"
           >
             <LogOut
               className={`w-6 h-6 text-[#CD7F32] group-hover:text-[#ffffff]`}
