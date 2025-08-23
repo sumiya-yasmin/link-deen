@@ -30,13 +30,16 @@ function Sidebar() {
   const handleClick = async () => {
     await signout();
   };
+  const isProfileActive = location.pathname.startsWith('/profile');
   return (
     <nav className="hidden md:flex bg-dark-2 px-6 py-2 min-w-[270px] flex-col justify-between h-screen fixed left-0 top-0">
       <div className="flex flex-col gap-4">
         <Link to="/" className="flex items-center ">
           <img src="/assets/logo5.png" className="object-contain h-18"  />
         </Link>
-        <Link to={`/profile/${user?._id}`} className="flex items-center gap-3 px-3 rounded-lg hover:bg-gray-800/50 transition-colors">
+        <Link to={`/profile/${user?._id}`} className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${isProfileActive 
+          ? 'bg-gray-800/50 text-white shadow-md' 
+          : 'hover:bg-gray-800/50'}`}>
           <img
             src={user?.imageUrl || '/assets/profile-placeholder.png'}
             alt="profile"
