@@ -31,7 +31,7 @@ function Topbar() {
           </button>
           <Link to={`/profile/${user?._id}`} className="flex items-center">
             <img
-              src="/assets/profile-placeholder.png"
+              src={user?.imageUrl || "/assets/profile-placeholder.png"}
               alt="profile"
               className="h-10 w-10 rounded-full border-2 border-[#CD7F32]"
             />
