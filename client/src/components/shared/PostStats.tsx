@@ -26,7 +26,7 @@ const PostStats = ({
 }: //  showComments = true,
 PostStatsProps) => {
   return (
-    <div className="flex justify-between items-center z-20 pt-4 border-t border-dark-4 text-light-3">
+    <div className="flex justify-center items-center z-20 pt-4 border-t border-dark-4 text-light-3">
       <div className="flex gap-2 mr-5">
         <button
           onClick={onLike}
@@ -58,7 +58,7 @@ PostStatsProps) => {
         )}
         <span>{comments}</span>
       </div>
-      <div className="flex gap-8">
+      {/* <div className="flex gap-8">
         <button onClick={onShare} className='hover:bg-dark-3 md:p-4 rounded-2xl hover:text-[#CD7F32]'>
           <Share2 className="w-5 h-5 " />
         </button>
@@ -69,7 +69,7 @@ PostStatsProps) => {
             }`}
           />
         </button>
-      </div>
+      </div> */}
     </div>
   );
 };

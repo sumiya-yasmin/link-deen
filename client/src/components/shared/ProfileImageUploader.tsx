@@ -247,7 +247,7 @@ useClickOutside(imageOptionsRef, () => setShowViewImageOptions(false));
           >
             <div  className={`absolute z-20 top-4 right-50`}>
               <Settings
-                className="w-6 h-6 cursor-pointer text-light-2 hover:text-white"
+                className="w-6 h-6 cursor-pointer bg-gray-600 text-light-2 hover:text-white"
                 onClick={(e) => {
             e.stopPropagation();
             setShowViewImageOptions((prev) => !prev);

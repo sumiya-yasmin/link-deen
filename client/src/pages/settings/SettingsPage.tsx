@@ -6,8 +6,8 @@ const settingsItems = [
   // { icon: '/assets/react.svg', label:'Profile', path: '/profile' },
 
   { icon: UserCog, label: 'Edit Profile', path: 'profile' },
-  { icon: RotateCcwKey, label: 'Edit Password', path: 'password' },
-  { icon: SunMoon, label: 'Theme', path: 'theme' },
+  // { icon: RotateCcwKey, label: 'Edit Password', path: 'password' },
+  // { icon: SunMoon, label: 'Theme', path: 'theme' },
   { icon: UserRoundX, label: 'Danger Zone', path: 'danger' },
   //   { icon: Files, label: 'Dua Board', path: '/blogs' },
   //   { icon: Settings, label: 'Settings', path: '/settings' },
