@@ -1,4 +1,4 @@
-import { Post, User } from '@/types';
+import { Post} from '@/types';
 import { Settings } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { DeleteConfirmDialog } from '../DeleteConfirmDialog';
@@ -6,11 +6,10 @@ import PostEditDialog from './PostEditDialog';
 
 interface PostSettingsProps {
   post: Post;
-  user: User;
   onDeletePost: (postId: string) => void;
 }
 
-const PostSettings = ({ post, user, onDeletePost }: PostSettingsProps) => {
+const PostSettings = ({ post, onDeletePost }: PostSettingsProps) => {
   const [showOptions, setShowOptions] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);

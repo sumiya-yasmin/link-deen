@@ -16,11 +16,11 @@ function FileUploader({
   setClearFilePreview,
   onRemove,
 }: FileUploaderProps) {
-  const [file, setFile] = useState<File[]>([]);
+  // const [file, setFile] = useState<File[]>([]);
   const [fileUrl, setFileUrl] = useState('');
   const onDrop = useCallback(
     (acceptedFiles: FileWithPath[]) => {
-      setFile(acceptedFiles);
+      // setFile(acceptedFiles);
       fieldChange(acceptedFiles);
       setFileUrl(URL.createObjectURL(acceptedFiles[0]));
     },
@@ -35,14 +35,14 @@ function FileUploader({
 
   useEffect(() => {
     setClearFilePreview(() => () => {
-      setFile([]);
+      // setFile([]);
       setFileUrl('');
     });
   }, [setClearFilePreview]);
 
   const handleRemove = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setFile([]);
+    // setFile([]);
     setFileUrl('');
     onRemove?.(); // also trigger parent's clear
   };

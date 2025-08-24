@@ -64,7 +64,7 @@ const HikmahPage = () => {
   </p>
           <ul className="flex flex-col gap-9">
             {data!.pages.map((page, pageIndex) => {
-              const hikmahs = page.posts.filter((post) => post.type === 'hikmah');
+              const hikmahs = page.posts.filter((post: Post) => post.type === 'hikmah');
               return (
                 <React.Fragment key={pageIndex}>
                   {hikmahs.map((post: Post, postIndex: number) => {

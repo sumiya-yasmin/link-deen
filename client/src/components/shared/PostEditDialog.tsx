@@ -28,7 +28,7 @@ const PostEditDialog = ({ post, open, onOpenChange }: PostEditDialogProps) => {
           </DialogDescription>
         </DialogHeader>
 
-        <PostForm post={post} onCancel={handleCancel} />
+        <PostForm post={post} onCancel={handleCancel} type={post.type}/>
       </DialogContent>
     </Dialog>
   );

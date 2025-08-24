@@ -1,4 +1,4 @@
-import { Heart, MessageCircle, Bookmark, Share2, Moon } from 'lucide-react';
+import { Heart, MessageCircle, Moon } from 'lucide-react';
 
 type PostStatsProps = {
   likes?: number;
@@ -17,10 +17,10 @@ const PostStats = ({
   likes = 0,
   comments = 0,
   isLiked = true,
-  isSaved = false,
+  // isSaved = false,
   onLike,
-  onSave,
-  onShare,
+  // onSave,
+  // onShare,
   onToggleComments,
    variant = 'default',
 }: //  showComments = true,

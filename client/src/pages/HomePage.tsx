@@ -1,6 +1,6 @@
 import { useInView } from 'react-intersection-observer';
 import { useGetRecentPosts } from '@/hooks/usePostApis';
-import { Home, Loader, LoaderCircle, Sparkles, TrendingUp } from 'lucide-react';
+import { Loader, LoaderCircle, Sparkles, TrendingUp } from 'lucide-react';
 import React, { useEffect } from 'react';
 import { Post } from '@/types';
 import PostCard from '@/components/shared/PostCard';

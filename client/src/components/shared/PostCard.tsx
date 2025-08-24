@@ -38,12 +38,13 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
         : mode === 'minimal'
         ? 'w-full max-w-xs'
         : 'bg-dark-2 rounded-3xl border border-dark-4 p-5 lg:p-7 w-full max-w-screen-sm';
+        const linkRef = ref as React.ForwardedRef<HTMLAnchorElement>;
 
     if (mode === 'minimal') {
       return (
         <Link
           to={`/post/${post._id}`}
-          ref={ref}
+          ref={linkRef}
           className={`${wrapperClass} group hover:shadow-lg transition-shadow duration-200 rounded-md overflow-hidden`}
         >
           {post.image && (
@@ -96,7 +97,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
 
               {isOwner && (
                 <PostSettings
-                  user={user}
+                  // user={user}
                   post={post}
                   onDeletePost={(deleteData: string) => deletePost(deleteData)}
                 />
@@ -187,7 +188,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
           </div>
           {isOwner && (
             <PostSettings
-              user={user}
+              // user={user}
               post={post}
               onDeletePost={(deleteData: string) => deletePost(deleteData)}
             />

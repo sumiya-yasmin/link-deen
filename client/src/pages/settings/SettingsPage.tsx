@@ -1,7 +1,7 @@
 // src/pages/SettingsPage.tsx
 
 import { Link, Outlet, useLocation } from 'react-router-dom';
-import { RotateCcwKey, SunMoon, UserCog, UserRoundX } from 'lucide-react';
+import { UserCog, UserRoundX } from 'lucide-react';
 const settingsItems = [
   // { icon: '/assets/react.svg', label:'Profile', path: '/profile' },
 
