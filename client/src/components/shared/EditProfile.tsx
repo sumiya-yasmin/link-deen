@@ -88,10 +88,10 @@ const EditProfileModal = ({ isOpen, onClose, defaultValues }: Props) => {
           </div>
 
           <div className="flex justify-end gap-3 pt-2">
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button type="button" variant="ghost" onClick={onClose} className="bg-zinc-600 hover:bg-zinc-700">
               Cancel
             </Button>
-            <Button type="submit" disabled={editProfileMutation.isPending}>
+            <Button type="submit" disabled={editProfileMutation.isPending} className="bg-[#CD7F50] hover:bg-[#cd7f32]">
               {editProfileMutation.isPending ? (
                 <span className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin" /> Saving...
