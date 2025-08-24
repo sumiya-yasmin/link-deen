@@ -73,9 +73,12 @@ const ProfilePage = () => {
         <hr className="mb-6" />
 
         {filteredPosts.length > 0 ? (
-          <div className="space-y-6">
+          <div className="space-y-8">
             {filteredPosts.map((post) => (
+              <>
               <PostCard key={post._id} post={post} mode={'details'} />
+              <hr className='text-dark-4 w-[93%]'></hr>
+              </>
             ))}
           </div>
         ) : (

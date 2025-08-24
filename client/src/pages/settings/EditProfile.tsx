@@ -78,7 +78,7 @@ function EditProfile() {
            <Button type="button" variant="ghost" onClick={handleCancel} className={`hover:bg-gray-700 rounded-md bg-dark-4`}>
               Cancel
             </Button>
-          <Button type="submit" onClick={handleUpdate} disabled={editProfileMutation.isPending} className={`hover:bg-[#CD7F32] rounded-md bg-dark-4`}>
+          <Button type="submit" onClick={handleUpdate} disabled={editProfileMutation.isPending} className={`bg-[#CD7F50] hover:bg-[#cd7f32] rounded-md`}>
               {editProfileMutation.isPending ? (
                  <span className="flex items-center gap-2">
                   <Loader2 className="w-4 h-4 animate-spin mr-2" /> Updating...
