@@ -5,6 +5,11 @@
 
 ## 🌐 Live Demo
 
+- **Frontend:** The live, user-facing application.
+  - [https://link-deen.vercel.app](https://link-deen.vercel.app)
+- **Backend API:** The API that powers the application. This URL is not a browsable website; it is the base URL for API endpoints
+  - [https://link-deen.onrender.com](https://link-deen.onrender.com)
+
 ## 🚀 Features
 
 ### 🔐 Authentication & Security
