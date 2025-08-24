@@ -91,7 +91,7 @@ export const CommentItem = ({
         <div className="flex justify-between items-start">
           <div className="flex items-center gap-2">
             <img
-              src="/assets/profile-placeholder.png"
+              src={user?.imageUrl || "/assets/profile-placeholder.png"}
               alt="profile"
               className="h-6 w-6 rounded-full border-2 border-[#CD7F32]"
             />
