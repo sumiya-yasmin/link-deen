@@ -23,11 +23,11 @@ export const authenticate = async (req, res, next) => {
   } catch (error) {
     console.error('Auth middleware error:', error);
 
-    if (
-      error.name === 'JsonWebTokenError' ||
-      error.name === 'TokenExpiredError'
-    ) {
+    if (error.name === 'JsonWebTokenError') {
       return res.status(401).json({ message: 'Invalid or expired token' });
+    }
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Access token expired' });
     }
 
     res.status(500).json({ message: 'Server error' });
