@@ -16,6 +16,7 @@ import {
 import toast from 'react-hot-toast';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSignout } from './useSignout';
+import { useAuth } from '@/context/AuthContext';
 
 export const useGetProfileById = (profileId: string, enabled = true) => {
   return useQuery({
@@ -43,11 +44,13 @@ export const useGetUserPosts = (userId: string, limit: number = 10) => {
 export const useUploadProfileImage = () => {
   const queryClient = useQueryClient();
   const { id: profileId } = useParams<{ id: string }>();
+   const { refreshUser } = useAuth(); 
 
   return useMutation({
     mutationFn: uploadProfileImage,
     onSuccess: (data, variables) => {
       console.log('Upload successful, response:', data);
+      refreshUser(); 
       if (data.user && profileId) {
         queryClient.setQueryData(
           [QUERY_KEYS.GET_PROFILE_BY_ID, profileId],
@@ -81,10 +84,13 @@ export const useUploadProfileImage = () => {
 export const useDeleteProfileImage = () => {
   const queryClient = useQueryClient();
   const { id: profileId } = useParams<{ id: string }>();
+     const { refreshUser } = useAuth(); 
+
 
   return useMutation({
     mutationFn: deleteProfileImage,
     onSuccess: (data, variables) => {
+      refreshUser(); 
       if (data.user && profileId) {
         queryClient.setQueryData(
           [QUERY_KEYS.GET_PROFILE_BY_ID, profileId],

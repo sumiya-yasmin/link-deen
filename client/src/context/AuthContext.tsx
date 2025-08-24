@@ -16,6 +16,7 @@ interface AuthContextType {
   isLoading: boolean;
   handleSignin: (accessToken: string) => void;
   handleSignout: () => void;
+  refreshUser: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -60,6 +61,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+   const refreshUser = async () => {
+    await fetchUserData();
   };
 
   // Check if user is logged in on initial load
@@ -108,6 +113,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         isLoading,
         handleSignin,
         handleSignout,
+        refreshUser,
       }}
     >
       {children}
