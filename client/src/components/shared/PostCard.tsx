@@ -165,7 +165,7 @@ const PostCard = React.forwardRef<HTMLDivElement, PostCardProps>(
                   post?.author?.imageUrl || '/assets/profile-placeholder.png'
                 }
                 alt="profile"
-                className="lg:h-12 w-12 rounded-full border-2 border-[#CD7F32]"
+                className="h-12 w-12 rounded-full border-2 border-[#CD7F32]"
               />
             </Link>
             <div className="flex flex-col">
