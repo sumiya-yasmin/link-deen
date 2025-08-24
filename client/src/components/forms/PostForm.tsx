@@ -146,6 +146,11 @@ function PostForm({ post, onCancel, type }: PostFormProps) {
               fieldChange={handleFileChange}
               mediaUrl={preview || post?.image}
               setClearFilePreview={setClearFilePreview}
+              onRemove={() => {
+    setPreview(null);
+    setImageFile(null);
+    setRemoveImage(true); // mark for backend to delete
+  }}
             />
           </FormItem>
           {type === 'post' && (
