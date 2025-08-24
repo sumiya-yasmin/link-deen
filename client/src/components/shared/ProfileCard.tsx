@@ -192,7 +192,7 @@ export const ProfileCard = ({
             className="text-center text-gray-600 cursor-pointer"
             onClick={() => handleShowDetails()}
           >
-            Show more info
+            {showDetails? <span>Show less info</span>: <span>Show more info</span>}
           </div>
           {showDetails && (
             <>
@@ -252,8 +252,8 @@ export const ProfileCard = ({
        <FollowModal
         isOpen={showFollowModal}
         onClose={() => setShowFollowModal(false)}
-        followers={profile.stats.followers}
-        following={profile.stats.following}
+        followers={profile.stats?.followers}
+        following={profile.stats?.following}
         initialTab={followModalTab}
         profileName={profile.name}
         currentUserId={user?._id?? null}
