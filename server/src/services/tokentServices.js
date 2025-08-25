@@ -7,10 +7,10 @@ export const generateTokens = (user) => {
     email: user.email,
   };
   const accessToken = jwt.sign(payload, config.JWT_SECRET, {
-    expiresIn: '5m',
+    expiresIn: '15m',
   });
   const refreshToken = jwt.sign(payload, config.JWT_SECRET, {
-    expiresIn: '6h',
+    expiresIn: '7d',
   });
 
   return { accessToken, refreshToken };
