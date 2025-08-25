@@ -9,21 +9,12 @@ import { generateTokens, hashToken } from '../services/tokentServices.js';
 import { ApiError, UserSoftDeletedError } from '../utils/ApiError.js';
 import { config } from '../config/index.js';
 
-const getCookieOptions = () => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  return {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax',
-    path: '/',
-    // Set the domain to ensure the cookie is shared across subdomains
-    domain: isProduction ? '.onrender.com' : undefined,
-  };
-};
-
 const setRefreshToken = (res, refreshToken) => {
   res.cookie('refreshToken', refreshToken, {
-   ...getCookieOptions(),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+    path: '/',
     maxAge: 7 * 24 * 60 * 60 * 1000,
   });
 };
